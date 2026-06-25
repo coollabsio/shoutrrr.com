@@ -8,8 +8,8 @@ interface Props {
 }
 
 const {
-  title = 'shoutrrr - Open Source Social Media Scheduler',
-  description = 'An open-source social media scheduler for Twitter/X, LinkedIn, and Bluesky. Self-hosted, privacy-first, and free forever.',
+  title = 'Shoutrrr - Self-Hosted Social Media Scheduler',
+  description = 'An open-source alternative to Buffer, Typefully, and Hootsuite. Schedule posts to X, Bluesky, and LinkedIn from your own server.',
 } = Astro.props;
 ---
 
@@ -25,15 +25,27 @@ const {
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:site_name" content="shoutrrr" />
+    <meta property="og:site_name" content="Shoutrrr" />
+    <meta property="og:image" content="https://shoutrrr.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="https://shoutrrr.com/og-image.png" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- App icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#101010" />
+    <meta name="msapplication-TileColor" content="#101010" />
+    <meta name="msapplication-TileImage" content="/mstile-150x150.png" />
 
     <!-- Inter Font (self-hosted) -->
 
