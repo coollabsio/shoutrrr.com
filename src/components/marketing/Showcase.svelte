@@ -6,19 +6,17 @@
    * (muted→grays, primary→lime, border→line).
    */
   import { animate } from 'motion';
-  import {
-    Calendar,
-    ChevronLeft,
-    ChevronRight,
-    Image as ImageIcon,
-    Shuffle,
-    Split,
-    Send,
-    MessageCircle,
-    Repeat2,
-    Heart,
-    BarChart3,
-  } from '@lucide/svelte';
+  import Calendar from '@lucide/svelte/icons/calendar';
+  import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+  import ChevronRight from '@lucide/svelte/icons/chevron-right';
+  import ImageIcon from '@lucide/svelte/icons/image';
+  import Shuffle from '@lucide/svelte/icons/shuffle';
+  import Split from '@lucide/svelte/icons/split';
+  import Send from '@lucide/svelte/icons/send';
+  import MessageCircle from '@lucide/svelte/icons/message-circle';
+  import Repeat2 from '@lucide/svelte/icons/repeat-2';
+  import Heart from '@lucide/svelte/icons/heart';
+  import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
 
   type Tab = 'composer' | 'calendar' | 'analytics';
   let tab = $state<Tab>('composer');

@@ -7,7 +7,20 @@
    *
    * Limits match the README: X ≤280, Bluesky ≤300 graphemes, LinkedIn ≤3000.
    */
-  import { Image as ImageIcon, Shuffle, Split, Send } from '@lucide/svelte';
+  import Check from '@lucide/svelte/icons/check';
+  import ImageIcon from '@lucide/svelte/icons/image';
+  import LoaderCircle from '@lucide/svelte/icons/loader-circle';
+  import Send from '@lucide/svelte/icons/send';
+  import Shuffle from '@lucide/svelte/icons/shuffle';
+  import Split from '@lucide/svelte/icons/split';
+  import { onDestroy } from 'svelte';
+  import { getCharCounter } from './char-counter.js';
+  import {
+    getPlatformText,
+    isOverrideActive,
+    setPlatformText,
+    togglePlatformOverride,
+  } from './platform-overrides.js';
 
   type Account = {
     id: string;
@@ -30,29 +43,63 @@
     { id: 'bs', platform: 'bluesky', handle: '@acme.bsky', limit: 300, tile: 'bg-sky-500 text-white' },
   ];
 
+  const CONFETTI_COLORS = [
+    '#65a30d',
+    '#84cc16',
+    '#22c55e',
+    '#10b981',
+    '#bef264',
+    '#fde047',
+    '#fef08a',
+  ];
+
+  const CONFETTI_PIECES = Array.from({ length: 96 }, (_, i) => {
+    const lane = i % 24;
+    const row = Math.floor(i / 24);
+    const x = -330 + lane * 27 + (row % 2) * 13;
+    const lift = -125 - ((i * 37) % 125);
+    const rotation = -360 + ((i * 71) % 760);
+    const delay = (i * 19) % 150;
+    const size = 5 + ((i * 7) % 6);
+    const start = 74 + ((i * 11) % 13);
+    const radius = i % 3 === 0 ? '999px' : '2px';
+    const color = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+
+    return `--x:${x}px; --lift:${lift}px; --r:${rotation}deg; --delay:${delay}ms; --size:${size}px; --start:${start}%; --radius:${radius}; --color:${color};`;
+  });
+
   let active = $state<string>('x');
   let autoSplit = $state(true);
-  let override = $state(false);
-  let text = $state(
-    'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading. Self-host it free, or use our managed Cloud soon. No per-seat pricing. Grab it on GitHub and deploy in a minute.',
-  );
-
-  // Grapheme-ish length so emoji count as one.
-  const len = $derived([...text].length);
+  let draft = $state({
+    baseText:
+      'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading. Self-host it free, or use our managed Cloud soon. No per-seat pricing. Grab it on GitHub and deploy in a minute.',
+    overrides: {} as Record<string, boolean>,
+    overrideTexts: {} as Record<string, string>,
+  });
+  let publishStatus = $state<'idle' | 'publishing' | 'published'>('idle');
+  let confettiRun = $state(0);
+  const text = $derived(getPlatformText(draft, active));
 
   type Sev = 'ok' | 'warn' | 'over';
-  function compute(limit: number) {
-    const sections = autoSplit ? Math.max(1, Math.ceil(len / limit)) : 1;
-    let state: Sev = 'ok';
-    if (sections === 1) {
-      if (len > limit) state = 'over';
-      else if (len > limit * 0.9) state = 'warn';
-    }
-    return { sections, state };
+  function textLength(value: string) {
+    // Grapheme-ish length so emoji count as one.
+    return [...value].length;
+  }
+
+  function compute(value: string, limit: number) {
+    return getCharCounter({ length: textLength(value), limit, autoSplit }) as {
+      sections: number;
+      state: Sev;
+      countLabel: string;
+    };
   }
 
   const activeAcct = $derived(ACCOUNTS.find((a) => a.id === active)!);
-  const activeInfo = $derived(compute(activeAcct.limit));
+  const len = $derived(textLength(text));
+  const activeInfo = $derived(compute(text, activeAcct.limit));
+  const override = $derived(isOverrideActive(draft.overrides, active));
+  const isPublishing = $derived(publishStatus === 'publishing');
+  const isPublished = $derived(publishStatus === 'published');
 
   const sevUnderline: Record<Sev, string> = {
     ok: 'bg-ink',
@@ -64,6 +111,43 @@
     warn: 'text-amber-600',
     over: 'text-red-500',
   };
+
+  let publishTimer: ReturnType<typeof setTimeout> | undefined;
+  let resetTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function clearPublishTimers() {
+    if (publishTimer) clearTimeout(publishTimer);
+    if (resetTimer) clearTimeout(resetTimer);
+  }
+
+  function publishNow() {
+    if (isPublishing) return;
+
+    clearPublishTimers();
+    publishStatus = 'publishing';
+
+    publishTimer = setTimeout(() => {
+      publishStatus = 'published';
+      confettiRun += 1;
+    }, 650);
+
+    resetTimer = setTimeout(() => {
+      publishStatus = 'idle';
+    }, 3600);
+  }
+
+  function toggleOverride() {
+    draft = {
+      ...draft,
+      overrides: togglePlatformOverride(draft.overrides, active),
+    };
+  }
+
+  function updateText(event: Event) {
+    draft = setPlatformText(draft, active, (event.currentTarget as HTMLTextAreaElement).value);
+  }
+
+  onDestroy(clearPublishTimers);
 </script>
 
 <div
@@ -76,7 +160,9 @@
     aria-label="Accounts"
   >
     {#each ACCOUNTS as a (a.id)}
-      {@const info = compute(a.limit)}
+      {@const accountText = getPlatformText(draft, a.id)}
+      {@const accountLen = textLength(accountText)}
+      {@const info = compute(accountText, a.limit)}
       {@const isActive = a.id === active}
       <button
         type="button"
@@ -91,11 +177,17 @@
           {@html GLYPHS[a.platform]}
         </span>
         <span>{a.handle}</span>
-        {#if override && isActive}
+        {#if isOverrideActive(draft.overrides, a.id)}
           <span class="size-1.5 rounded-full bg-lime" title="Override active"></span>
         {/if}
         <span class="font-mono text-[11px] tabular-nums text-ink-300">
-          {info.sections > 1 ? `${info.sections}×` : len}
+          {#if isPublishing}
+            <LoaderCircle class="size-3 animate-spin text-ink-300" aria-label="Publishing" />
+          {:else if isPublished}
+            <Check class="size-3 text-lime-deep" aria-label="Published" />
+          {:else}
+            {info.sections > 1 ? `${info.sections}×` : accountLen}
+          {/if}
         </span>
         <!-- active / severity underline -->
         <span
@@ -110,7 +202,8 @@
   <!-- editor -->
   <div class="px-4 pt-4 sm:px-[26px]">
     <textarea
-      bind:value={text}
+      value={text}
+      oninput={updateText}
       rows="5"
       aria-label="Draft post"
       spellcheck="false"
@@ -138,10 +231,8 @@
       class={`inline-flex shrink-0 items-baseline gap-0.5 font-mono text-[12px] tabular-nums ${activeInfo.state !== 'ok' ? sevCount[activeInfo.state] : ''}`}
     >
       <span class={activeInfo.state === 'ok' ? 'text-ink' : ''}>{len}</span>
-      {#if activeInfo.sections === 1}
-        <span class="mx-px text-ink-300">/</span>
-        <span class="text-ink-300">{activeAcct.limit}</span>
-      {/if}
+      <span class={activeInfo.state === 'over' ? 'text-red-500' : 'text-ink-300'}>/</span>
+      <span class={activeInfo.state === 'over' ? 'text-red-500' : 'text-ink-300'}>{activeAcct.limit}</span>
     </div>
   </div>
 
@@ -163,7 +254,7 @@
     <div class="ml-auto"></div>
     <button
       type="button"
-      onclick={() => (override = !override)}
+      onclick={toggleOverride}
       data-active={override}
       class="inline-flex h-7 items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink data-[active=true]:border-line data-[active=true]:bg-surface data-[active=true]:text-ink"
     >
@@ -192,14 +283,96 @@
     >
     <button
       type="button"
-      class="inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-lime-ring bg-lime px-3 text-[12.5px] font-medium text-lime-deep shadow-[0_1px_2px_0_rgb(0_0_0/0.04)] transition-[filter] hover:brightness-[1.04]"
+      onclick={publishNow}
+      disabled={isPublishing}
+      class="relative inline-flex h-8 items-center justify-center gap-1.5 overflow-visible rounded-md border border-lime-ring bg-lime px-3 text-[12.5px] font-medium text-lime-deep shadow-[0_1px_2px_0_rgb(0_0_0/0.04)] transition-[filter,transform] hover:brightness-[1.04] active:scale-[0.985] disabled:cursor-wait disabled:brightness-95"
+      class:published-pop={isPublished}
     >
-      <Send class="size-3.5" />
-      <span>Publish now</span>
-      <kbd
-        class="ml-0.5 hidden h-4 items-center rounded border border-lime-deep/25 bg-lime-deep/10 px-1 font-mono text-[10px] font-normal leading-none text-lime-deep/90 sm:inline-flex"
-        >⌘↵</kbd
-      >
+      {#if isPublishing}
+        <LoaderCircle class="size-3.5 animate-spin" />
+        <span>Publishing…</span>
+      {:else if isPublished}
+        <Check class="size-3.5" />
+        <span>Published</span>
+      {:else}
+        <Send class="size-3.5" />
+        <span>Publish now</span>
+        <kbd
+          class="ml-0.5 hidden h-4 items-center rounded border border-lime-deep/25 bg-lime-deep/10 px-1 font-mono text-[10px] font-normal leading-none text-lime-deep/90 sm:inline-flex"
+          >⌘↵</kbd
+        >
+      {/if}
     </button>
   </div>
+
+  {#if confettiRun}
+    <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {#each CONFETTI_PIECES as piece, i (`${confettiRun}-${i}`)}
+        <span class="confetti" style={piece}></span>
+      {/each}
+    </div>
+  {/if}
 </div>
+
+<style>
+  .published-pop {
+    animation: published-pop 520ms cubic-bezier(0.2, 1.4, 0.3, 1);
+  }
+
+  .confetti {
+    position: absolute;
+    left: var(--start);
+    bottom: 42px;
+    width: var(--size);
+    height: calc(var(--size) * 1.45);
+    border-radius: var(--radius);
+    background: var(--color);
+    box-shadow: 0 1px 2px rgb(22 101 52 / 0.18);
+    opacity: 0;
+    animation: confetti-pop 1250ms cubic-bezier(0.13, 0.7, 0.22, 1) var(--delay) both;
+  }
+
+  @keyframes published-pop {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    45% {
+      transform: scale(1.06);
+    }
+  }
+
+  @keyframes confetti-pop {
+    0% {
+      opacity: 0;
+      transform: translate3d(0, 0, 0) rotate(0deg) scale(0.7);
+    }
+
+    12% {
+      opacity: 1;
+    }
+
+    48% {
+      opacity: 1;
+      transform: translate3d(calc(var(--x) * 0.55), var(--lift), 0) rotate(calc(var(--r) * 0.55))
+        scale(1);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate3d(var(--x), 40px, 0) rotate(var(--r)) scale(0.85);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .published-pop,
+    .confetti {
+      animation: none;
+    }
+
+    .confetti {
+      display: none;
+    }
+  }
+</style>
