@@ -1,0 +1,59 @@
+---
+/**
+ * Ambient lime aura — drifting blurred blobs that sit behind a focal element.
+ * Decorative only; motion.dev drives the drift (see motion-init.ts), and it
+ * holds still under prefers-reduced-motion.
+ */
+interface Props {
+  variant?: 'hero' | 'cta';
+  class?: string;
+}
+const { variant = 'hero', class: className = '' } = Astro.props;
+---
+
+{
+  variant === 'hero' ? (
+    <div
+      data-aura
+      aria-hidden="true"
+      class:list={[
+        'pointer-events-none absolute -inset-x-10 -top-16 -bottom-10 z-0 blur-[46px] opacity-55',
+        className,
+      ]}
+    >
+      <div
+        data-aura-anim="a"
+        class="absolute left-[20%] top-0 h-60 w-60 rounded-full bg-lime"
+      />
+      <div
+        data-aura-anim="b"
+        class="absolute bottom-0 right-[8%] h-56 w-56 rounded-full"
+        style="background:oklch(0.86 0.16 150)"
+      />
+      <div
+        data-aura-anim="spin"
+        class="absolute right-[30%] top-[30%] h-40 w-40 rounded-full"
+        style="background:oklch(0.9 0.14 110);transform-origin:120px 80px"
+      />
+    </div>
+  ) : (
+    <div
+      data-aura
+      aria-hidden="true"
+      class:list={[
+        'pointer-events-none absolute inset-0 z-0 blur-[60px] opacity-40',
+        className,
+      ]}
+    >
+      <div
+        data-aura-anim="a"
+        class="absolute -top-10 left-[30%] h-[300px] w-[300px] rounded-full bg-lime"
+      />
+      <div
+        data-aura-anim="b"
+        class="absolute -bottom-16 right-[25%] h-[260px] w-[260px] rounded-full"
+        style="background:oklch(0.88 0.14 150)"
+      />
+    </div>
+  )
+}
