@@ -1,438 +1,422 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import Layout from '../layouts/Layout.astro';
+import Aura from '../components/marketing/Aura.astro';
+import BrandIcon from '../components/marketing/BrandIcon.astro';
+import ComposerMockup from '../components/marketing/ComposerMockup.svelte';
+import Showcase from '../components/marketing/Showcase.svelte';
+import PenLine from 'lucide-astro/PenLine';
+import Send from 'lucide-astro/Send';
+import CalendarDays from 'lucide-astro/CalendarDays';
+import LineChart from 'lucide-astro/LineChart';
+import Link2 from 'lucide-astro/Link2';
+import Users from 'lucide-astro/Users';
+import Bell from 'lucide-astro/Bell';
+import ShieldCheck from 'lucide-astro/ShieldCheck';
+import Zap from 'lucide-astro/Zap';
+import Server from 'lucide-astro/Server';
+import KeyRound from 'lucide-astro/KeyRound';
+import CircleSlash from 'lucide-astro/CircleSlash';
+import Check from 'lucide-astro/Check';
+import Cloud from 'lucide-astro/Cloud';
+
+const GITHUB = 'https://github.com/coollabsio/shoutrrr';
+
+const pillars = [
+  {
+    icon: Server,
+    title: 'Self-host or Cloud',
+    body: 'Run it on your own box with a single Docker image today — or use our fully managed Cloud when it lands. Same app, your choice.',
+  },
+  {
+    icon: KeyRound,
+    title: 'Your data, your rules',
+    body: 'Self-host and your posts, tokens, and analytics live on infrastructure you control. Credentials are encrypted at rest and refreshed automatically.',
+  },
+  {
+    icon: CircleSlash,
+    title: 'No per-seat pricing',
+    body: 'Invite the whole team into a workspace. The open-source app is free forever — no per-head, per-post, or per-month seat fees.',
+  },
+];
+
+const features = [
+  { icon: PenLine, title: 'Composer', body: 'Draft with media and alt text, watch a live character count per network, and auto-split long posts into threads where supported.' },
+  { icon: Send, title: 'Multi-account publishing', body: 'Fan one post out to many accounts at once with optional per-platform overrides. Each target publishes independently and retries on failure.' },
+  { icon: CalendarDays, title: 'Queue & calendar', body: 'Set recurring posting slots in your timezone, drop drafts into the queue, and review everything on a month calendar. Publish instantly anytime.' },
+  { icon: LineChart, title: 'Analytics', body: 'Follower and post-count trends per account, plus per-post engagement: likes, reposts, replies, and impressions.' },
+  { icon: Link2, title: 'Connected accounts', body: 'Link via OAuth (X, LinkedIn) or app password (Bluesky), group accounts into reusable sets, and get nudged when one needs reconnecting.' },
+  { icon: Users, title: 'Workspaces & team', body: 'Multiple workspaces with role-based memberships, email invitations, and ownership transfer. Every record is scoped to its workspace.' },
+  { icon: Bell, title: 'Notifications', body: 'In-app alerts the moment a post publishes or fails, or when an account needs your attention to keep posting.' },
+  { icon: ShieldCheck, title: 'Secure by default', body: 'Email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login.' },
+  { icon: Zap, title: 'Fast & flexible', body: 'A single, snappy interface — self-host it on your own infrastructure now, with a fully managed Cloud option coming soon. No lock-in either way.' },
+];
+
+const security = [
+  { tag: '2FA', title: 'TOTP', body: 'Time-based one-time codes from any authenticator app.' },
+  { tag: 'Passkeys', title: 'WebAuthn', body: 'Phishing-resistant passwordless sign-in with device biometrics.' },
+  { tag: 'SSO', title: 'Social login', body: 'Optional Google, X, and LinkedIn sign-in for your team.' },
+  { tag: 'At rest', title: 'Encrypted tokens', body: 'Credentials encrypted on disk and refreshed automatically.' },
+];
+
+const networks = [
+  { name: 'X', icon: 'x' as const },
+  { name: 'LinkedIn', icon: 'linkedin' as const },
+  { name: 'Bluesky', icon: 'bluesky' as const },
+];
+
+const faqs = [
+  {
+    q: 'What platforms does Shoutrrr support?',
+    a: 'X, Bluesky, and LinkedIn today. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
+  },
+  {
+    q: 'Is Shoutrrr really free?',
+    a: 'Yes — the open-source app is free under Apache 2.0, with no paid seats or locked features. A managed Cloud version (optional, paid) is coming soon for teams who would rather not run it themselves.',
+  },
+  {
+    q: 'Do I have to self-host?',
+    a: 'Not for long. Today you self-host with a single Docker image, and the open-source app will always be free. A fully managed Cloud — same features, run by us — is on the way if you would rather skip the setup.',
+  },
+  {
+    q: 'How do I install it?',
+    a: 'Pull the prebuilt Docker image — it bundles the web app, queue worker, and scheduler in one container and defaults to SQLite with no external services. Prefer zero setup? The managed Cloud is coming soon.',
+  },
+  {
+    q: 'Can I use it with my team?',
+    a: 'Yes. Invite teammates into shared workspaces with role-based access, and keep different brands, clients, or projects cleanly separated.',
+  },
+  {
+    q: 'Is my data safe?',
+    a: 'Shoutrrr is self-hosted, so your posts, accounts, and analytics stay on infrastructure you control. Account tokens are encrypted at rest.',
+  },
+  {
+    q: 'How do I contribute?',
+    a: 'Open an issue or pull request on GitHub — bug reports, docs, and features all help. The whole project is Apache 2.0 licensed.',
+  },
+];
 ---
 
 <Layout>
-  <!-- Hero Section -->
-  <section class="pt-12 md:pt-24 pb-10 text-center">
-    <h1 class="text-3xl md:text-6xl font-bold tracking-tight">
-      Self-hosted social scheduling<span class="text-[#FCD34D]">.</span>
-    </h1>
-    <p
-      class="mt-6 text-neutral-400 max-w-4xl mx-auto text-base md:text-lg leading-relaxed"
-    >
-      An open-source alternative to Buffer, Typefully, and Hootsuite.
-      Write once and schedule posts to X, Bluesky, and LinkedIn. More platforms coming soon.
-    </p>
+  <!-- ===== HERO ===== -->
+  <section
+    class="mx-auto grid max-w-site items-center gap-10 px-6 pb-10 pt-14 md:grid-cols-[1.05fr_1fr] md:gap-14 md:pt-[72px]"
+  >
+    <div>
+      <div
+        data-reveal
+        class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface-sunken px-3 py-1.5 text-[12.5px] font-medium text-ink-600"
+      >
+        <Cloud class="h-4 w-4 text-lime-text" stroke-width={1.8} />
+        Managed Cloud coming soon
+      </div>
+      <h1
+        data-reveal
+        data-reveal-delay="0.06"
+        class="font-display text-[clamp(42px,5.6vw,66px)] font-medium leading-[1.02]"
+      >
+        Draft once.<br />Post everywhere.<br /><span
+          class="italic"
+          style="color:oklch(0.5 0.13 130)">On your own terms.</span
+        >
+      </h1>
+      <p
+        data-reveal
+        data-reveal-delay="0.12"
+        class="mb-8 mt-[22px] max-w-[480px] text-[18px] leading-[1.6] text-ink-500"
+      >
+        Shoutrrr is the open-source alternative to Buffer, Typefully, and
+        Hootsuite. Write a post once and fan it out to X, Bluesky, and LinkedIn
+        at the same time — or queue it on a recurring schedule. Self-host it free
+        today, or let our managed Cloud run it for you, coming soon.
+      </p>
+      <div
+        data-reveal
+        data-reveal-delay="0.18"
+        class="mb-[26px] flex flex-wrap gap-3"
+      >
+        <a
+          href="#get"
+          data-hover
+          data-hover-lift="-3"
+          class="rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+          >Deploy Shoutrrr →</a
+        >
+        <a
+          href="#showcase"
+          data-hover
+          data-hover-lift="-3"
+          class="rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+          >See the product</a
+        >
+      </div>
+      <div
+        data-reveal
+        data-reveal-delay="0.24"
+        class="flex flex-wrap items-center gap-x-[18px] gap-y-2 text-[13px] text-ink-300"
+      >
+        <span class="flex items-center gap-1.5"
+          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> One-command
+          Docker deploy</span
+        >
+        <span class="flex items-center gap-1.5"
+          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> Bring your own
+          keys</span
+        >
+      </div>
+    </div>
 
-    <!-- Hosted Coming Soon -->
+    <!-- Composer mockup + aura -->
+    <div data-reveal data-reveal-delay="0.1" class="relative">
+      <Aura variant="hero" />
+      <ComposerMockup client:load />
+    </div>
+  </section>
+
+  <!-- ===== TRUST STRIP ===== -->
+  <section class="mx-auto max-w-site px-6 pb-16 pt-6">
     <div
-      class="mt-6 inline-flex items-center gap-2 bg-coolgray-300/60 text-sm px-4 py-2 rounded"
+      data-reveal
+      class="flex flex-wrap items-center justify-center gap-x-10 gap-y-3.5 rounded-2xl border border-line-soft bg-surface-sunken px-6 py-[22px]"
     >
-      <svg
-        class="w-4 h-4 text-[#FCD34D]"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
+      <span class="text-[13px] font-semibold text-ink-400"
+        >Publishes independently to</span
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z"
-        ></path>
-      </svg>
-      <span class="text-neutral-400">Hosted version coming soon</span>
-    </div>
-
-    <!-- CTA Buttons -->
-    <!-- <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
-      <a
-        href="#features"
-        class="p-3 px-8 rounded text-white border border-coollabs hover:bg-coollabs bg-coollabs/30 font-semibold text-base flex items-center gap-2 transition-colors"
+      {
+        networks.map((n) => (
+          <span class="flex items-center gap-2 text-sm font-semibold text-ink-700">
+            <BrandIcon name={n.icon} brand class="h-[18px] w-[18px]" />
+            {n.name}
+          </span>
+        ))
+      }
+      <span class="border-l border-line-strong pl-6 text-[13px] text-ink-300"
+        >more networks coming soon</span
       >
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
-        </svg>
-        Get Started
-      </a>
-    </div> -->
-
-    <!-- GitHub Link -->
-    <div class="mt-8 max-w-xl mx-auto">
-      <a
-        href="https://github.com/coollabsio/shoutrrr"
-        class="font-mono bg-coolgray-300 px-4 py-3 rounded text-xs md:text-sm text-left flex items-center justify-between"
-        aria-label="Open Shoutrrr on GitHub"
-      >
-        <div>
-          <span class="select-none text-neutral-400">$ </span>
-          <span>github.com/coollabsio/shoutrrr</span>
-        </div>
-        <span class="text-neutral-400 ml-4 flex-shrink-0">
-          <svg
-            class="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              clip-rule="evenodd"
-              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-            ></path>
-          </svg>
-        </span>
-      </a>
     </div>
   </section>
 
-  <!-- Most Useful Features Intro -->
-  <section id="features" class="mt-16 px-4 text-center">
-    <p class="text-sm font-semibold uppercase tracking-[0.2em] text-[#FCD34D]">
-      Most useful features
-    </p>
-    <h2 class="mt-4 text-2xl md:text-4xl font-bold tracking-tight">
-      The parts of Shoutrrr you'll use every day<span class="text-[#FCD34D]">.</span>
-    </h2>
-    <p class="mt-4 max-w-3xl mx-auto text-neutral-400 text-base md:text-lg leading-relaxed">
-      Composer, scheduling, workspaces, connected accounts, and analytics are
-      the core workflows that make Shoutrrr more than a posting form.
-    </p>
-  </section>
-
-  <!-- Publish Everywhere Feature -->
-  <section class="mt-10 pb-10 px-4">
-    <div class="rounded-3xl border border-[#FCD34D]/20 bg-gradient-to-br from-coolgray-300 via-coolgray-200 to-[#101010] p-6 md:p-10 overflow-hidden relative">
-      <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#FCD34D]/60 to-transparent"></div>
-      <div class="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
-        <div>
-          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-[#FCD34D]">
-            Publish everywhere
-          </p>
-          <h3 class="mt-4 text-2xl md:text-5xl font-bold tracking-tight">
-            Compose once. Schedule it everywhere<span class="text-[#FCD34D]">.</span>
-          </h3>
-          <p class="mt-6 text-neutral-300 text-base md:text-lg leading-relaxed">
-            Write a post once, customize it per network when needed, and send it
-            to X, Bluesky, and LinkedIn from one self-hosted workspace. More
-            platforms are coming soon.
-          </p>
-          <div class="mt-8 flex flex-col sm:flex-row gap-3">
-            <a
-              href="https://github.com/coollabsio/shoutrrr"
-              class="inline-flex items-center justify-center gap-2 rounded bg-[#FCD34D] px-5 py-3 text-sm font-semibold text-[#101010] hover:bg-yellow-300 transition-colors"
+  <!-- ===== VALUE PILLARS ===== -->
+  <section id="selfhost" class="mx-auto max-w-site px-6 pb-24 pt-2">
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        pillars.map((p, i) => {
+          const Icon = p.icon;
+          return (
+            <div
+              data-reveal
+              data-reveal-delay={(i * 0.08).toFixed(2)}
+              data-hover
+              class="rounded-2xl border border-line-soft p-7"
             >
-              View on GitHub
-              <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-
-        <div class="rounded-2xl border border-coolgray-500 bg-[#101010]/70 p-5 md:p-6 shadow-2xl shadow-black/30">
-          <div class="flex items-center gap-3 border-b border-coolgray-400 pb-4">
-            <div class="flex -space-x-2">
-              <span class="grid h-9 w-9 place-items-center rounded-full border border-coolgray-500 bg-coolgray-300 text-xs font-semibold">X</span>
-              <span class="grid h-9 w-9 place-items-center rounded-full border border-coolgray-500 bg-coolgray-300 text-xs font-semibold">BS</span>
-              <span class="grid h-9 w-9 place-items-center rounded-full border border-coolgray-500 bg-coolgray-300 text-xs font-semibold">in</span>
+              <div class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-lime-soft text-lime-deep">
+                <Icon class="h-[22px] w-[22px]" stroke-width={1.7} />
+              </div>
+              <h3 class="mb-2 font-display text-[21px] font-medium">{p.title}</h3>
+              <p class="m-0 text-[14.5px] leading-[1.6] text-ink-500">{p.body}</p>
             </div>
-            <div>
-              <p class="text-sm font-semibold text-white">Multi-platform composer</p>
-              <p class="text-xs text-neutral-400">One draft, multiple social accounts</p>
-            </div>
-          </div>
+          );
+        })
+      }
+    </div>
+  </section>
 
-          <ul class="mt-5 space-y-4 text-sm text-neutral-300">
-            <li class="flex gap-3">
-              <span class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border border-[#FCD34D] text-[#FCD34D] text-xs">✓</span>
-              <span>Live character counts and per-platform copy overrides.</span>
-            </li>
-            <li class="flex gap-3">
-              <span class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border border-[#FCD34D] text-[#FCD34D] text-xs">✓</span>
-              <span>Media, alt text, and thread support where the platform allows it.</span>
-            </li>
-            <li class="flex gap-3">
-              <span class="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border border-[#FCD34D] text-[#FCD34D] text-xs">✓</span>
-              <span>Reusable account sets for publishing to the right channels faster.</span>
-            </li>
-          </ul>
+  <!-- ===== INTERACTIVE SHOWCASE ===== -->
+  <section id="showcase" class="border-y border-line-soft bg-surface-sunken">
+    <div class="mx-auto max-w-site px-6 py-24">
+      <div data-reveal class="mx-auto mb-11 max-w-[620px] text-center">
+        <div
+          class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+        >
+          One fast interface
         </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+        >
+          Everything from drafting to results
+        </h2>
+        <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
+          Compose, queue, and measure without ever leaving the app — or
+          switching between five browser tabs.
+        </p>
+      </div>
+      <div data-reveal data-reveal-delay="0.08">
+        <Showcase client:visible />
       </div>
     </div>
   </section>
 
-  <!-- Daily Workflows Section -->
-  <section class="mt-6 pb-10 px-4">
-    <div class="text-center max-w-3xl mx-auto">
-      <p class="text-sm font-semibold uppercase tracking-[0.2em] text-[#FCD34D]">
-        Daily workflows
-      </p>
-      <h2 class="mt-4 text-2xl md:text-4xl font-bold tracking-tight">
-        Plan, collaborate, and learn what worked<span class="text-[#FCD34D]">.</span>
+  <!-- ===== FEATURES GRID ===== -->
+  <section id="features" class="mx-auto max-w-site px-6 py-24">
+    <div data-reveal class="mb-11 max-w-[560px]">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        The whole toolkit
+      </div>
+      <h2
+        class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+      >
+        Built for individuals and teams alike
       </h2>
-      <p class="mt-4 text-neutral-400 text-base md:text-lg leading-relaxed">
-        Keep your content calendar organized, separate brands or clients, and
-        track performance without handing your workflow to a hosted platform.
-      </p>
     </div>
-
-    <div class="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <article class="rounded-3xl border border-coolgray-400 bg-coolgray-300/80 p-6 md:p-8">
-        <div class="flex items-start gap-3">
-          <div class="mt-1 grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-[#FCD34D]/10 text-[#FCD34D]">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3.75 8.25h16.5M4.5 6.75h15A1.5 1.5 0 0121 8.25v10.5A1.5 1.5 0 0119.5 20.25h-15A1.5 1.5 0 013 18.75V8.25A1.5 1.5 0 014.5 6.75z" /></svg>
-          </div>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#FCD34D]">Queue and calendar</p>
-            <h3 class="text-2xl font-bold text-white">Plan posts before the week gets busy.</h3>
-          </div>
-        </div>
-        <p class="mt-5 text-sm leading-6 text-neutral-300">
-          Set recurring posting slots in your workspace timezone, queue drafts,
-          review the month calendar, and publish instantly when needed.
-        </p>
-      </article>
-
-      <article class="rounded-3xl border border-coolgray-400 bg-coolgray-300/80 p-6 md:p-8">
-        <div class="flex items-start gap-3">
-          <div class="mt-1 grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-[#FCD34D]/10 text-[#FCD34D]">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h4.5l2.25 2.25H18a2.25 2.25 0 012.25 2.25v8.25A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75z" /></svg>
-          </div>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#FCD34D]">Workspaces and teams</p>
-            <h3 class="text-2xl font-bold text-white">Keep brands, clients, and people separated.</h3>
-          </div>
-        </div>
-        <p class="mt-5 text-sm leading-6 text-neutral-300">
-          Invite collaborators, assign roles, transfer ownership, and keep every
-          post, account, and metric scoped to the right workspace.
-        </p>
-      </article>
-
-      <article class="rounded-3xl border border-coolgray-400 bg-coolgray-300/80 p-6 md:p-8">
-        <div class="flex items-start gap-3">
-          <div class="mt-1 grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-[#FCD34D]/10 text-[#FCD34D]">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
-          </div>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#FCD34D]">Analytics</p>
-            <h3 class="text-2xl font-bold text-white">See how accounts and posts perform.</h3>
-          </div>
-        </div>
-        <p class="mt-5 text-sm leading-6 text-neutral-300">
-          Track follower and post-count trends per account, plus per-post
-          engagement such as likes, reposts, replies, and impressions.
-        </p>
-      </article>
-
-      <article class="rounded-3xl border border-coolgray-400 bg-coolgray-300/80 p-6 md:p-8">
-        <div class="flex items-start gap-3">
-          <div class="mt-1 grid h-12 w-12 flex-shrink-0 place-items-center rounded-2xl bg-[#FCD34D]/10 text-[#FCD34D]">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </div>
-          <div>
-            <p class="text-sm font-semibold uppercase tracking-[0.16em] text-[#FCD34D]">Self-hosted</p>
-            <h3 class="text-2xl font-bold text-white">Free & Open-source forever.</h3>
-          </div>
-        </div>
-        <p class="mt-5 text-sm leading-6 text-neutral-300">
-          Run the full product on your own infrastructure. No paid tiers, no
-          feature gates, and no hosted-service limits in the open-source app.
-        </p>
-      </article>
+    <div
+      data-reveal
+      class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        features.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div class="bg-surface p-7 transition-colors hover:bg-surface-raised">
+              <Icon class="mb-3.5 h-[22px] w-[22px] text-ink-700" stroke-width={1.7} />
+              <h3 class="mb-2 text-base font-bold -tracking-[0.01em]">{f.title}</h3>
+              <p class="m-0 text-sm leading-[1.6] text-ink-500">{f.body}</p>
+            </div>
+          );
+        })
+      }
     </div>
   </section>
 
-  <!-- FAQ Section -->
-  <section id="faq" class="mt-16 pb-10">
-    <h2 class="text-2xl md:text-4xl font-bold text-center">
-      Frequently asked questions<span class="text-[#FCD34D]">.</span>
-    </h2>
-    <p class="mt-4 text-neutral-400 text-center max-w-2xl mx-auto">
-      Quick answers in plain language.
-    </p>
-
+  <!-- ===== SECURITY (dark) ===== -->
+  <section id="security" class="bg-ink-900 text-white">
     <div
-      class="mt-12 max-w-3xl mx-auto divide-y divide-coolgray-300 border-y border-coolgray-300"
+      class="mx-auto grid max-w-site items-center gap-14 px-6 py-24 md:grid-cols-2"
     >
-      <!-- FAQ 1 -->
-      <div class="faq-item py-4">
-        <button
-          class="faq-button w-full text-left text-sm font-medium flex justify-between items-center text-white"
-          aria-expanded="false"
+      <div data-reveal>
+        <div
+          class="mb-4 text-xs font-semibold uppercase tracking-[0.14em]"
+          style="color:oklch(0.83 0.18 128.85)"
         >
-          <span>What platforms does shoutrrr support?</span>
-          <svg
-            class="w-6 h-6 transition-transform duration-200 flex-shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <p class="faq-answer hidden mt-2 text-sm text-neutral-300 text-left">
-          Shoutrrr works with X, Bluesky, and LinkedIn today. You can write
-          once, adjust each post when needed, and schedule everything from one place.
+          Secure by default
+        </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,46px)] font-medium leading-[1.06]"
+        >
+          Your accounts,<br />locked down tight
+        </h2>
+        <p class="mt-[18px] max-w-[440px] text-base leading-[1.65] text-white/70">
+          Email and password with verification out of the box, plus every modern
+          factor you'd want layered on top. Account tokens are encrypted at rest
+          and never stored in plain text.
         </p>
       </div>
-
-      <!-- FAQ 2 -->
-      <div class="faq-item py-4">
-        <button
-          class="faq-button w-full text-left text-sm font-medium flex justify-between items-center text-white"
-          aria-expanded="false"
-        >
-          <span>Is shoutrrr really free?</span>
-          <svg
-            class="w-6 h-6 transition-transform duration-200 flex-shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <p class="faq-answer hidden mt-2 text-sm text-neutral-300 text-left">
-          Yes. The <a
-            href="https://github.com/coollabsio/shoutrrr"
-            class="text-[#FCD34D] underline decoration-[#FCD34D]/40 underline-offset-4 hover:text-[#FDE68A]"
-            target="_blank"
-            rel="noopener noreferrer">open-source app</a
-          > is free to use, and you can run it on your own server. There are no
-          paid seats or locked features in the self-hosted version.
-        </p>
+      <div class="grid grid-cols-2 gap-3.5">
+        {
+          security.map((s, i) => (
+            <div
+              data-reveal
+              data-reveal-delay={(i * 0.06).toFixed(2)}
+              class="rounded-[13px] border border-white/10 bg-white/[0.03] p-5"
+            >
+              <div
+                class="mb-1.5 text-[13px] font-bold"
+                style="color:oklch(0.83 0.18 128.85)"
+              >
+                {s.tag}
+              </div>
+              <div class="mb-1 text-sm font-semibold">{s.title}</div>
+              <div class="text-[13px] leading-[1.5] text-white/60">{s.body}</div>
+            </div>
+          ))
+        }
       </div>
+    </div>
+  </section>
 
-      <!-- FAQ 3 -->
-      <div class="faq-item py-4">
-        <button
-          class="faq-button w-full text-left text-sm font-medium flex justify-between items-center text-white"
-          aria-expanded="false"
+  <!-- ===== CTA ===== -->
+  <section id="get" class="mx-auto max-w-site px-6 py-20 sm:py-[104px]">
+    <div
+      data-reveal
+      class="relative overflow-hidden rounded-3xl border border-line-strong bg-surface-raised px-6 py-16 text-center sm:px-10 sm:py-[72px]"
+    >
+      <Aura variant="cta" />
+      <div class="relative z-10">
+        <h2
+          class="font-display text-[clamp(32px,4.5vw,52px)] font-medium leading-[1.05]"
         >
-          <span>How do I install shoutrrr?</span>
-          <svg
-            class="w-6 h-6 transition-transform duration-200 flex-shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <p class="faq-answer hidden mt-2 text-sm text-neutral-300 text-left">
-          The easiest path is to run the ready-made Docker setup from the
+          Own your posting workflow
+        </h2>
+        <p
+          class="mx-auto mt-[18px] max-w-[480px] text-[17px] leading-[1.6] text-ink-500"
+        >
+          Spin up your own instance in minutes — free, open source, yours.
+          Prefer not to run it yourself? A fully managed Cloud version is coming
+          soon.
+        </p>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
           <a
-            href="https://github.com/coollabsio/shoutrrr"
-            class="text-[#FCD34D] underline decoration-[#FCD34D]/40 underline-offset-4 hover:text-[#FDE68A]"
-            target="_blank"
-            rel="noopener noreferrer">GitHub repository</a
-          >. It gives you the app and everything it needs without building it
-          by hand.
-        </p>
-      </div>
-
-      <!-- FAQ 4 -->
-      <div class="faq-item py-4">
-        <button
-          class="faq-button w-full text-left text-sm font-medium flex justify-between items-center text-white"
-          aria-expanded="false"
-        >
-          <span>Can I use it with my team?</span>
-          <svg
-            class="w-6 h-6 transition-transform duration-200 flex-shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+            href={GITHUB}
+            data-hover
+            data-hover-lift="-3"
+            class="inline-flex items-center gap-2 rounded-xl border border-lime-ring bg-lime px-[26px] py-3.5 text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker
+            →</a
           >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <p class="faq-answer hidden mt-2 text-sm text-neutral-300 text-left">
-          Yes. You can invite teammates, organize work into separate spaces,
-          and keep different brands, clients, or projects apart.
-        </p>
-      </div>
-
-      <!-- FAQ 5 -->
-      <div class="faq-item py-4">
-        <button
-          class="faq-button w-full text-left text-sm font-medium flex justify-between items-center text-white"
-          aria-expanded="false"
-        >
-          <span>Is my data safe?</span>
-          <svg
-            class="w-6 h-6 transition-transform duration-200 flex-shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+          <a
+            href={`${GITHUB}#readme`}
+            data-hover
+            data-hover-lift="-3"
+            class="inline-flex items-center gap-2 rounded-xl border border-line-strong bg-surface px-[26px] py-3.5 text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+            ><BrandIcon name="github" class="h-[18px] w-[18px]" /> Read the docs</a
           >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <p class="faq-answer hidden mt-2 text-sm text-neutral-300 text-left">
-          Shoutrrr is self-hosted, so your posts, accounts, and analytics stay
-          on infrastructure you control. Account connection details are protected
-          by the app.
-        </p>
-      </div>
-
-      <!-- FAQ 6 -->
-      <div class="faq-item py-4">
-        <button
-          class="faq-button w-full text-left text-sm font-medium flex justify-between items-center text-white"
-          aria-expanded="false"
+        </div>
+        <div
+          class="mt-[22px] break-all font-mono text-[11px] text-ink-400 sm:text-[12.5px]"
         >
-          <span>How do I contribute?</span>
-          <svg
-            class="w-6 h-6 transition-transform duration-200 flex-shrink-0"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-              clip-rule="evenodd"></path>
-          </svg>
-        </button>
-        <p class="faq-answer hidden mt-2 text-sm text-neutral-300 text-left">
-          Visit the <a
-            href="https://github.com/coollabsio/shoutrrr"
-            class="text-[#FCD34D] underline decoration-[#FCD34D]/40 underline-offset-4 hover:text-[#FDE68A]"
-            target="_blank"
-            rel="noopener noreferrer">GitHub repository</a
-          > to report bugs, suggest improvements, update docs, or open a pull
-          request. Every useful contribution helps.
-        </p>
+          docker pull ghcr.io/coollabsio/shoutrrr:latest
+        </div>
+        <div
+          class="mt-4 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-400"
+        >
+          <Cloud class="h-4 w-4 text-lime-text" stroke-width={1.8} /> …or skip the
+          setup — managed Cloud coming soon
+        </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section id="faq" class="mx-auto max-w-3xl px-6 pb-28">
+    <div data-reveal class="mb-12 text-center">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        Questions
+      </div>
+      <h2
+        class="font-display text-[clamp(28px,4vw,40px)] font-medium leading-[1.1]"
+      >
+        Answers in plain language
+      </h2>
+    </div>
+    <div data-reveal class="divide-y divide-line border-y border-line">
+      {
+        faqs.map((item) => (
+          <details class="faq group">
+            <summary
+              class="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-[15px] font-semibold text-ink-800 [&::-webkit-details-marker]:hidden"
+            >
+              <span>{item.q}</span>
+              <svg
+                class="h-5 w-5 flex-shrink-0 text-ink-300 transition-transform duration-200 group-open:rotate-180"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </summary>
+            <p class="-mt-1 pb-5 pr-9 text-sm leading-[1.6] text-ink-500">
+              {item.a}
+            </p>
+          </details>
+        ))
+      }
     </div>
   </section>
 </Layout>
-
-<script>
-  // FAQ accordion
-  document.querySelectorAll(".faq-button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const answer = button.nextElementSibling as HTMLElement;
-      const isOpen = button.getAttribute("aria-expanded") === "true";
-
-      // Close all
-      document.querySelectorAll(".faq-button").forEach((btn) => {
-        btn.setAttribute("aria-expanded", "false");
-        const chevron = btn.querySelector("svg");
-        if (chevron) chevron.style.transform = "";
-        const ans = btn.nextElementSibling as HTMLElement;
-        if (ans) ans.classList.add("hidden");
-      });
-
-      // Toggle current
-      if (!isOpen) {
-        button.setAttribute("aria-expanded", "true");
-        const chevron = button.querySelector("svg");
-        if (chevron) chevron.style.transform = "rotate(180deg)";
-        if (answer) answer.classList.remove("hidden");
-      }
-    });
-  });
-
-</script>

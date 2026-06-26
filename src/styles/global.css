@@ -1,0 +1,78 @@
+/* Shoutrrr marketing — light system.
+   Tokens live in tailwind.config.cjs; this file holds base element styles,
+   font tuning, and the motion choreography's resting states. */
+
+:root {
+  color-scheme: light;
+  /* oklch tokens mirrored for raw CSS (gradients, masks, inline use). */
+  --primary: oklch(0.841 0.238 128.85);
+  --primary-deep: oklch(0.405 0.101 131.063);
+  --foreground: oklch(0.205 0 0);
+  --background: oklch(1 0 0);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Noto Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  scroll-behavior: smooth;
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-deep);
+}
+
+/* Newsreader: keep display headlines editorial and warm at large sizes. */
+.font-display {
+  font-optical-sizing: auto;
+  font-variation-settings: 'opsz' 72;
+  letter-spacing: -0.02em;
+}
+
+/* Honor the no-anchor jump offset under the sticky header. */
+:target {
+  scroll-margin-top: 90px;
+}
+
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Motion resting states ─────────────────────────────────────────────
+   Only hide pre-animation content once JS is confirmed (`.js` added inline
+   in <head>), so no-JS users always see content. The motion module flips
+   these to visible on scroll-enter. */
+.js [data-reveal] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* Ambient aura canvases start invisible; motion fades them in + drifts them. */
+.js [data-aura] > * {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

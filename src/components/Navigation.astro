@@ -1,255 +1,136 @@
 ---
-
+import BrandIcon from './marketing/BrandIcon.astro';
+import Menu from 'lucide-astro/Menu';
+import X from 'lucide-astro/X';
+import ChevronRight from 'lucide-astro/ChevronRight';
+const links = [
+  { href: '/#features', label: 'Features' },
+  { href: '/#showcase', label: 'Product' },
+  { href: '/#security', label: 'Security' },
+  { href: '/philosophy', label: 'Philosophy' },
+  { href: '/sponsorships', label: 'Sponsors' },
+  { href: 'https://coollabs.io/discord', label: 'Community' },
+  { href: '/#faq', label: 'FAQ' },
+];
+const GITHUB = 'https://github.com/coollabsio/shoutrrr';
 ---
 
-<nav
-  class="sticky top-0 z-50 bg-[#101010]/80 backdrop-blur-md border-b border-coolgray-300/50"
+<header
+  class="sticky top-0 z-50 border-b border-line bg-white/85 backdrop-blur-lg backdrop-saturate-150"
 >
-  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+  <nav
+    class="mx-auto flex max-w-site items-center justify-between gap-6 px-5 py-3 sm:px-6 sm:py-3.5"
+  >
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-      <img src="/shoutrrr.png" alt="shoutrrr" class="w-8 h-8" />
-      Shoutrrr
+    <a href="/" class="flex items-center gap-2.5 text-ink no-underline">
+      <img
+        src="/shoutrrr.png"
+        alt=""
+        width="30"
+        height="30"
+        class="h-[30px] w-[30px]"
+      />
+      <span class="text-[18px] font-bold -tracking-[0.01em]">Shoutrrr</span>
     </a>
 
-    <!-- Desktop Nav -->
-    <div class="hidden md:flex items-center gap-1">
-      <a
-        href="/#features"
-        class="text-white text-base hover:bg-coolgray-200 p-2 px-3 rounded flex items-center gap-2 transition-colors"
-      >
-        <svg
-          class="w-5 h-5 text-[#FCD34D]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-          ></path>
-        </svg>
-        Features
-      </a>
-      <a
-        href="/philosophy"
-        class="text-white text-base hover:bg-coolgray-200 p-2 px-3 rounded flex items-center gap-2 transition-colors"
-      >
-        <svg
-          class="w-5 h-5 text-[#FCD34D]"
-          viewBox="0 0 256 256"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g fill="currentColor">
-            <path
-              d="M176 232a8 8 0 0 1-8 8H88a8 8 0 0 1 0-16h80a8 8 0 0 1 8 8m40-128a87.55 87.55 0 0 1-33.64 69.21A16.24 16.24 0 0 0 176 186v6a16 16 0 0 1-16 16H96a16 16 0 0 1-16-16v-6a16 16 0 0 0-6.23-12.66A87.59 87.59 0 0 1 40 104.5C39.74 56.83 78.26 17.14 125.88 16A88 88 0 0 1 216 104"
-              opacity=".2"></path>
-            <path
-              d="M176 232a8 8 0 0 1-8 8H88a8 8 0 0 1 0-16h80a8 8 0 0 1 8 8m40-128a87.55 87.55 0 0 1-33.64 69.21A16.24 16.24 0 0 0 176 186v6a16 16 0 0 1-16 16H96a16 16 0 0 1-16-16v-6a16 16 0 0 0-6.23-12.66A87.59 87.59 0 0 1 40 104.5C39.74 56.83 78.26 17.14 125.88 16A88 88 0 0 1 216 104m-16 0a72 72 0 0 0-73.74-72c-39 .92-70.47 33.39-70.26 72.39a71.64 71.64 0 0 0 27.64 56.3A32 32 0 0 1 96 186v6h24v-42.34l-22.34-22.35a8 8 0 0 1 11.31-11.31L128 135l19-19a8 8 0 0 1 11.31 11.31L140 145.66V192h20v-6a32.12 32.12 0 0 1 12.47-25.35A71.65 71.65 0 0 0 200 104"
-            ></path>
-          </g>
-        </svg>
-        Philosophy
-      </a>
-      <a
-        href="/#faq"
-        class="text-white text-base hover:bg-coolgray-200 p-2 px-3 rounded flex items-center gap-2 transition-colors"
-      >
-        <svg
-          class="w-5 h-5 text-[#FCD34D]"
-          viewBox="0 0 256 256"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g fill="currentColor">
-            <path
-              d="M208 32v160H72a24 24 0 0 0-24 24V56a24 24 0 0 1 24-24Z"
-              opacity=".2"></path>
-            <path
-              d="M208 24H72a32 32 0 0 0-32 32v168a8 8 0 0 0 8 8h144a8 8 0 0 0 0-16H56a16 16 0 0 1 16-16h136a8 8 0 0 0 8-8V32a8 8 0 0 0-8-8m-8 160H72a31.82 31.82 0 0 0-16 4.29V56a16 16 0 0 1 16-16h128Z"
-            ></path>
-          </g>
-        </svg>
-        FAQ
-      </a>
-      <a
-        href="https://coollabs.io/discord"
-        class="text-white text-base hover:bg-coolgray-200 p-2 px-3 rounded flex items-center gap-2 transition-colors"
-      >
-        <svg
-          class="w-5 h-5 text-[#FCD34D]"
-          viewBox="0 0 256 256"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g fill="currentColor">
-            <path
-              d="m235.21 185.59l-67 29.7a8.15 8.15 0 0 1-11-4.56L147 183.06a190.5 190.5 0 0 1-19 .94a190.5 190.5 0 0 1-19-.94l-10.25 27.67a8.15 8.15 0 0 1-11 4.56l-67-29.7a8 8 0 0 1-4.55-9.24L45.77 60a8.08 8.08 0 0 1 6.54-6l36.06-5.92a8.1 8.1 0 0 1 9.21 6l5 19.63a192.32 192.32 0 0 1 50.88 0l5-19.63a8.1 8.1 0 0 1 9.21-6L203.69 54a8.08 8.08 0 0 1 6.54 6l29.53 116.37a8 8 0 0 1-4.55 9.22"
-              opacity=".2"></path>
-            <path
-              d="M104 140a12 12 0 1 1-12-12a12 12 0 0 1 12 12m60-12a12 12 0 1 0 12 12a12 12 0 0 0-12-12m74.45 64.9l-67 29.71a16.17 16.17 0 0 1-21.71-9.1l-8.11-22q-6.72.45-13.63.46t-13.63-.46l-8.11 22a16.18 16.18 0 0 1-21.71 9.1l-67-29.71a15.94 15.94 0 0 1-9.06-18.51L38 58a16.08 16.08 0 0 1 13-11.87l36.06-5.92a16.21 16.21 0 0 1 18.26 11.88l3.26 12.83Q118.11 64 128 64t19.4.92l3.26-12.83a16.22 16.22 0 0 1 18.26-11.88L205 46.13A16.08 16.08 0 0 1 218 58l29.53 116.38a15.94 15.94 0 0 1-9.08 18.52M232 178.28L202.47 62h-.08l-36.06-6a.17.17 0 0 0-.17 0l-2.83 11.14c5 .94 10 2.06 14.83 3.42A8 8 0 0 1 176 86.31a8.09 8.09 0 0 1-2.16-.3A172.25 172.25 0 0 0 128 80a172.25 172.25 0 0 0-45.84 6a8 8 0 1 1-4.32-15.4c4.82-1.36 9.78-2.48 14.82-3.42L89.83 56a.21.21 0 0 0-.12 0l-36.1 5.92a.24.24 0 0 0-.09 0L24 178.33L91 208a.21.21 0 0 0 .22 0L98 189.72a173.2 173.2 0 0 1-20.14-4.32a8 8 0 0 1 4.3-15.4a171.85 171.85 0 0 0 45.84 6a171.85 171.85 0 0 0 45.84-6a8 8 0 0 1 4.32 15.41a173.2 173.2 0 0 1-20.16 4.31l6.75 18.28a.22.22 0 0 0 .21 0Z"
-            ></path>
-          </g>
-        </svg>
-        Community <span class="text-xs">(20k+)</span>
-      </a>
-      <a
-        href="/sponsorships"
-        class="text-white text-base hover:bg-coolgray-200 p-2 px-3 rounded flex items-center gap-2 transition-colors"
-      >
-        <svg
-          class="w-5 h-5 text-[#FCD34D]"
-          viewBox="0 0 256 256"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g fill="currentColor">
-            <path
-              d="M232 102c0 66-104 122-104 122S24 168 24 102a54 54 0 0 1 54-54c22.59 0 41.94 12.31 50 32c8.06-19.69 27.41-32 50-32a54 54 0 0 1 54 54"
-              opacity=".2"></path>
-            <path
-              d="M178 40c-20.65 0-38.73 8.88-50 23.89C116.73 48.88 98.65 40 78 40a62.07 62.07 0 0 0-62 62c0 70 103.79 126.66 108.21 129a8 8 0 0 0 7.58 0C136.21 228.66 240 172 240 102a62.07 62.07 0 0 0-62-62m-50 174.8C109.74 204.77 32 155.83 32 102a46.06 46.06 0 0 1 46-46c19.45 0 35.78 10.36 42.6 27a8 8 0 0 0 14.8 0c6.82-16.64 23.15-27 42.6-27a46.06 46.06 0 0 1 46 46c0 53.83-77.74 102.77-96 112.8"
-            ></path>
-          </g>
-        </svg>
-        Sponsor Us
-      </a>
+    <!-- Desktop links -->
+    <div class="hidden items-center gap-5 text-sm text-ink-500 lg:flex">
+      {
+        links
+          .filter((l) => l.label !== 'FAQ')
+          .map((l) => (
+            <a href={l.href} class="no-underline transition-colors hover:text-ink">
+              {l.label}
+            </a>
+          ))
+      }
     </div>
 
-    <!-- Mobile Hamburger -->
-    <button
-      id="menu-toggle"
-      class="md:hidden p-2 rounded hover:bg-coolgray-200 transition-colors"
-      aria-label="Toggle menu"
-    >
-      <svg
-        class="w-6 h-6 text-white"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
+    <!-- Actions -->
+    <div class="flex items-center gap-2 sm:gap-3">
+      <a
+        href={GITHUB}
+        class="hidden items-center gap-1.5 rounded-[9px] px-3 py-2 text-sm font-medium text-ink-700 no-underline transition-colors hover:bg-surface-sunken sm:inline-flex"
+        ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
-      </svg>
-    </button>
-  </div>
+      <a
+        href="/#get"
+        class="rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
+        >Deploy it</a
+      >
+      <!-- Mobile toggle -->
+      <button
+        id="menu-toggle"
+        class="relative grid size-9 place-items-center rounded-[9px] text-ink transition-colors hover:bg-surface-sunken lg:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <Menu id="icon-menu" class="size-6" />
+        <X id="icon-close" class="absolute hidden size-6" />
+      </button>
+    </div>
+  </nav>
 
-  <!-- Mobile Menu -->
-  <div id="mobile-menu" class="hidden md:hidden flex-col gap-1 px-4 pb-3">
-    <a
-      href="/#features"
-      class="text-white text-sm w-full text-left hover:bg-coolgray-200 p-2 rounded flex items-center gap-2 transition-colors"
-    >
-      <svg
-        class="w-5 h-5 text-[#FCD34D]"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-        ></path>
-      </svg>
-      Features
-    </a>
-    <a
-      href="/philosophy"
-      class="text-white text-sm w-full text-left hover:bg-coolgray-200 p-2 rounded flex items-center gap-2 transition-colors"
-    >
-      <svg
-        class="w-5 h-5 text-[#FCD34D]"
-        viewBox="0 0 256 256"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g fill="currentColor">
-          <path
-            d="M176 232a8 8 0 0 1-8 8H88a8 8 0 0 1 0-16h80a8 8 0 0 1 8 8m40-128a87.55 87.55 0 0 1-33.64 69.21A16.24 16.24 0 0 0 176 186v6a16 16 0 0 1-16 16H96a16 16 0 0 1-16-16v-6a16 16 0 0 0-6.23-12.66A87.59 87.59 0 0 1 40 104.5C39.74 56.83 78.26 17.14 125.88 16A88 88 0 0 1 216 104"
-            opacity=".2"></path>
-          <path
-            d="M176 232a8 8 0 0 1-8 8H88a8 8 0 0 1 0-16h80a8 8 0 0 1 8 8m40-128a87.55 87.55 0 0 1-33.64 69.21A16.24 16.24 0 0 0 176 186v6a16 16 0 0 1-16 16H96a16 16 0 0 1-16-16v-6a16 16 0 0 0-6.23-12.66A87.59 87.59 0 0 1 40 104.5C39.74 56.83 78.26 17.14 125.88 16A88 88 0 0 1 216 104m-16 0a72 72 0 0 0-73.74-72c-39 .92-70.47 33.39-70.26 72.39a71.64 71.64 0 0 0 27.64 56.3A32 32 0 0 1 96 186v6h24v-42.34l-22.34-22.35a8 8 0 0 1 11.31-11.31L128 135l19-19a8 8 0 0 1 11.31 11.31L140 145.66V192h20v-6a32.12 32.12 0 0 1 12.47-25.35A71.65 71.65 0 0 0 200 104"
-          ></path>
-        </g>
-      </svg>
-      Philosophy
-    </a>
-    <a
-      href="/#faq"
-      class="text-white text-sm w-full text-left hover:bg-coolgray-200 p-2 rounded flex items-center gap-2 transition-colors"
-    >
-      <svg
-        class="w-5 h-5 text-[#FCD34D]"
-        viewBox="0 0 256 256"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g fill="currentColor">
-          <path
-            d="M208 32v160H72a24 24 0 0 0-24 24V56a24 24 0 0 1 24-24Z"
-            opacity=".2"></path>
-          <path
-            d="M208 24H72a32 32 0 0 0-32 32v168a8 8 0 0 0 8 8h144a8 8 0 0 0 0-16H56a16 16 0 0 1 16-16h136a8 8 0 0 0 8-8V32a8 8 0 0 0-8-8m-8 160H72a31.82 31.82 0 0 0-16 4.29V56a16 16 0 0 1 16-16h128Z"
-          ></path>
-        </g>
-      </svg>
-      FAQ
-    </a>
-    <a
-      href="https://coollabs.io/discord"
-      class="text-white text-sm w-full text-left hover:bg-coolgray-200 p-2 rounded flex items-center gap-2 transition-colors"
-    >
-      <svg
-        class="w-5 h-5 text-[#FCD34D]"
-        viewBox="0 0 256 256"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g fill="currentColor">
-          <path
-            d="m235.21 185.59l-67 29.7a8.15 8.15 0 0 1-11-4.56L147 183.06a190.5 190.5 0 0 1-19 .94a190.5 190.5 0 0 1-19-.94l-10.25 27.67a8.15 8.15 0 0 1-11 4.56l-67-29.7a8 8 0 0 1-4.55-9.24L45.77 60a8.08 8.08 0 0 1 6.54-6l36.06-5.92a8.1 8.1 0 0 1 9.21 6l5 19.63a192.32 192.32 0 0 1 50.88 0l5-19.63a8.1 8.1 0 0 1 9.21-6L203.69 54a8.08 8.08 0 0 1 6.54 6l29.53 116.37a8 8 0 0 1-4.55 9.22"
-            opacity=".2"></path>
-          <path
-            d="M104 140a12 12 0 1 1-12-12a12 12 0 0 1 12 12m60-12a12 12 0 1 0 12 12a12 12 0 0 0-12-12m74.45 64.9l-67 29.71a16.17 16.17 0 0 1-21.71-9.1l-8.11-22q-6.72.45-13.63.46t-13.63-.46l-8.11 22a16.18 16.18 0 0 1-21.71 9.1l-67-29.71a15.94 15.94 0 0 1-9.06-18.51L38 58a16.08 16.08 0 0 1 13-11.87l36.06-5.92a16.21 16.21 0 0 1 18.26 11.88l3.26 12.83Q118.11 64 128 64t19.4.92l3.26-12.83a16.22 16.22 0 0 1 18.26-11.88L205 46.13A16.08 16.08 0 0 1 218 58l29.53 116.38a15.94 15.94 0 0 1-9.08 18.52M232 178.28L202.47 62h-.08l-36.06-6a.17.17 0 0 0-.17 0l-2.83 11.14c5 .94 10 2.06 14.83 3.42A8 8 0 0 1 176 86.31a8.09 8.09 0 0 1-2.16-.3A172.25 172.25 0 0 0 128 80a172.25 172.25 0 0 0-45.84 6a8 8 0 1 1-4.32-15.4c4.82-1.36 9.78-2.48 14.82-3.42L89.83 56a.21.21 0 0 0-.12 0l-36.1 5.92a.24.24 0 0 0-.09 0L24 178.33L91 208a.21.21 0 0 0 .22 0L98 189.72a173.2 173.2 0 0 1-20.14-4.32a8 8 0 0 1 4.3-15.4a171.85 171.85 0 0 0 45.84 6a171.85 171.85 0 0 0 45.84-6a8 8 0 0 1 4.32 15.41a173.2 173.2 0 0 1-20.16 4.31l6.75 18.28a.22.22 0 0 0 .21 0Z"
-          ></path>
-        </g>
-      </svg>
-      Community <span class="text-xs">(20k+)</span>
-    </a>
-    <a
-      href="/sponsorships"
-      class="text-white text-sm w-full text-left hover:bg-coolgray-200 p-2 rounded flex items-center gap-2 transition-colors"
-    >
-      <svg
-        class="w-5 h-5 text-[#FCD34D]"
-        viewBox="0 0 256 256"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g fill="currentColor">
-          <path
-            d="M232 102c0 66-104 122-104 122S24 168 24 102a54 54 0 0 1 54-54c22.59 0 41.94 12.31 50 32c8.06-19.69 27.41-32 50-32a54 54 0 0 1 54 54"
-            opacity=".2"></path>
-          <path
-            d="M178 40c-20.65 0-38.73 8.88-50 23.89C116.73 48.88 98.65 40 78 40a62.07 62.07 0 0 0-62 62c0 70 103.79 126.66 108.21 129a8 8 0 0 0 7.58 0C136.21 228.66 240 172 240 102a62.07 62.07 0 0 0-62-62m-50 174.8C109.74 204.77 32 155.83 32 102a46.06 46.06 0 0 1 46-46c19.45 0 35.78 10.36 42.6 27a8 8 0 0 0 14.8 0c6.82-16.64 23.15-27 42.6-27a46.06 46.06 0 0 1 46 46c0 53.83-77.74 102.77-96 112.8"
-          ></path>
-        </g>
-      </svg>
-      Sponsorships
-    </a>
+  <!-- Mobile menu (animated height) -->
+  <div
+    id="mobile-menu"
+    data-open="false"
+    class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out data-[open=true]:grid-rows-[1fr] lg:hidden"
+  >
+    <div class="overflow-hidden">
+      <nav class="flex flex-col gap-0.5 border-t border-line px-4 pb-5 pt-3">
+        {
+          links.map((l) => (
+            <a
+              href={l.href}
+              class="flex items-center justify-between rounded-xl px-3 py-3 text-[15px] font-medium text-ink-700 no-underline transition-colors hover:bg-surface-sunken active:bg-surface-sunken"
+            >
+              {l.label}
+              <ChevronRight class="size-4 text-ink-300" />
+            </a>
+          ))
+        }
+        <div class="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-4">
+          <a
+            href={GITHUB}
+            class="inline-flex items-center justify-center gap-2 rounded-xl border border-line-strong bg-surface px-4 py-3 text-sm font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+            ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
+          >
+          <a
+            href="/#get"
+            class="inline-flex items-center justify-center rounded-xl border border-lime-ring bg-lime px-4 py-3 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            >Deploy it</a
+          >
+        </div>
+      </nav>
+    </div>
   </div>
-</nav>
+</header>
 
 <script>
-  const toggle = document.getElementById("menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-  toggle?.addEventListener("click", () => {
-    menu?.classList.toggle("hidden");
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const iconMenu = document.getElementById('icon-menu');
+  const iconClose = document.getElementById('icon-close');
+
+  function setOpen(open: boolean) {
+    if (!menu || !toggle) return;
+    menu.setAttribute('data-open', String(open));
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    iconMenu?.classList.toggle('hidden', open);
+    iconClose?.classList.toggle('hidden', !open);
+  }
+
+  toggle?.addEventListener('click', () => {
+    setOpen(menu?.getAttribute('data-open') !== 'true');
   });
-  // Close mobile menu on anchor click
-  menu?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      menu?.classList.add("hidden");
-    });
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => setOpen(false));
+  });
+  // Close when resizing up to the desktop breakpoint.
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', (e) => {
+    if (e.matches) setOpen(false);
   });
 </script>

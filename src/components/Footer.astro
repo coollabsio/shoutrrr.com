@@ -1,42 +1,98 @@
 ---
+import BrandIcon from './marketing/BrandIcon.astro';
+const GITHUB = 'https://github.com/coollabsio/shoutrrr';
+const socials = [
+  { name: 'github', href: GITHUB, label: 'GitHub' },
+  { name: 'x', href: 'https://x.com/heyandras', label: 'X' },
+  { name: 'bluesky', href: 'https://bsky.app/profile/heyandras.dev', label: 'Bluesky' },
+] as const;
+const cols = [
+  {
+    title: 'Product',
+    links: [
+      { href: '/#features', label: 'Features' },
+      { href: '/#showcase', label: 'Composer' },
+      { href: '/#showcase', label: 'Calendar' },
+      { href: '/#showcase', label: 'Analytics' },
+    ],
+  },
+  {
+    title: 'Project',
+    links: [
+      { href: GITHUB, label: 'GitHub' },
+      { href: `${GITHUB}#readme`, label: 'Documentation' },
+      { href: '/philosophy', label: 'Philosophy' },
+      { href: '/sponsorships', label: 'Sponsor us' },
+    ],
+  },
+  {
+    title: 'Resources',
+    links: [
+      { href: '/#get', label: 'Self-hosting guide' },
+      { href: '/#security', label: 'Security' },
+      { href: 'https://coollabs.io/discord', label: 'Community' },
+      { href: `${GITHUB}/blob/main/LICENSE`, label: 'License (Apache 2.0)' },
+    ],
+  },
+];
+const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-coolgray-300 mt-24">
-  <div class="max-w-7xl mx-auto px-4 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
-    <!-- Copyright -->
-    <p class="text-xs text-neutral-400">
-      &copy; {new Date().getFullYear()} shoutrrr. All rights reserved.
-    </p>
+<footer class="border-t border-line">
+  <div
+    class="mx-auto grid max-w-site gap-8 px-6 py-14 sm:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]"
+  >
+    <div>
+      <div class="mb-3.5 flex items-center gap-2.5">
+        <img src="/shoutrrr.png" alt="" width="28" height="28" class="h-7 w-7" />
+        <span class="text-[17px] font-bold">Shoutrrr</span>
+      </div>
+      <p class="m-0 max-w-[240px] text-[13.5px] leading-[1.6] text-ink-400">
+        The open-source social scheduler. Draft once, post everywhere, keep your
+        data. Self-host it, or use the managed Cloud — coming soon.
+      </p>
+      <div class="mt-5 flex items-center gap-2">
+        {
+          socials.map((s) => (
+            <a
+              href={s.href}
+              aria-label={s.label}
+              class="grid h-9 w-9 place-items-center rounded-lg border border-line text-ink-400 no-underline transition-colors hover:border-line-strong hover:text-ink"
+            >
+              <BrandIcon name={s.name} class="h-[18px] w-[18px]" />
+            </a>
+          ))
+        }
+      </div>
+    </div>
 
-    <!-- Social Icons -->
-    <div class="flex items-center gap-4">
-      <!-- GitHub -->
-      <a
-        href="#"
-        class="text-gray-400 hover:text-gray-500 transition-colors"
-        aria-label="GitHub"
-      >
-        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            fill-rule="evenodd"
-            d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </a>
+    {
+      cols.map((col) => (
+        <div>
+          <div class="mb-3.5 text-xs font-bold uppercase tracking-[0.06em] text-ink-500">
+            {col.title}
+          </div>
+          <div class="flex flex-col gap-2.5 text-[13.5px] text-ink-400">
+            {col.links.map((l) => (
+              <a
+                href={l.href}
+                class="text-inherit no-underline transition-colors hover:text-ink"
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+  </div>
 
-      <!-- Twitter/X -->
-      <a
-        href="#"
-        class="text-gray-400 hover:text-gray-500 transition-colors"
-        aria-label="Twitter"
-      >
-        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-          />
-        </svg>
-      </a>
+  <div class="border-t border-line">
+    <div
+      class="mx-auto flex max-w-site flex-wrap justify-between gap-2 px-6 py-[18px] text-[12.5px] text-ink-300"
+    >
+      <span>© {year} Shoutrrr · Apache 2.0 licensed</span>
+      <span>Open source · Self-host or Cloud</span>
     </div>
   </div>
 </footer>
