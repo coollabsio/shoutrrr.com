@@ -34,11 +34,10 @@ body {
   color: var(--primary-deep);
 }
 
-/* Fraunces: dial in the optical size + a touch of softness so the display
-   serif reads warm rather than sharp at large sizes. */
+/* Newsreader: keep display headlines editorial and warm at large sizes. */
 .font-display {
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  font-variation-settings: 'opsz' 72;
   letter-spacing: -0.02em;
 }
 

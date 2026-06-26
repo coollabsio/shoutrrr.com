@@ -53,7 +53,7 @@ module.exports = {
           '"Segoe UI Emoji"',
         ],
         display: [
-          '"Fraunces Variable"',
+          '"Newsreader Variable"',
           'ui-serif',
           'Georgia',
           '"Times New Roman"',
