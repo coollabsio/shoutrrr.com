@@ -151,7 +151,7 @@
 </script>
 
 <div
-  class="relative z-10 overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-card"
+  class="relative z-10 w-full min-w-0 overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-card"
 >
   <!-- platform tabs -->
   <div
@@ -169,14 +169,14 @@
         role="tab"
         aria-selected={isActive}
         onclick={() => (active = a.id)}
-        class="group relative flex shrink-0 items-center gap-2 rounded-t-md px-3 pb-2.5 pt-2 text-[12.5px] font-medium tracking-[-0.005em] transition-colors"
+        class="group relative flex shrink-0 items-center gap-1.5 rounded-t-md px-2.5 pb-2.5 pt-2 text-[12px] font-medium tracking-[-0.005em] transition-colors sm:gap-2 sm:px-3 sm:text-[12.5px]"
         class:text-ink={isActive}
         class:text-ink-300={!isActive}
       >
         <span class={`grid size-[18px] place-items-center rounded-[5px] ${a.tile}`}>
           {@html GLYPHS[a.platform]}
         </span>
-        <span>{a.handle}</span>
+        <span class="max-w-[84px] truncate sm:max-w-none">{a.handle}</span>
         {#if isOverrideActive(draft.overrides, a.id)}
           <span class="size-1.5 rounded-full bg-lime" title="Override active"></span>
         {/if}
@@ -242,7 +242,7 @@
   >
     <button
       type="button"
-      class="inline-flex h-7 items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink"
+      class="inline-flex h-[34px] items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink sm:h-7"
     >
       <ImageIcon class="size-3.5" />
       <span>Media</span>
@@ -251,12 +251,12 @@
         >1</span
       >
     </button>
-    <div class="ml-auto"></div>
+    <div class="hidden min-[360px]:ml-auto min-[360px]:block"></div>
     <button
       type="button"
       onclick={toggleOverride}
       data-active={override}
-      class="inline-flex h-7 items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink data-[active=true]:border-line data-[active=true]:bg-surface data-[active=true]:text-ink"
+      class="inline-flex h-[34px] items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink data-[active=true]:border-line data-[active=true]:bg-surface data-[active=true]:text-ink sm:h-7"
     >
       <Split class="size-3.5" />
       <span>{override ? 'Override on' : 'Override'}</span>
@@ -265,7 +265,7 @@
       type="button"
       onclick={() => (autoSplit = !autoSplit)}
       data-active={autoSplit}
-      class="inline-flex h-7 items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink data-[active=true]:border-line data-[active=true]:bg-surface data-[active=true]:text-ink"
+      class="inline-flex h-[34px] items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300 transition-colors hover:border-line hover:bg-surface hover:text-ink data-[active=true]:border-line data-[active=true]:bg-surface data-[active=true]:text-ink sm:h-7"
     >
       <Shuffle class="size-3.5" />
       <span>Auto-split</span>
@@ -274,18 +274,18 @@
 
   <!-- submit bar -->
   <div
-    class="flex items-center justify-end gap-1.5 border-t border-line px-4 py-3"
+    class="flex flex-wrap items-center justify-end gap-1.5 border-t border-line px-4 py-3"
   >
     <button
       type="button"
-      class="inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-line bg-surface px-3 text-[12.5px] font-medium text-ink-700 transition-colors hover:bg-surface-sunken"
+      class="inline-flex h-9 items-center justify-center gap-1.5 rounded-md border border-line bg-surface px-3 text-[12.5px] font-medium text-ink-700 transition-colors hover:bg-surface-sunken sm:h-8"
       >Save draft</button
     >
     <button
       type="button"
       onclick={publishNow}
       disabled={isPublishing}
-      class="relative inline-flex h-8 items-center justify-center gap-1.5 overflow-visible rounded-md border border-lime-ring bg-lime px-3 text-[12.5px] font-medium text-lime-deep shadow-[0_1px_2px_0_rgb(0_0_0/0.04)] transition-[filter,transform] hover:brightness-[1.04] active:scale-[0.985] disabled:cursor-wait disabled:brightness-95"
+      class="relative inline-flex h-9 items-center justify-center gap-1.5 overflow-visible rounded-md border border-lime-ring bg-lime px-3 text-[12.5px] font-medium text-lime-deep shadow-[0_1px_2px_0_rgb(0_0_0/0.04)] transition-[filter,transform] hover:brightness-[1.04] active:scale-[0.985] disabled:cursor-wait disabled:brightness-95 sm:h-8"
       class:published-pop={isPublished}
     >
       {#if isPublishing}

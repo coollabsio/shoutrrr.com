@@ -99,9 +99,9 @@ const faqs = [
 <Layout>
   <!-- ===== HERO ===== -->
   <section
-    class="mx-auto grid max-w-site items-center gap-10 px-6 pb-10 pt-14 md:grid-cols-[1.05fr_1fr] md:gap-14 md:pt-[72px]"
+    class="mx-auto grid max-w-site items-center gap-10 overflow-hidden px-6 pb-10 pt-14 md:grid-cols-[1.05fr_1fr] md:gap-14 md:overflow-visible md:pt-[72px]"
   >
-    <div>
+    <div class="min-w-0">
       <div
         data-reveal
         class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface-sunken px-3 py-1.5 text-[12.5px] font-medium text-ink-600"
@@ -132,20 +132,20 @@ const faqs = [
       <div
         data-reveal
         data-reveal-delay="0.18"
-        class="mb-[26px] flex flex-wrap gap-3"
+        class="mb-[26px] flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap"
       >
         <a
           href="#get"
           data-hover
           data-hover-lift="-3"
-          class="rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+          class="rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
           >Deploy Shoutrrr →</a
         >
         <a
           href="#showcase"
           data-hover
           data-hover-lift="-3"
-          class="rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+          class="rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
           >See the product</a
         >
       </div>
@@ -166,7 +166,7 @@ const faqs = [
     </div>
 
     <!-- Composer mockup + aura -->
-    <div data-reveal data-reveal-delay="0.1" class="relative">
+    <div data-reveal data-reveal-delay="0.1" class="relative min-w-0 max-w-full">
       <Aura variant="hero" />
       <ComposerMockup client:load />
     </div>
