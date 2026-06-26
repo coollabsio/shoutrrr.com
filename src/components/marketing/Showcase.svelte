@@ -68,10 +68,11 @@
     { n: 7 }, { n: 8 }, { n: 9, chips: [{ p: 'bluesky', t: '8:00a', txt: 'Tips' }] }, { n: 10 },
     { n: 11, chips: [{ p: 'x', t: '9:00a', txt: 'Thread' }] }, { n: 12 }, { n: 13 },
     { n: 14 }, { n: 15 },
-    { n: 16, today: true, chips: [{ p: 'x', t: '9:00a', txt: 'AMA' }, { p: 'linkedin', t: '2:00p', txt: 'Case study' }] },
+    { n: 16, chips: [{ p: 'x', t: '9:00a', txt: 'AMA' }, { p: 'linkedin', t: '2:00p', txt: 'Case study' }] },
     { n: 17 }, { n: 18, chips: [{ p: 'linkedin', t: '11:00a', txt: 'Hiring' }] }, { n: 19 }, { n: 20 },
     { n: 21 }, { n: 22 }, { n: 23, chips: [{ p: 'x', t: '9:00a', txt: 'Recap' }] }, { n: 24 },
-    { n: 25, chips: [{ p: 'bluesky', t: '9:00a', txt: 'Notes' }] }, { n: 26 }, { n: 27 },
+    { n: 25, chips: [{ p: 'bluesky', t: '9:00a', txt: 'Notes' }] },
+    { n: 26, today: true, chips: [{ p: 'x', t: '10:00a', txt: 'Launch recap' }] }, { n: 27 },
     { n: 28 }, { n: 29 }, { n: 30 },
     { n: 1, out: true }, { n: 2, out: true }, { n: 3, out: true }, { n: 4, out: true },
   ];
@@ -93,6 +94,8 @@
   const ranges = ['7d', '14d', '30d', '90d'];
 
   function enter(node: HTMLElement) {
+    // Respect the user's motion preference — no fade on tab switch under reduce.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     animate(
       node,
       { opacity: [0, 1], transform: ['translateY(8px)', 'translateY(0px)'] },
@@ -102,11 +105,18 @@
 </script>
 
 <!-- tabs -->
-<div class="mb-6 flex flex-wrap justify-center gap-2 sm:mb-7">
+<div
+  class="mb-6 flex flex-wrap justify-center gap-2 sm:mb-7"
+  role="tablist"
+  aria-label="Product tour"
+>
   {#each TABS as t (t.key)}
     <button
+      id={`tab-${t.key}`}
+      role="tab"
+      aria-selected={tab === t.key}
+      aria-controls={`panel-${t.key}`}
       onclick={() => (tab = t.key)}
-      aria-pressed={tab === t.key}
       class="rounded-full border px-4 py-2 text-[13px] font-semibold transition-colors sm:px-[18px] sm:py-2.5 sm:text-sm"
       class:bg-lime={tab === t.key}
       class:text-lime-deep={tab === t.key}
@@ -125,7 +135,14 @@
   class="flex min-h-[460px] flex-col overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-panel"
 >
   {#key tab}
-    <div use:enter class="flex flex-1 flex-col">
+    <div
+      use:enter
+      id={`panel-${tab}`}
+      role="tabpanel"
+      aria-labelledby={`tab-${tab}`}
+      tabindex="0"
+      class="flex flex-1 flex-col outline-none"
+    >
       {#if tab === 'composer'}
         <!-- ░░ COMPOSER ░░ -->
         <div class="flex flex-1 flex-col md:grid md:grid-cols-[1.25fr_1fr] md:items-stretch">

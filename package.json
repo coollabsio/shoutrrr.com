@@ -16,7 +16,6 @@
     "@fontsource-variable/noto-sans": "^5.2.10",
     "@lucide/svelte": "^1.21.0",
     "astro": "^5.17.1",
-    "daisyui": "^5.5.16",
     "lucide-astro": "^0.556.0",
     "motion": "^12.40.0",
     "svelte": "^5.49.1",

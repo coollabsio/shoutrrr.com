@@ -10,7 +10,7 @@ module.exports = {
           deep: 'oklch(0.405 0.101 131.063)', // text on lime
           ring: 'oklch(0.79 0.2 128.85)', // border on lime
           soft: 'oklch(0.96 0.07 128)', // tinted fill
-          text: 'oklch(0.55 0.1 130)', // eyebrow/labels
+          text: 'oklch(0.48 0.12 131)', // eyebrow/labels (AA on white)
         },
         // Neutral ink ramp (warm-neutral grays from the design).
         ink: {

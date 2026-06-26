@@ -75,8 +75,11 @@ function hovers() {
   });
 }
 
-reveals();
+// Everything here is motion. Under prefers-reduced-motion we run none of it —
+// the reduced-motion rules in global.css already reveal [data-reveal] content
+// without JS, so nothing stays hidden.
 if (!reduce) {
+  reveals();
   auras();
   hovers();
 }
