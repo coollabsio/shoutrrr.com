@@ -7,13 +7,18 @@
    *
    * Limits match the README: X ≤280, Bluesky ≤300 graphemes, LinkedIn ≤3000.
    */
+  import { animate } from 'motion';
+  import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
   import Check from '@lucide/svelte/icons/check';
+  import Heart from '@lucide/svelte/icons/heart';
   import ImageIcon from '@lucide/svelte/icons/image';
   import LoaderCircle from '@lucide/svelte/icons/loader-circle';
+  import MessageCircle from '@lucide/svelte/icons/message-circle';
+  import Repeat2 from '@lucide/svelte/icons/repeat-2';
   import Send from '@lucide/svelte/icons/send';
   import Shuffle from '@lucide/svelte/icons/shuffle';
   import Split from '@lucide/svelte/icons/split';
-  import { onDestroy } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { getCharCounter } from './char-counter.js';
   import {
     getPlatformText,
@@ -78,7 +83,36 @@
   });
   let publishStatus = $state<'idle' | 'publishing' | 'published'>('idle');
   let confettiRun = $state(0);
+  let showXPreview = $state(false);
   const text = $derived(getPlatformText(draft, active));
+
+  // How the post lands on X — the payoff of the autoplay loop. Engagement is
+  // illustrative; the copy is the first beat of the real hero draft.
+  const xPost = {
+    text: 'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading.',
+    time: 'now',
+    replies: '18',
+    reposts: '64',
+    likes: '291',
+    views: '6.2K',
+  };
+
+  const easeOut = [0.22, 0.61, 0.36, 1] as const;
+  const easeGlide = [0.6, 0.01, 0.18, 1] as const;
+
+  // Cursor tip sits ~5.5px in from the SVG's top-left at this render size.
+  const CURSOR_TIP = 5.5;
+
+  let cardEl: HTMLDivElement;
+  let publishBtnEl: HTMLButtonElement;
+  let cursorEl: HTMLElement;
+
+  // The autoplay loop is a canned demo; the moment a real user touches the
+  // composer we stand down for good and let them drive.
+  let userEngaged = false;
+  // Bumping this aborts whatever the loop is mid-await on.
+  let loopGen = 0;
+  let prefersReduced = false;
 
   type Sev = 'ok' | 'warn' | 'over';
   function textLength(value: string) {
@@ -112,29 +146,153 @@
     over: 'text-red-500',
   };
 
-  let publishTimer: ReturnType<typeof setTimeout> | undefined;
-  let resetTimer: ReturnType<typeof setTimeout> | undefined;
+  let manualResetTimer: ReturnType<typeof setTimeout> | undefined;
 
   function clearPublishTimers() {
-    if (publishTimer) clearTimeout(publishTimer);
-    if (resetTimer) clearTimeout(resetTimer);
+    if (manualResetTimer) clearTimeout(manualResetTimer);
   }
 
+  const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+  function resetComposer() {
+    clearPublishTimers();
+    publishStatus = 'idle';
+    showXPreview = false;
+  }
+
+  // The shared publish beat: spinner → published + confetti → X preview.
+  // `gen` lets the autoplay loop bail out cleanly if the user takes over.
+  async function runPublishBeat(gen: number) {
+    publishStatus = 'publishing';
+    await sleep(680);
+    if (gen !== loopGen) return;
+    publishStatus = 'published';
+    confettiRun += 1; // confetti bursts here — "in between" publish and preview
+    await sleep(600); // let the "Published" ✓ land and the confetti reach full spread
+    if (gen !== loopGen) return;
+    showXPreview = true;
+  }
+
+  // Manual click from a real user. Stops the autoplay for good, then runs the
+  // same beat and returns to the editable composer.
   function publishNow() {
     if (isPublishing) return;
-
-    clearPublishTimers();
-    publishStatus = 'publishing';
-
-    publishTimer = setTimeout(() => {
-      publishStatus = 'published';
-      confettiRun += 1;
-    }, 650);
-
-    resetTimer = setTimeout(() => {
-      publishStatus = 'idle';
-    }, 3600);
+    pauseAutoplay();
+    const gen = ++loopGen;
+    resetComposer();
+    runPublishBeat(gen).then(() => {
+      manualResetTimer = setTimeout(resetComposer, 3400);
+    });
   }
+
+  // ── Autoplay choreography ────────────────────────────────────────────
+  // A fake cursor drifts in from the card's centre, glides to "Publish now",
+  // presses it, and the post lands on X. Then it all resets and replays.
+
+  function cursorHome() {
+    const c = cardEl.getBoundingClientRect();
+    return { x: c.width / 2 - CURSOR_TIP, y: c.height * 0.46 };
+  }
+
+  function publishTarget() {
+    const c = cardEl.getBoundingClientRect();
+    const b = publishBtnEl.getBoundingClientRect();
+    return {
+      x: b.left - c.left + b.width / 2 - CURSOR_TIP,
+      y: b.top - c.top + b.height / 2 - CURSOR_TIP,
+    };
+  }
+
+  function pauseAutoplay() {
+    if (userEngaged) return;
+    userEngaged = true;
+    loopGen += 1; // abort the in-flight loop
+    if (cursorEl) animate(cursorEl, { opacity: 0 }, { duration: 0.2 });
+    resetComposer();
+  }
+
+  async function autoplayLoop() {
+    const gen = loopGen;
+    const home = cursorHome();
+    await animate(cursorEl, { x: home.x, y: home.y, opacity: 0, scale: 1 }, { duration: 0 });
+
+    while (gen === loopGen && !userEngaged) {
+      resetComposer();
+
+      // drift in
+      await animate(cursorEl, { opacity: [0, 1], scale: [0.6, 1] }, { duration: 0.4, ease: easeOut });
+      if (gen !== loopGen) break;
+
+      // glide to the Publish button
+      const t = publishTarget();
+      await animate(cursorEl, { x: t.x, y: t.y }, { duration: 0.95, ease: easeGlide });
+      if (gen !== loopGen) break;
+      await sleep(180);
+
+      // press
+      await animate(cursorEl, { scale: [1, 0.82, 1] }, { duration: 0.28, ease: easeOut });
+      if (gen !== loopGen) break;
+
+      // cursor lifts away while the post sends
+      animate(cursorEl, { opacity: 0, y: t.y + 16 }, { duration: 0.45, ease: easeOut });
+
+      await runPublishBeat(gen);
+      if (gen !== loopGen) break;
+
+      // dwell on the X preview — long enough to take in the tweet
+      await sleep(2900);
+      if (gen !== loopGen) break;
+
+      // Reset the composer and park the cursor *behind* the preview while it
+      // still fully covers the card — so the snap from "Published" back to the
+      // editable draft is never seen. Only then fade the preview away to reveal
+      // an already-fresh composer.
+      publishStatus = 'idle';
+      await animate(cursorEl, { x: home.x, y: home.y, opacity: 0, scale: 1 }, { duration: 0 });
+
+      showXPreview = false;
+      await sleep(450); // let the preview's 0.45s fade-out complete…
+      if (gen !== loopGen) break;
+      await sleep(650); // …then breathe before the cursor drifts back in
+      if (gen !== loopGen) break;
+    }
+  }
+
+  onMount(() => {
+    prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    // Start when the composer scrolls into view; never restart once the user
+    // has engaged.
+    let started = false;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && !started && !userEngaged) {
+            started = true;
+            autoplayLoop();
+          }
+        }
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(cardEl);
+
+    // Any genuine interaction (click, tab into the editor) stands the demo down.
+    cardEl.addEventListener('pointerdown', pauseAutoplay);
+    cardEl.addEventListener('focusin', pauseAutoplay);
+
+    return () => {
+      io.disconnect();
+      cardEl.removeEventListener('pointerdown', pauseAutoplay);
+      cardEl.removeEventListener('focusin', pauseAutoplay);
+    };
+  });
+
+  onDestroy(() => {
+    loopGen += 1;
+    clearPublishTimers();
+  });
 
   function toggleOverride() {
     draft = {
@@ -144,13 +302,13 @@
   }
 
   function updateText(event: Event) {
+    pauseAutoplay();
     draft = setPlatformText(draft, active, (event.currentTarget as HTMLTextAreaElement).value);
   }
-
-  onDestroy(clearPublishTimers);
 </script>
 
 <div
+  bind:this={cardEl}
   class="relative z-10 w-full min-w-0 overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-card"
 >
   <!-- platform tabs -->
@@ -282,6 +440,7 @@
       >Save draft</button
     >
     <button
+      bind:this={publishBtnEl}
       type="button"
       onclick={publishNow}
       disabled={isPublishing}
@@ -305,18 +464,124 @@
     </button>
   </div>
 
+  <!-- X preview — the payoff: how the draft lands once it's posted -->
+  <div
+    class="x-preview pointer-events-none absolute inset-0 z-20 flex flex-col bg-surface p-4 sm:p-5"
+    class:x-preview--on={showXPreview}
+    aria-hidden={!showXPreview}
+  >
+    <div class="mb-3 flex items-center gap-2 text-[12.5px] font-semibold text-ink-500">
+      <span class="grid size-5 place-items-center rounded-full bg-black text-white">
+        {@html GLYPHS.x}
+      </span>
+      <span>Live on X</span>
+      <span
+        class="ml-auto inline-flex items-center gap-1 rounded-full bg-lime-soft px-2 py-0.5 text-[11px] font-medium text-lime-deep"
+      >
+        <Check class="size-3" /> Published
+      </span>
+    </div>
+
+    <div class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-white">
+      <div class="flex gap-3 p-4">
+        <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white">
+          <img src="/shoutrrr.png" alt="" class="size-8" />
+        </span>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-1 text-[15px] leading-tight">
+            <span class="font-bold text-[#0f1419]">Shoutrrr</span>
+            <svg
+              class="size-[18px] shrink-0 text-[#1d9bf0]"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"
+              />
+            </svg>
+            <span class="truncate text-[#536471]">@shoutrrr</span>
+            <span class="text-[#536471]">·</span>
+            <span class="shrink-0 text-[#536471]">{xPost.time}</span>
+          </div>
+          <p class="mt-0.5 whitespace-pre-wrap break-words text-[14px] leading-[1.45] text-[#0f1419]">
+            {xPost.text}
+          </p>
+          <div class="mt-3 flex max-w-[340px] items-center justify-between text-[#536471]">
+            <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums">
+              <MessageCircle class="size-[15px]" />{xPost.replies}
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums">
+              <Repeat2 class="size-[15px]" />{xPost.reposts}
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums">
+              <Heart class="size-[15px]" />{xPost.likes}
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums">
+              <BarChart3 class="size-[15px]" />{xPost.views}
+            </span>
+          </div>
+        </div>
+      </div>
+      <p class="mt-auto border-t border-line px-4 py-3 text-[12px] text-ink-300">
+        Also delivered to <span class="font-medium text-ink-600">LinkedIn</span> and
+        <span class="font-medium text-ink-600">Bluesky</span> · 0 errors.
+      </p>
+    </div>
+  </div>
+
   {#if confettiRun}
-    <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div class="pointer-events-none absolute inset-0 z-30 overflow-hidden" aria-hidden="true">
       {#each CONFETTI_PIECES as piece, i (`${confettiRun}-${i}`)}
         <span class="confetti" style={piece}></span>
       {/each}
     </div>
   {/if}
+
+  <!-- autoplay cursor: parked off-state until the loop drives it -->
+  <span
+    bind:this={cursorEl}
+    class="pointer-events-none absolute left-0 top-0 z-40 will-change-transform"
+    style="opacity:0"
+    aria-hidden="true"
+  >
+    <svg width="22" height="22" viewBox="0 0 24 24" class="drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)]">
+      <path
+        d="M6 6 L6 21 L10.2 16.8 L12.8 22.2 L15.2 21 L12.6 15.8 L18.4 15.8 Z"
+        fill="#fff"
+        stroke="#111827"
+        stroke-width="1.5"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </span>
 </div>
 
 <style>
   .published-pop {
     animation: published-pop 520ms cubic-bezier(0.2, 1.4, 0.3, 1);
+  }
+
+  /* X preview overlay — fades + lifts in, then hides without intercepting
+     clicks on the composer underneath. */
+  .x-preview {
+    opacity: 0;
+    transform: scale(0.985) translateY(6px);
+    visibility: hidden;
+    transition:
+      opacity 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1),
+      visibility 0s linear 0.45s;
+  }
+
+  .x-preview--on {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    visibility: visible;
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+      transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+      visibility 0s;
   }
 
   .confetti {
@@ -373,6 +638,12 @@
 
     .confetti {
       display: none;
+    }
+
+    .x-preview,
+    .x-preview--on {
+      transition: none;
+      transform: none;
     }
   }
 </style>
