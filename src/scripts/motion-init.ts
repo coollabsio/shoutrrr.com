@@ -34,32 +34,54 @@ function reveals() {
 
 type AuraKind = 'a' | 'b' | 'spin';
 
-const auraTracks: Record<AuraKind, { keyframes: Record<string, string[]>; duration: number; ease: string }> = {
+// Each blob drifts on its own slow, organic path — independent x/y/scale plus a
+// gentle opacity "breathe" — rather than one transform string, which Motion
+// interpolates far more smoothly. The 'spin' blob rotates instead. Every track
+// returns to its first frame so the infinite loop is seamless.
+const auraTracks: Record<
+  AuraKind,
+  { keyframes: Record<string, number[]>; duration: number; ease: 'easeInOut' | 'linear' }
+> = {
   a: {
-    keyframes: { transform: ['translate(0px,0px) scale(1)', 'translate(40px,-30px) scale(1.15)', 'translate(0px,0px) scale(1)'] },
-    duration: 14,
-    ease: 'ease-in-out',
+    keyframes: {
+      x: [0, 38, -14, 0],
+      y: [0, -28, 16, 0],
+      scale: [1, 1.16, 0.95, 1],
+      opacity: [1, 0.8, 0.92, 1],
+    },
+    duration: 16,
+    ease: 'easeInOut',
   },
   b: {
-    keyframes: { transform: ['translate(0px,0px) scale(1.1)', 'translate(-50px,40px) scale(0.9)', 'translate(0px,0px) scale(1.1)'] },
-    duration: 18,
-    ease: 'ease-in-out',
+    keyframes: {
+      x: [0, -46, 18, 0],
+      y: [0, 34, -20, 0],
+      scale: [1.08, 0.9, 1.14, 1.08],
+      opacity: [1, 0.72, 0.9, 1],
+    },
+    duration: 21,
+    ease: 'easeInOut',
   },
   spin: {
-    keyframes: { transform: ['rotate(0deg)', 'rotate(360deg)'] },
-    duration: 32,
+    keyframes: {
+      rotate: [0, 360],
+      scale: [1, 1.12, 1],
+    },
+    duration: 30,
     ease: 'linear',
   },
 };
 
 function auras() {
-  document.querySelectorAll<HTMLElement>('[data-aura-anim]').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('[data-aura-anim]').forEach((el, i) => {
     const kind = (el.dataset.auraAnim as AuraKind) ?? 'a';
     const track = auraTracks[kind] ?? auraTracks.a;
     animate(el, track.keyframes, {
-      duration: track.duration,
-      repeat: Infinity,
+      // Nudge each blob's duration so the two aura instances drift out of phase
+      // rather than looping in lockstep.
+      duration: track.duration * (1 + i * 0.04),
       ease: track.ease,
+      repeat: Infinity,
     });
   });
 }
