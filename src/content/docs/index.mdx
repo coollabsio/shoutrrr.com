@@ -1,0 +1,49 @@
+---
+title: Introduction
+description: Shoutrrr is the open-source, self-hostable alternative to Buffer, Typefully & Hootsuite — write once, publish everywhere.
+order: 0
+---
+
+Shoutrrr is a social media scheduling tool you run yourself. Connect your
+accounts, draft a post once, and send it to every network at the same time — or
+queue it to go out on a recurring schedule. No monthly seat fees, and no third
+party holding your tokens or your data.
+
+It's built for individuals and teams: invite collaborators into a shared
+workspace, keep clients or brands separated, and see how your posts perform —
+all from a single, fast interface.
+
+## Why Shoutrrr
+
+- **You own everything** — your posts, your audience tokens, your analytics, all on your own infrastructure.
+- **One post, every platform** — compose once and publish to multiple accounts, tweaking the text per network when you want.
+- **Plan ahead** — a posting queue with recurring time slots and a month calendar keep your feed consistent without babysitting it.
+- **Made for teams** — workspaces, roles, and email invites keep clients and collaborators tidy.
+- **No lock-in** — open source under Apache 2.0, runs anywhere Docker does.
+
+## Supported platforms
+
+| Platform        | Connect with     | Limits per post            | Threads          |
+| --------------- | ---------------- | -------------------------- | ---------------- |
+| **X** (Twitter) | OAuth 2.0        | ≤280 chars, up to 4 media  | Yes              |
+| **Bluesky**     | App password     | ≤300 graphemes, up to 4 images | Yes          |
+| **LinkedIn**    | OAuth 2.0 (OIDC) | ≤3000 chars, up to 9 images | Single post     |
+
+When a post is too long for a platform that supports threads, Shoutrrr splits it
+into a thread automatically. Each target publishes independently and retries on
+failure.
+
+## Core features
+
+- **Composer** — draft with media and alt text, with a live per-network character count.
+- **Multi-account publishing** — fan one post out to many accounts at once, with optional per-platform overrides.
+- **Queue & calendar** — recurring posting slots in your workspace's timezone, plus a month calendar to review everything. Publish instantly whenever you like.
+- **Analytics** — follower and post-count trends per account, plus per-post engagement (likes, reposts, replies, impressions).
+- **Workspaces & team** — multiple workspaces with role-based memberships, email invitations, and ownership transfer.
+- **Secure by default** — email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login. Account tokens are stored encrypted and refreshed automatically.
+
+## Next steps
+
+- [Self-hosting](/docs/getting-started) — get an instance running with Docker.
+- [Connecting accounts](/docs/connecting-accounts) — link X, Bluesky, and LinkedIn.
+- [Configuration](/docs/configuration) — environment variables and tuning.

@@ -1,0 +1,107 @@
+---
+title: Self-hosting
+description: Run your own Shoutrrr instance with Docker in a few minutes.
+order: 1
+---
+
+The recommended way to host Shoutrrr is the prebuilt Docker image. It runs the
+web app, queue worker, and scheduler in a single container — ideal for a single
+box. It defaults to SQLite with no external services, and you can switch to
+Postgres/Redis later if you need to scale out.
+
+```bash
+docker pull ghcr.io/coollabsio/shoutrrr:latest
+```
+
+## Quick start with `docker run`
+
+Create a production env file:
+
+```bash
+cat > .env.prod <<'EOF'
+APP_URL=http://localhost:8080
+APP_KEY=base64:PASTE_GENERATED_KEY_HERE
+EOF
+```
+
+Generate an `APP_KEY` and paste it into `.env.prod`:
+
+```bash
+docker run --rm --entrypoint php ghcr.io/coollabsio/shoutrrr:latest \
+  /var/www/html/artisan key:generate --show
+```
+
+Start Shoutrrr with persistent volumes:
+
+```bash
+docker volume create shoutrrr-storage
+docker volume create shoutrrr-sqlite
+
+docker run -d \
+  --name shoutrrr \
+  --env-file .env.prod \
+  -p 8080:8080 \
+  -v shoutrrr-storage:/var/www/html/storage \
+  -v shoutrrr-sqlite:/var/www/html/database/sqlite \
+  ghcr.io/coollabsio/shoutrrr:latest
+```
+
+Shoutrrr runs its startup tasks automatically, including database migrations.
+Open `http://localhost:8080`, register the first account, and you're in.
+
+:::tip
+To test a specific release, replace `latest` with a version tag such as
+`1.0.0-rc.2` in the commands above.
+:::
+
+## Going to production
+
+For a real public deployment:
+
+- Set `APP_URL` to your HTTPS domain.
+- Set `SESSION_SECURE_COOKIE=true`.
+- Keep `APP_ENV=production` and `APP_DEBUG=false`.
+
+:::warning
+Keep your `APP_KEY` safe and stable. It encrypts your stored account tokens —
+if you lose or change it, connected accounts will need to be re-linked.
+:::
+
+## Docker Compose
+
+If you prefer Compose, use the bundled production file, which pulls the prebuilt
+image from GHCR:
+
+```bash
+git clone https://github.com/coollabsio/shoutrrr.git
+cd shoutrrr
+cp .env.example.prod .env
+
+# Set APP_KEY and APP_URL in .env before starting.
+docker compose -f docker-compose.production.yaml run --rm app \
+  php artisan key:generate --show
+
+docker compose -f docker-compose.production.yaml up -d
+```
+
+## Deploy with Coolify
+
+[Coolify](https://coolify.io) deploys Shoutrrr straight from the repository
+using the bundled Compose file — it handles the domain, HTTPS, and persistent
+volumes for you.
+
+1. In Coolify, choose **+ New → Resource → Public Repository** and enter `https://github.com/coollabsio/shoutrrr`.
+2. Set the **Build Pack** to **Docker Compose** and the file to `docker-compose.production.yaml`.
+3. Under the `app` service, add a **Domain** pointing at port **8080**. Coolify provisions TLS automatically.
+4. Add `APP_KEY`, `APP_URL` (matching the domain), `APP_ENV=production`, and `APP_DEBUG=false` as environment variables — plus any account credentials (see [Connecting accounts](/docs/connecting-accounts)).
+5. Click **Deploy**.
+
+The Compose file declares named volumes for storage and the SQLite database, so
+your data and uploads survive redeploys.
+
+## Resetting test data
+
+```bash
+docker rm -f shoutrrr
+docker volume rm shoutrrr-storage shoutrrr-sqlite
+```

@@ -1,0 +1,75 @@
+---
+title: Configuration
+description: Environment variables for tuning your Shoutrrr instance.
+order: 3
+---
+
+Shoutrrr is configured through environment variables in your `.env` file (or
+`--env-file` / Compose environment). The defaults run a self-contained instance
+on SQLite with no external services. This page covers the variables you're most
+likely to change.
+
+## Application
+
+| Variable                | Default                  | Description                                              |
+| ----------------------- | ------------------------ | -------------------------------------------------------- |
+| `APP_KEY`               | —                        | Secret that encrypts stored account tokens. **Required.** |
+| `APP_URL`               | `http://localhost:8080`  | Public URL of your instance. Used for OAuth redirects.   |
+| `APP_ENV`               | `production` (image)     | `production` or `local`.                                 |
+| `APP_DEBUG`             | `false`                  | Verbose errors. Keep `false` in production.              |
+| `SESSION_SECURE_COOKIE` | `false`                  | Set `true` when serving over HTTPS.                      |
+
+:::warning
+Generate `APP_KEY` once and keep it stable — changing it invalidates every
+encrypted account token, forcing all accounts to be re-linked.
+:::
+
+## Workers
+
+Publishing and scheduling require a queue worker and the scheduler. The Docker
+image runs both inside the container by default.
+
+| Variable                 | Default | Description                                  |
+| ------------------------ | ------- | -------------------------------------------- |
+| `QUEUE_WORKER_ENABLED`   | `true`  | Run the in-container queue worker.           |
+| `SCHEDULER_ENABLED`      | `true`  | Run the in-container scheduler.              |
+| `INERTIA_SSR_ENABLED`    | `false` | Enable server-side rendering.                |
+
+:::note
+To run the worker and scheduler as separate services (e.g. in the cloud), set
+`QUEUE_WORKER_ENABLED=false` / `SCHEDULER_ENABLED=false` and start them with
+`php artisan queue:work` and `php artisan schedule:work` in their own containers.
+:::
+
+## Database, cache & queue
+
+By default everything is database-backed on SQLite — no extra services to run.
+
+| Variable           | Default                              | Description                            |
+| ------------------ | ------------------------------------ | -------------------------------------- |
+| `DB_CONNECTION`    | `sqlite`                             | `sqlite`, `pgsql`, or `mysql`.         |
+| `DB_DATABASE`      | `database/sqlite/database.sqlite`    | SQLite path, or database name.         |
+| `DB_HOST` / `DB_PORT` | `127.0.0.1` / `3306`              | For Postgres/MySQL.                     |
+| `DB_USERNAME` / `DB_PASSWORD` | —                         | For Postgres/MySQL.                     |
+| `CACHE_STORE`      | `database`                           | e.g. `database` or `redis`.            |
+| `QUEUE_CONNECTION` | `database`                           | e.g. `database` or `redis`.            |
+| `SESSION_DRIVER`   | `database`                           | Where sessions are stored.             |
+
+To scale out, point `DB_*` / `REDIS_*` at managed services and switch
+`DB_CONNECTION`, `CACHE_STORE`, and `QUEUE_CONNECTION` to use them.
+
+## Email
+
+Email is used for verification and team invitations.
+
+| Variable            | Default              | Description                          |
+| ------------------- | -------------------- | ------------------------------------ |
+| `MAIL_MAILER`       | `log`                | `smtp`, `log`, etc.                  |
+| `MAIL_HOST` / `MAIL_PORT` | `127.0.0.1` / `2525` | SMTP server.                   |
+| `MAIL_FROM_ADDRESS` | `hello@example.com`  | Sender address for outgoing mail.    |
+
+## Accounts & social login
+
+Credentials for connecting and publishing to networks are documented in
+[Connecting accounts](/docs/connecting-accounts) — `X_*`, `LINKEDIN_*`, and the
+optional `SOCIALITE_*` / `GOOGLE_*` variables for social sign-in.

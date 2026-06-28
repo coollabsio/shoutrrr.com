@@ -1,0 +1,70 @@
+---
+import type { Root, Node } from 'fumadocs-core/page-tree';
+
+interface Props {
+  tree?: Root;
+  nodes?: Node[];
+  currentUrl: string;
+}
+
+const { tree, nodes, currentUrl } = Astro.props;
+const items: Node[] = nodes ?? tree?.children ?? [];
+const Self = Astro.self;
+
+const linkClass =
+  'block rounded-lg px-3 py-1.5 text-sm text-ink-500 no-underline transition-colors hover:bg-surface-sunken hover:text-ink aria-[current=page]:bg-lime-soft aria-[current=page]:font-medium aria-[current=page]:text-lime-text';
+---
+
+<ul class="flex flex-col gap-0.5">
+  {
+    items.map((node) =>
+      node.type === 'separator' ? (
+        <li class="px-3 pb-1 pt-4 text-xs font-semibold uppercase tracking-wide text-ink-300">
+          {node.name}
+        </li>
+      ) : node.type === 'folder' ? (
+        <li>
+          <details open={node.defaultOpen ?? true} class="group">
+            <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 py-1.5 text-sm font-semibold text-ink-700 transition-colors hover:bg-surface-sunken">
+              {node.index ? (
+                <a
+                  href={node.index.url}
+                  class="no-underline"
+                  aria-current={node.index.url === currentUrl ? 'page' : undefined}
+                >
+                  {node.name}
+                </a>
+              ) : (
+                <span>{node.name}</span>
+              )}
+              <svg
+                class="size-3.5 text-ink-300 transition-transform group-open:rotate-90"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </summary>
+            <div class="ml-2 mt-0.5 border-l border-line pl-2">
+              <Self nodes={node.children} currentUrl={currentUrl} />
+            </div>
+          </details>
+        </li>
+      ) : (
+        <li>
+          <a
+            href={node.url}
+            class={linkClass}
+            aria-current={node.url === currentUrl ? 'page' : undefined}
+          >
+            {node.name}
+          </a>
+        </li>
+      )
+    )
+  }
+</ul>

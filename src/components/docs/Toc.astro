@@ -1,0 +1,71 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+// Show H2/H3 only — keeps the rail readable on long pages.
+const items = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+{
+  items.length > 0 && (
+    <nav
+      aria-label="On this page"
+      class="sticky top-[90px] hidden max-h-[calc(100vh-110px)] w-56 shrink-0 overflow-y-auto py-10 xl:block"
+    >
+      <p class="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-300">
+        On this page
+      </p>
+      <ul class="flex flex-col gap-1 border-l border-line">
+        {items.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              data-toc-link={h.slug}
+              class:list={[
+                'block border-l-2 border-transparent py-1 text-sm text-ink-400 no-underline transition-colors hover:text-ink',
+                h.depth === 3 ? 'pl-6' : 'pl-3',
+              ]}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<script>
+  // Highlight the heading currently in view.
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')
+  );
+  if (links.length) {
+    const byId = new Map(links.map((l) => [l.dataset.tocLink, l]));
+    const active = (slug: string | null) => {
+      links.forEach((l) => {
+        const on = l.dataset.tocLink === slug;
+        l.classList.toggle('border-lime', on);
+        l.classList.toggle('text-ink', on);
+        l.classList.toggle('font-medium', on);
+      });
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) active(visible.target.id);
+      },
+      { rootMargin: '-90px 0px -70% 0px', threshold: 0 }
+    );
+    byId.forEach((_, slug) => {
+      if (slug) {
+        const el = document.getElementById(slug);
+        if (el) observer.observe(el);
+      }
+    });
+  }
+</script>
