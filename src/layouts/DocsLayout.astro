@@ -1,0 +1,57 @@
+---
+import type { Root } from 'fumadocs-core/page-tree';
+import type { MarkdownHeading } from 'astro';
+import Layout from './Layout.astro';
+import DocsSidebar from '../components/docs/DocsSidebar.astro';
+import DocsSearch from '../components/docs/DocsSearch.svelte';
+import Toc from '../components/docs/Toc.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  tree: Root;
+  headings: MarkdownHeading[];
+  currentUrl: string;
+}
+
+const { title, description, tree, headings, currentUrl } = Astro.props;
+---
+
+<Layout title={`${title} — Shoutrrr Docs`} description={description}>
+  <div class="mx-auto flex w-full max-w-site gap-8 px-5 sm:px-6">
+    <!-- Sidebar (desktop) -->
+    <aside
+      class="sticky top-[70px] hidden h-[calc(100vh-70px)] w-64 shrink-0 overflow-y-auto py-8 pr-2 lg:block"
+    >
+      <DocsSearch client:idle />
+      <nav aria-label="Documentation" class="mt-5">
+        <DocsSidebar tree={tree} currentUrl={currentUrl} />
+      </nav>
+    </aside>
+
+    <!-- Content -->
+    <article class="min-w-0 flex-1 py-10">
+      <!-- Mobile nav -->
+      <details
+        class="mb-6 rounded-xl border border-line bg-surface-sunken lg:hidden"
+      >
+        <summary
+          class="cursor-pointer list-none px-4 py-3 text-sm font-semibold text-ink-700"
+        >
+          Documentation menu
+        </summary>
+        <div class="border-t border-line px-3 py-3">
+          <DocsSearch client:idle />
+          <nav aria-label="Documentation" class="mt-4">
+            <DocsSidebar tree={tree} currentUrl={currentUrl} />
+          </nav>
+        </div>
+      </details>
+
+      <slot />
+    </article>
+
+    <!-- Table of contents -->
+    <Toc headings={headings} />
+  </div>
+</Layout>

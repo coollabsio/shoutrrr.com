@@ -76,3 +76,151 @@ body {
     transform: none !important;
   }
 }
+
+/* ── Docs prose ────────────────────────────────────────────────────────
+   Self-contained typography for rendered MDX (no @tailwindcss/typography).
+   Tuned to the marketing tokens: Noto Sans body, lime accents, soft lines. */
+.docs-prose {
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+.docs-prose > * + * {
+  margin-top: 1.15em;
+}
+.docs-prose h2,
+.docs-prose h3,
+.docs-prose h4 {
+  font-family: 'Newsreader Variable', ui-serif, Georgia, serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  scroll-margin-top: 90px;
+}
+.docs-prose h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.25rem;
+  font-size: 1.6rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid oklch(0.92 0 0);
+}
+.docs-prose h3 {
+  margin-top: 2rem;
+  font-size: 1.25rem;
+}
+.docs-prose h4 {
+  margin-top: 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+.docs-prose a {
+  color: oklch(0.48 0.12 131);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: oklch(0.79 0.2 128.85 / 0.5);
+}
+.docs-prose a:hover {
+  text-decoration-color: oklch(0.79 0.2 128.85);
+}
+.docs-prose strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+.docs-prose ul,
+.docs-prose ol {
+  padding-left: 1.4rem;
+}
+.docs-prose ul {
+  list-style: disc;
+}
+.docs-prose ol {
+  list-style: decimal;
+}
+.docs-prose li + li {
+  margin-top: 0.4rem;
+}
+.docs-prose li::marker {
+  color: oklch(0.6 0 0);
+}
+/* Inline code */
+.docs-prose :not(pre) > code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em;
+  background: oklch(0.96 0.07 128);
+  color: oklch(0.405 0.101 131.063);
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+}
+/* Shiki code blocks */
+.docs-prose pre {
+  background: oklch(0.985 0 0) !important;
+  border: 1px solid oklch(0.92 0 0);
+  border-radius: 0.75rem;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.docs-prose pre code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.docs-prose blockquote {
+  border-left: 3px solid oklch(0.79 0.2 128.85);
+  padding-left: 1rem;
+  color: oklch(0.46 0 0);
+  font-style: italic;
+}
+.docs-prose img {
+  border-radius: 0.75rem;
+  border: 1px solid oklch(0.92 0 0);
+}
+.docs-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.docs-prose th,
+.docs-prose td {
+  border: 1px solid oklch(0.92 0 0);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
+.docs-prose th {
+  background: oklch(0.985 0 0);
+  font-weight: 600;
+}
+.docs-prose hr {
+  border: none;
+  border-top: 1px solid oklch(0.92 0 0);
+  margin: 2.5rem 0;
+}
+
+/* fumadocs remark-admonition output (callouts) */
+.docs-prose .admonition {
+  margin: 1.5rem 0;
+  border: 1px solid oklch(0.92 0 0);
+  border-left-width: 3px;
+  border-radius: 0.6rem;
+  padding: 0.85rem 1.1rem;
+  background: oklch(0.985 0 0);
+}
+.docs-prose .admonition > * + * {
+  margin-top: 0.5rem;
+}
+.docs-prose .admonition-heading {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.docs-prose .admonition-type-warn,
+.docs-prose .admonition-type-warning {
+  border-left-color: oklch(0.78 0.16 75);
+}
+.docs-prose .admonition-type-error,
+.docs-prose .admonition-type-danger {
+  border-left-color: oklch(0.62 0.21 25);
+}
+.docs-prose .admonition-type-info,
+.docs-prose .admonition-type-note {
+  border-left-color: oklch(0.79 0.2 128.85);
+}

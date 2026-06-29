@@ -1,0 +1,63 @@
+---
+title: Connecting accounts
+description: Link your X, Bluesky, and LinkedIn accounts so Shoutrrr can publish on your behalf.
+order: 2
+---
+
+Shoutrrr publishes through your own accounts. Bluesky works out of the box; X and
+LinkedIn publish through developer apps you register, so they need a few
+credentials in your environment.
+
+:::warning
+Publishing and scheduling rely on a running queue worker and scheduler. The
+provided Docker setups start both for you automatically.
+:::
+
+## Bluesky
+
+Nothing extra to configure. Each user connects with a Bluesky
+[app password](https://bsky.app/settings/app-passwords) from the **Connected
+accounts** screen — no developer app required.
+
+## X (Twitter)
+
+Register an app at [developer.x.com](https://developer.x.com) and add its
+credentials to your `.env`. The redirect URI must match what you register; it
+defaults to `${APP_URL}/accounts/callback/x`.
+
+```dotenv
+X_CLIENT_ID=
+X_CLIENT_SECRET=
+X_REDIRECT_URI="${APP_URL}/accounts/callback/x"
+```
+
+## LinkedIn
+
+Register an app at
+[linkedin.com/developers](https://www.linkedin.com/developers) and add its
+credentials. The redirect URI defaults to
+`${APP_URL}/accounts/callback/linkedin`.
+
+```dotenv
+LINKEDIN_CLIENT_ID=
+LINKEDIN_CLIENT_SECRET=
+LINKEDIN_REDIRECT_URI="${APP_URL}/accounts/callback/linkedin"
+```
+
+## Optional: social login
+
+Let people sign in with a social account instead of a password:
+
+```dotenv
+SOCIALITE_ENABLED=true
+SOCIALITE_PROVIDERS=google            # comma-separated: google,x,linkedin
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI="${APP_URL}/auth/google/callback"
+```
+
+:::note
+After editing `.env`, restart the container so the new values are picked up. Make
+sure each redirect URI registered with the provider exactly matches your
+`APP_URL`.
+:::
