@@ -1,0 +1,173 @@
+---
+title: MCP server
+description: Let AI assistants draft, schedule, and publish Shoutrrr posts through the built-in Model Context Protocol server.
+order: 4
+---
+
+Every Shoutrrr instance ships with a built-in [Model Context
+Protocol](https://modelcontextprotocol.io) (MCP) server. Point an MCP-capable
+assistant — Claude, Cursor, or anything that speaks MCP — at your instance and it
+can read your posts and analytics, draft and edit content, manage schedules and
+account sets, and (with your explicit confirmation) publish on your behalf.
+
+The server runs inside your own deployment. Nothing is sent to a third party:
+the assistant connects directly to your instance and acts as you, scoped to a
+single workspace.
+
+## Endpoint
+
+The server is exposed over streamable HTTP at `/mcp`:
+
+```
+https://your-domain.example/mcp
+```
+
+It's protected by OAuth 2.1. Most clients only need that URL — they discover the
+authorization endpoints automatically from the standard metadata documents:
+
+- `/.well-known/oauth-protected-resource`
+- `/.well-known/oauth-authorization-server`
+
+Dynamic client registration is supported, so you don't have to pre-register the
+assistant as an app.
+
+:::warning
+The MCP server requires a logged-in Shoutrrr account and inherits all the same
+permissions, so only expose it over HTTPS. The OAuth flow encrypts and issues
+bearer tokens that act on your behalf.
+:::
+
+## Connecting an assistant
+
+Add the endpoint to your client. For example, with the Claude Code CLI:
+
+```bash
+claude mcp add --transport http shoutrrr https://your-domain.example/mcp
+```
+
+Or, for a client that takes a JSON config:
+
+```json
+{
+  "mcpServers": {
+    "shoutrrr": {
+      "type": "http",
+      "url": "https://your-domain.example/mcp"
+    }
+  }
+}
+```
+
+The first time the assistant connects, it opens Shoutrrr's OAuth consent screen
+in your browser:
+
+1. **Sign in** to Shoutrrr if you aren't already.
+2. **Pick a workspace.** The consent screen lists every workspace you belong to.
+   The one you choose is bound to this connection.
+3. **Approve.** The assistant receives a token and is ready to use.
+
+:::note
+The chosen workspace is **fixed for the life of the connection**. To operate on
+a different workspace, reconnect (re-run the OAuth flow) and pick another one.
+The `list-workspaces-tool` shows which workspace the current connection is bound
+to, plus your other workspaces.
+:::
+
+## Permissions and safety
+
+The MCP server never grants more than the web UI does.
+
+- **Same roles, same policies.** Every tool call is authorized against the exact
+  workspace policies the web app uses. If your role can't do something in the
+  browser, the assistant can't do it either.
+- **Membership is re-checked on every call.** If you're removed from (or leave)
+  the bound workspace, the connection stops working immediately — even though the
+  token hasn't expired.
+- **Irreversible actions need confirmation.** Outward-facing or destructive tools
+  — publishing now, retrying a failed target, and deleting a post — refuse to run
+  unless called with `confirm=true`. A well-behaved assistant will ask you first
+  and only then confirm.
+
+:::tip
+Publishing is asynchronous. After a publish or retry, the assistant should poll
+`get-post-tool` to see per-target results rather than assume success.
+:::
+
+## What the assistant can do
+
+The server exposes the following tools. Names are the on-the-wire identifiers
+your client will show.
+
+### Reading
+
+| Tool | What it does |
+| --- | --- |
+| `list-workspaces-tool` | Show the bound workspace plus your other workspaces. |
+| `list-posts-tool` | List posts in the workspace; optionally filter by status or a text query. |
+| `get-post-tool` | Fetch one post by id, including per-target publish status and attempts. |
+| `get-calendar-tool` | List scheduled and published posts for a calendar month (`YYYY-MM`). |
+| `list-connected-accounts-tool` | List connected X, LinkedIn, and Bluesky accounts and their status. |
+| `list-account-sets-tool` | List saved account sets (named groups of accounts). |
+| `get-posting-schedule-tool` | Get the workspace timezone and recurring weekly posting slots. |
+
+### Drafting and editing
+
+| Tool | What it does |
+| --- | --- |
+| `create-post-tool` | Create a draft. Destination is `all` (every account), `set` (an account set), or `account` (one account). |
+| `update-post-tool` | Edit text, destination, per-account overrides, and attached media. Uses optimistic concurrency — see below. |
+| `add-post-media-tool` | Attach an image by downloading it from a public URL (jpeg, png, webp, gif; max 8 MiB). Returns a media id. |
+| `remove-post-media-tool` | Remove an image from the workspace media library by id. |
+
+### Scheduling and publishing
+
+| Tool | What it does |
+| --- | --- |
+| `schedule-post-tool` | Schedule a post for a specific ISO-8601 time. Pass `null` to un-schedule back to draft. |
+| `queue-post-tool` | Schedule a post into the next open slot of the workspace posting schedule. |
+| `publish-post-tool` | Publish immediately. Irreversible and outward-facing — requires `confirm=true`. |
+| `retry-post-target-tool` | Retry a failed publish target. Outward-facing — requires `confirm=true`. |
+
+### Account sets and sharing
+
+| Tool | What it does |
+| --- | --- |
+| `create-account-set-tool` | Create a named, reusable group of connected accounts. |
+| `update-account-set-tool` | Rename a set or change its member accounts. |
+| `delete-account-set-tool` | Delete a set (existing posts that used it are unaffected). |
+| `create-share-link-tool` | Create a public, no-auth URL for a post. |
+| `list-shares-tool` | List active (non-revoked, non-expired) share links for a post. |
+| `delete-share-tool` | Revoke a share link. |
+
+### Deleting
+
+| Tool | What it does |
+| --- | --- |
+| `delete-post-tool` | Delete a post. A draft is removed permanently; a published post is also deleted from the connected accounts where possible. Irreversible — requires `confirm=true`. |
+
+:::note
+**Editing safely.** `update-post-tool` uses optimistic concurrency: pass the
+`expected_updated_at` value returned by `get-post-tool`. If the post changed in
+the meantime, the call returns a stale-write error instead of clobbering the
+newer version. Re-fetch and retry.
+:::
+
+## Tokens and rate limits
+
+- **Token lifetime.** Access tokens expire after 8 hours; refresh tokens after 30
+  days. Compliant clients refresh automatically, so you rarely re-consent.
+- **Rate limit.** MCP requests are throttled to 60 per minute per user. The OAuth
+  authorize and token endpoints are throttled separately to curb consent abuse.
+- **Cleanup.** Abandoned and orphaned workspace bindings are pruned hourly, so
+  revoking a token or deleting a client leaves nothing behind.
+
+## Troubleshooting
+
+- **"This connection is not bound to a workspace."** The OAuth grant lost its
+  workspace binding (for example, the token was created out of band). Reconnect
+  and pick a workspace on the consent screen.
+- **"You do not have permission…"** Your role in the bound workspace doesn't allow
+  that action, or you've been removed from the workspace. Check your membership.
+- **A publish "succeeded" but nothing appeared.** Publishing is asynchronous and
+  per-target. Call `get-post-tool` and inspect each target's status and attempts;
+  failed targets can be retried with `retry-post-target-tool`.
