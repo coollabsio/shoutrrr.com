@@ -29,6 +29,16 @@ body {
   overflow-x: hidden;
 }
 
+/* Safari: add safe area inset padding to the header for notches (iOS).
+   On desktop the inset resolves to 0, so this is a no-op there.
+   NOTE: do NOT pin `html { height: 100dvh }` here — it locks the sticky
+   header's `top: 0` to a fixed dvh box instead of the live visual viewport,
+   which makes Safari park the navbar under the address/tab bar as it resizes.
+   Anchor-offset under the sticky header is handled by `scroll-margin-top`. */
+header {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+
 ::selection {
   background: var(--primary);
   color: var(--primary-deep);
