@@ -40,10 +40,13 @@ export default function rehypeHeadingAnchors() {
           children: [
             ...node.children,
             {
+              // The `#` glyph is drawn via CSS (.heading-anchor::after) so it
+              // never becomes part of the heading's text — otherwise Astro's
+              // heading collection captures it and the TOC shows a stray "#".
               type: 'element',
               tagName: 'span',
               properties: { className: ['heading-anchor'], 'aria-hidden': 'true' },
-              children: [{ type: 'text', value: '#' }],
+              children: [],
             },
           ],
         },

@@ -12,6 +12,8 @@ const docs = defineCollection({
     order: z.number().optional(),
     // Hide from the sidebar/search while keeping the page reachable.
     hidden: z.boolean().optional(),
+    // Free-form tags used to filter search results (e.g. ["setup", "cli"]).
+    tags: z.array(z.string()).optional(),
   }),
 });
 

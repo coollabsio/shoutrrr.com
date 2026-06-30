@@ -11,11 +11,13 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  jsonLd?: unknown;
 }
 
 const {
   title = 'Shoutrrr — Open-source social scheduling',
   description = 'The open-source alternative to Buffer, Typefully & Hootsuite. Draft once, post everywhere — schedule to X, Bluesky, and LinkedIn. Self-host it free, or use the managed Cloud (coming soon).',
+  jsonLd,
 } = Astro.props;
 
 // Absolute, self-referencing canonical (Astro.site set in astro.config.mjs).
@@ -63,6 +65,16 @@ const iconVersion = '2026-06-megaphone';
     <link rel="apple-touch-icon" sizes="180x180" href={`/apple-touch-icon.png?v=${iconVersion}`} />
     <link rel="manifest" href={`/site.webmanifest?v=${iconVersion}`} />
     <meta name="theme-color" content="#ffffff" />
+
+    {
+      jsonLd && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
 
     <title>{title}</title>
   </head>
