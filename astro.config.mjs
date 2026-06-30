@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 import remarkDirective from 'remark-directive';
 import remarkCallout from './src/lib/docs/remark-callout.mjs';
+import rehypeHeadingAnchors from './src/lib/docs/rehype-heading-anchors.mjs';
 
 export default defineConfig({
   site: 'https://shoutrrr.com',
@@ -14,6 +15,7 @@ export default defineConfig({
   // Shiki highlighter so code blocks match the rest of the marketing site.
   markdown: {
     remarkPlugins: [remarkDirective, remarkCallout],
+    rehypePlugins: [rehypeHeadingAnchors],
     shikiConfig: {
       theme: 'github-light',
       wrap: false,
