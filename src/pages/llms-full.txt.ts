@@ -12,7 +12,7 @@ export const GET: APIRoute = async () => {
     return `# ${entry.data.title}\n\n${desc}${entry.body?.trim() ?? ''}`;
   });
 
-  const body = ['# Shoutrrr Documentation', '', ...sections].join('\n\n---\n\n');
+  const body = ['# Shoutrrr Documentation', ...sections].join('\n\n---\n\n');
 
   return new Response(body + '\n', {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },
