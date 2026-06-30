@@ -133,6 +133,32 @@ header {
 .docs-prose a:hover {
   text-decoration-color: oklch(0.79 0.2 128.85);
 }
+/* Self-linking section headings: the heading reads as plain text, with a `#`
+   that appears on hover/focus so readers can grab a deep link to that spot. */
+.docs-prose h2 .heading-link,
+.docs-prose h3 .heading-link,
+.docs-prose h4 .heading-link {
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+}
+.docs-prose .heading-anchor {
+  margin-left: 0.35em;
+  color: oklch(0.79 0.2 128.85);
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.docs-prose .heading-link:hover .heading-anchor,
+.docs-prose .heading-link:focus-visible .heading-anchor {
+  opacity: 1;
+}
+@media (hover: none) {
+  /* No hover on touch — keep the anchor visible but subtle. */
+  .docs-prose .heading-anchor {
+    opacity: 0.4;
+  }
+}
 .docs-prose strong {
   font-weight: 600;
   color: var(--foreground);
