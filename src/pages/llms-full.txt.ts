@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getOrderedDocs } from '../lib/docs/source';
+import { getReleasesMarkdown, SHOUTRRR_REPO } from '../lib/docs/github-releases';
 
 export const prerender = true;
 
@@ -7,10 +8,19 @@ export const prerender = true;
 export const GET: APIRoute = async () => {
   const docs = await getOrderedDocs();
 
-  const sections = docs.map(({ entry }) => {
-    const desc = entry.data.description ? `> ${entry.data.description}\n\n` : '';
-    return `# ${entry.data.title}\n\n${desc}${entry.body?.trim() ?? ''}`;
-  });
+  const sections = await Promise.all(
+    docs.map(async ({ entry }) => {
+      const desc = entry.data.description
+        ? `> ${entry.data.description}\n\n`
+        : '';
+      // The changelog's MDX source is a component import; emit generated Markdown.
+      const source =
+        entry.id === 'changelog'
+          ? await getReleasesMarkdown(SHOUTRRR_REPO)
+          : entry.body?.trim() ?? '';
+      return `# ${entry.data.title}\n\n${desc}${source}`;
+    })
+  );
 
   const body = ['# Shoutrrr Documentation', ...sections].join('\n\n---\n\n');
 

@@ -67,20 +67,25 @@ async function buildFiles() {
       .map(nameOf)
       .sort();
 
-    const ordered = childPages.map((e) => nameOf(e.id));
-    const hasIndex = ordered.includes('index');
+    const indexEntry = childPages.find((e) => nameOf(e.id) === 'index');
+
+    // Each page may be preceded by a fumadocs separator (`---Label---`) when
+    // its frontmatter declares one, turning it into a sidebar category header.
+    const sep = (e: DocEntry) => (e.data.separator ? [`---${e.data.separator}---`] : []);
+
+    // index first, then sub-folders, then the order-sorted pages.
+    const items: string[] = [];
+    if (indexEntry) items.push(...sep(indexEntry), 'index');
+    items.push(...childFolders);
+    for (const e of childPages) {
+      if (nameOf(e.id) === 'index') continue;
+      items.push(...sep(e), nameOf(e.id));
+    }
 
     return {
       type: 'meta' as const,
       path: `${dir ? dir + '/' : ''}meta.json`,
-      data: {
-        // index first, then sub-folders, then the order-sorted pages.
-        pages: [
-          ...(hasIndex ? ['index'] : []),
-          ...childFolders,
-          ...ordered.filter((p) => p !== 'index'),
-        ],
-      },
+      data: { pages: items },
     };
   });
 
