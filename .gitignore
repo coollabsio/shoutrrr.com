@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# superpowers brainstorming/planning docs (local only)
+docs/superpowers/
