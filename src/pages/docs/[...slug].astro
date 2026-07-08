@@ -12,6 +12,8 @@ import Accordions from '../../components/docs/mdx/Accordions.astro';
 import Accordion from '../../components/docs/mdx/Accordion.astro';
 import TypeTable from '../../components/docs/mdx/TypeTable.astro';
 import Banner from '../../components/docs/mdx/Banner.astro';
+import ApiReference from '../../components/docs/api/ApiReference.astro';
+import { getApiTags, operationAnchor } from '../../lib/api/openapi.js';
 import {
   getDocsSource,
   entryToSlug,
@@ -43,6 +45,19 @@ const currentUrl = page?.url ?? DOCS_BASE_URL;
 const neighbours = getNeighbours(tree, currentUrl);
 const crumbs = getBreadcrumbs(tree, currentUrl);
 const lastModified = getLastModified(entry.id);
+
+// API tag pages render the OpenAPI reference and contribute their operation
+// headings to the TOC (component-rendered headings aren't in `headings`).
+const apiTag = entry.data.apiTag;
+const apiGroup = apiTag ? getApiTags().find((t) => t.tag === apiTag) : null;
+const apiHeadings = apiGroup
+  ? apiGroup.operations.map((op) => ({
+      depth: 3,
+      slug: operationAnchor(op),
+      text: `${op.method} ${op.path}`,
+    }))
+  : [];
+const allHeadings = [...headings, ...apiHeadings];
 
 // Custom components authors can use in MDX without importing them per file.
 const mdxComponents = {
@@ -87,7 +102,7 @@ const jsonLd = {
   title={entry.data.title}
   description={entry.data.description}
   tree={tree}
-  headings={headings}
+  headings={allHeadings}
   currentUrl={currentUrl}
   jsonLd={jsonLd}
 >
@@ -102,6 +117,7 @@ const jsonLd = {
   }
   <div class="docs-prose">
     <Content components={mdxComponents} />
+    {apiTag && <ApiReference tag={apiTag} />}
   </div>
   {lastModified && <LastModified date={lastModified} />}
   <PageNav neighbours={neighbours} />
