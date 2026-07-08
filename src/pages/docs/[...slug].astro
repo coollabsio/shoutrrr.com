@@ -49,9 +49,9 @@ const lastModified = getLastModified(entry.id);
 // API tag pages render the OpenAPI reference and contribute their operation
 // headings to the TOC (component-rendered headings aren't in `headings`).
 const apiTag = entry.data.apiTag;
-const apiGroup = apiTag ? getApiTags().find((t) => t.tag === apiTag) : null;
+const apiGroup = apiTag ? getApiTags().find((t: any) => t.tag === apiTag) : null;
 const apiHeadings = apiGroup
-  ? apiGroup.operations.map((op) => ({
+  ? apiGroup.operations.map((op: any) => ({
       depth: 3,
       slug: operationAnchor(op),
       text: `${op.method} ${op.path}`,
