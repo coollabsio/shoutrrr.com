@@ -12,6 +12,11 @@ assert.equal(typeLabel({ type: 'array', items: {} }), 'any[]');
 assert.equal(typeLabel({ enum: ['draft', 'scheduled'] }), 'draft | scheduled');
 assert.equal(typeLabel({ const: 'all' }), '"all"');
 assert.equal(typeLabel({ anyOf: [{ type: 'string' }, { type: 'null' }] }), 'string | null');
+// union of objects uses kind-const discriminators
+assert.equal(typeLabel({ anyOf: [
+  { type: 'object', properties: { kind: { const: 'all' } } },
+  { type: 'object', properties: { kind: { const: 'set' } } },
+] }), '"all" | "set"');
 
 // nullable + constraints
 assert.equal(isNullable({ type: ['integer', 'null'] }), true);
@@ -47,6 +52,15 @@ assert.equal(cursor.nullable, true);
 const nested = rows.find((r) => r.name === 'per_page');
 assert.equal(nested.depth, 1, 'nested object property is depth 1');
 
+// array-of-objects recursion carries depth
+const arrRows = flattenSchema({
+  type: 'object',
+  properties: {
+    targets: { type: 'array', items: { type: 'object', properties: { handle: { type: 'string' } } } },
+  },
+});
+assert.equal(arrRows.find((r) => r.name === 'handle').depth, 1, 'array-of-object item property is depth 1');
+
 // exampleFromSchema
 const ex = exampleFromSchema({
   type: 'object', required: ['name'],
@@ -56,4 +70,7 @@ assert.equal(typeof ex.name, 'string');
 assert.equal(ex.count, undefined, 'only required fields in example when some are required');
 assert.deepEqual(exampleFromSchema({ type: 'array', items: { type: 'string' } }), ['string']);
 assert.equal(exampleFromSchema({ enum: ['draft', 'scheduled'] }), 'draft');
+// null-typed fields example to null (destination anyOf `id: {type:"null"}`)
+assert.equal(exampleFromSchema({ type: 'null' }), null);
+
 console.log('schema tests passed');

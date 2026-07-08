@@ -9,12 +9,23 @@ export function isNullable(schema) {
   return Array.isArray(schema.type) && schema.type.includes('null');
 }
 
+/** Label a union: use each member's `kind` const discriminator when present,
+ *  else its plain type label. Dedups so scalar unions stay tidy. */
+function unionLabel(members) {
+  const parts = members.map((m) => {
+    const kind = m?.properties?.kind;
+    if (kind && kind.const !== undefined) return JSON.stringify(kind.const);
+    return typeLabel(m);
+  });
+  return [...new Set(parts)].join(' | ');
+}
+
 export function typeLabel(schema) {
   if (!schema || typeof schema !== 'object') return 'any';
   if (schema.const !== undefined) return JSON.stringify(schema.const);
   if (Array.isArray(schema.enum)) return schema.enum.map((v) => (v === null ? 'null' : String(v))).join(' | ');
-  if (Array.isArray(schema.anyOf)) return schema.anyOf.map(typeLabel).join(' | ');
-  if (Array.isArray(schema.oneOf)) return schema.oneOf.map(typeLabel).join(' | ');
+  if (Array.isArray(schema.anyOf)) return unionLabel(schema.anyOf);
+  if (Array.isArray(schema.oneOf)) return unionLabel(schema.oneOf);
   const bases = baseTypes(schema);
   const base = bases[0] ?? (schema.properties ? 'object' : 'any');
   if (base === 'array') {
@@ -91,6 +102,8 @@ export function exampleFromSchema(schema) {
   if (Array.isArray(schema.anyOf)) return exampleFromSchema(schema.anyOf[0]);
   const base = baseTypes(schema)[0] ?? (schema.properties ? 'object' : 'string');
   switch (base) {
+    case 'null':
+      return null;
     case 'object': {
       const out = {};
       const props = schema.properties ?? {};
