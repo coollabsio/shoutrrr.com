@@ -113,15 +113,66 @@ async function buildFiles() {
   return [...pages, ...meta];
 }
 
+/**
+ * Present the `api` sub-folder as flat sidebar sections rather than a
+ * collapsible accordion:
+ *   • its endpoint pages become a flat "API Reference" category — a separator
+ *     followed by the pages — in the folder's original position (above
+ *     Resources); and
+ *   • its landing page (the REST API guide at `/docs/api`) moves up under the
+ *     "Integrations" category, beside the MCP server page, labelled "API".
+ * Site-specific surgery: the docs have exactly one content sub-folder.
+ */
+function organizeApiSection(tree: Root): Root {
+  const apiUrl = `${DOCS_BASE_URL}/api`;
+  const mcpUrl = `${DOCS_BASE_URL}/mcp`;
+  const children = [...tree.children];
+
+  const folderIndex = children.findIndex(
+    (n) => n.type === 'folder' && n.index?.url === apiUrl
+  );
+  if (folderIndex === -1) return tree;
+
+  const folder = children[folderIndex] as Folder;
+  const guide = folder.index;
+  const endpoints = folder.children;
+
+  // Replace the accordion with a flat "API Reference" category.
+  const refSeparator = {
+    type: 'separator',
+    name: 'API Reference',
+    $id: `${folder.$id}:ref`,
+  } as unknown as Node;
+  children.splice(folderIndex, 1, refSeparator, ...endpoints);
+
+  // Move the guide under Integrations (right after the MCP server page).
+  if (guide) {
+    const mcpIndex = children.findIndex(
+      (n) => n.type === 'page' && n.url === mcpUrl
+    );
+    const at = mcpIndex === -1 ? folderIndex : mcpIndex + 1;
+    children.splice(at, 0, { ...guide, name: 'API' });
+  }
+
+  return { ...tree, children };
+}
+
 let cached: LoaderOutput<any> | undefined;
 
-/** fumadocs loader output: page tree, page lookup, and URL generation. */
+/** fumadocs loader output: page tree, page lookup, and URL generation. The
+ *  page tree is post-processed so the API docs render as flat categories
+ *  (see {@link organizeApiSection}). */
 export async function getDocsSource() {
   if (!cached) {
-    cached = loader({
+    const source = loader({
       baseUrl: DOCS_BASE_URL,
       source: { files: await buildFiles() },
     });
+    const rawGetPageTree = source.getPageTree.bind(source);
+    let tree: Root | undefined;
+    source.getPageTree = (() =>
+      (tree ??= organizeApiSection(rawGetPageTree()))) as typeof source.getPageTree;
+    cached = source;
   }
   return cached;
 }
