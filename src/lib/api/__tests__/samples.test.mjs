@@ -33,4 +33,18 @@ assert.ok(mp.curl.includes("-F 'file=@/path/to/file'"));
 assert.ok(mp.curl.includes("-F 'alt_text=A cat'"));
 assert.ok(mp.js.includes('FormData'));
 assert.ok(mp.python.includes('files='));
+
+// quoting safety: an apostrophe in the body must not break the curl command
+const apos = buildCodeSamples({ method: 'POST', path: '/posts', baseUrl: base, body: { base_text: "It's ok" } });
+assert.ok(apos.curl.includes("It'\\''s ok"), 'curl single-quote-escapes body content');
+
+// php multipart text fields use single-quoted PHP (no $ interpolation)
+const dollar = buildCodeSamples({ method: 'POST', path: '/media', baseUrl: base, multipart: true, body: { alt_text: 'Ask $support' } });
+assert.ok(dollar.php.includes("'alt_text' => 'Ask $support'"), 'php text field is single-quoted, no interpolation');
+
+// python must not mangle the substring "true" inside a string, but must convert real booleans
+const pybool = buildCodeSamples({ method: 'POST', path: '/posts', baseUrl: base, body: { note: 'set to true please', flag: true } });
+assert.ok(pybool.python.includes("'note': 'set to true please'"), 'python leaves "true" inside strings intact');
+assert.ok(pybool.python.includes("'flag': True"), 'python converts real booleans to True');
+
 console.log('samples tests passed');
