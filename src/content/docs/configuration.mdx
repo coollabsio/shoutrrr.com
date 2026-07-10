@@ -2,6 +2,7 @@
 title: Configuration
 description: Environment variables for tuning your Shoutrrr instance.
 order: 3
+tags: [configuration, self-hosting]
 ---
 
 Shoutrrr is configured through environment variables in your `.env` file (or
@@ -22,6 +23,41 @@ likely to change.
 :::warning
 Generate `APP_KEY` once and keep it stable — changing it invalidates every
 encrypted account token, forcing all accounts to be re-linked.
+:::
+
+## Reverse proxies & HTTPS
+
+If you run Shoutrrr behind a TLS-terminating proxy — Coolify/Traefik, Nginx,
+Caddy, a Cloudflare Tunnel, etc. — the container receives plain HTTP and only
+learns the request was really HTTPS from forwarded headers. Without the
+variables below, Shoutrrr generates `http://` links: OAuth callbacks fail with
+redirect-URI mismatches (e.g. LinkedIn), post-login redirects break, and the
+browser blocks assets as **mixed content**.
+
+| Variable          | Default | Description                                                                                  |
+| ----------------- | ------- | -------------------------------------------------------------------------------------------- |
+| `TRUSTED_PROXIES` | —       | Trust forwarded headers. Set `*` to trust all proxies, or a comma-separated CIDR list.       |
+| `OCTANE_HTTPS`    | `false` | Force HTTPS scheme generation for redirects and asset URLs. Set `true` behind an HTTPS proxy. |
+
+For a typical HTTPS deployment behind a proxy:
+
+```bash
+APP_URL=https://your-domain.example.com
+SESSION_SECURE_COOKIE=true
+TRUSTED_PROXIES=*
+OCTANE_HTTPS=true
+```
+
+- `TRUSTED_PROXIES` makes Shoutrrr honour `X-Forwarded-Proto` / `X-Forwarded-Host`
+  for per-request scheme, host, and client-IP detection.
+- `OCTANE_HTTPS` forces the HTTPS scheme so links generated under Octane stay
+  `https://` across requests — this is what clears mixed-content errors and the
+  HTTP login-redirect problem.
+
+:::note
+Only set `TRUSTED_PROXIES=*` when Shoutrrr is genuinely reachable solely through
+your proxy. If the container is exposed directly, restrict it to the proxy's IP
+range so clients can't spoof forwarded headers.
 :::
 
 ## Workers

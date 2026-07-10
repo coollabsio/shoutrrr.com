@@ -28,39 +28,76 @@
     return s;
   }
 
+  let { tags = [] }: { tags?: string[] } = $props();
+
   let open = $state(false);
   let query = $state('');
   let results = $state<SortedResult[]>([]);
   let loading = $state(false);
   let inputEl = $state<HTMLInputElement>();
+  let triggerEl = $state<HTMLButtonElement>();
+  let activeTag = $state<string | null>(null);
 
-  let client: ReturnType<typeof oramaStaticClient> | undefined;
-  const getClient = () =>
-    (client ??= oramaStaticClient({ from: '/docs/search.json' }));
+  // One client per tag filter — each binds the tag at construction time.
+  const clients = new Map<string, ReturnType<typeof oramaStaticClient>>();
+  function getClient(tag: string | null) {
+    const key = tag ?? '';
+    let c = clients.get(key);
+    if (!c) {
+      c = oramaStaticClient({
+        from: '/docs/search.json',
+        ...(tag ? { tag } : {}),
+      });
+      clients.set(key, c);
+    }
+    return c;
+  }
+
+  async function runSearch() {
+    const q = query;
+    if (!q.trim()) {
+      results = [];
+      loading = false;
+      return;
+    }
+    loading = true;
+    try {
+      const r = await getClient(activeTag).search(q);
+      results = Array.isArray(r) ? r : [];
+    } catch (e) {
+      console.error('docs search failed', e);
+      results = [];
+    } finally {
+      loading = false;
+    }
+  }
 
   let timer: ReturnType<typeof setTimeout>;
   function onInput() {
     clearTimeout(timer);
-    const q = query;
-    timer = setTimeout(async () => {
-      if (!q.trim()) {
-        results = [];
-        return;
-      }
-      loading = true;
-      try {
-        const r = await getClient().search(q);
-        results = Array.isArray(r) ? r : [];
-      } catch (e) {
-        console.error('docs search failed', e);
-        results = [];
-      } finally {
-        loading = false;
-      }
-    }, 120);
+    timer = setTimeout(runSearch, 120);
   }
 
+  function setTag(tag: string | null) {
+    activeTag = tag;
+    runSearch();
+  }
+
+  // Move the dialog to <body> so it escapes the sticky sidebar's stacking
+  // context (otherwise the navbar and page content paint over it).
+  function portal(node: HTMLElement) {
+    document.body.appendChild(node);
+    return {
+      destroy() {
+        node.remove();
+      },
+    };
+  }
+
+  // Both the desktop and mobile search islands listen for ⌘K. Only let the
+  // one whose trigger is actually on-screen open, so a single dialog appears.
   function openDialog() {
+    if (triggerEl && triggerEl.offsetParent === null) return;
     open = true;
     queueMicrotask(() => inputEl?.focus());
   }
@@ -68,6 +105,7 @@
     open = false;
     query = '';
     results = [];
+    activeTag = null;
   }
 
   function onKey(e: KeyboardEvent) {
@@ -84,6 +122,7 @@
 
 <button
   type="button"
+  bind:this={triggerEl}
   onclick={openDialog}
   class="search-trigger flex w-full items-center gap-2 rounded-lg border border-line bg-surface-sunken px-3 py-2 text-sm text-ink-400 transition-colors hover:border-line-strong hover:text-ink-500"
 >
@@ -110,7 +149,8 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-[100] flex items-start justify-center bg-ink-900/30 px-4 pt-[12vh] backdrop-blur-sm"
+    use:portal
+    class="fixed inset-0 z-[200] flex items-start justify-center bg-ink-900/30 px-4 pt-[12vh] backdrop-blur-sm"
     onclick={close}
   >
     <div
@@ -148,6 +188,27 @@
           >Esc</button
         >
       </div>
+
+      {#if tags.length > 0}
+        <div
+          class="flex flex-wrap items-center gap-1.5 border-b border-line px-4 py-2.5"
+        >
+          <button
+            type="button"
+            onclick={() => setTag(null)}
+            class="tag-chip"
+            class:active={activeTag === null}>All</button
+          >
+          {#each tags as tag (tag)}
+            <button
+              type="button"
+              onclick={() => setTag(tag)}
+              class="tag-chip"
+              class:active={activeTag === tag}>{tag}</button
+            >
+          {/each}
+        </div>
+      {/if}
 
       <div class="max-h-[55vh] overflow-y-auto p-2">
         {#if loading}
@@ -194,6 +255,34 @@
   .search-input:focus-visible {
     outline: none;
   }
+  /* Tag filter chips. */
+  .tag-chip {
+    border-radius: 999px;
+    border: 1px solid oklch(0.92 0 0);
+    background: oklch(0.985 0 0);
+    padding: 0.1rem 0.6rem;
+    font-size: 12px;
+    color: oklch(0.46 0 0);
+    transition:
+      color 0.15s,
+      background 0.15s,
+      border-color 0.15s;
+  }
+  .tag-chip:hover {
+    border-color: oklch(0.9 0 0);
+    color: oklch(0.205 0 0);
+  }
+  .tag-chip.active {
+    background: oklch(0.96 0.07 128);
+    border-color: oklch(0.79 0.2 128.85);
+    color: oklch(0.405 0.101 131.063);
+    font-weight: 600;
+  }
+  .tag-chip:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px oklch(0.841 0.238 128.85 / 0.25);
+  }
+
   /* Rendered Markdown inside result content. */
   .result-content :global(mark) {
     background: oklch(0.96 0.07 128);

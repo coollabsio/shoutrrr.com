@@ -1,0 +1,76 @@
+---
+/**
+ * Renders a repo's GitHub Releases as a changelog. Fetched and rendered at
+ * build time (the site is static) — see src/lib/docs/github-releases.ts for
+ * the cached fetcher.
+ *
+ *   <GithubReleases repo="coollabsio/shoutrrr" />
+ */
+import { getReleases, SHOUTRRR_REPO } from '../../lib/docs/github-releases';
+
+interface Props {
+  repo?: string;
+}
+const { repo = SHOUTRRR_REPO } = Astro.props;
+const releases = await getReleases(repo);
+
+const fmtDate = (iso: string | null) =>
+  iso
+    ? new Date(iso).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : '';
+
+// Anchor id from a tag, e.g. "v0.8.0" -> "v0-8-0".
+const slug = (tag: string) =>
+  tag.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+---
+
+{
+  releases.length === 0 ? (
+    <p class="text-ink-500">
+      No releases found. See them on{' '}
+      <a href={`https://github.com/${repo}/releases`}>GitHub</a>.
+    </p>
+  ) : (
+    <div class="flex flex-col gap-12">
+      {releases.map((r) => (
+        <section id={slug(r.tag)} class="scroll-mt-24">
+          <header class="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 class="!mt-0 !border-b-0 !pb-0 font-display text-2xl font-semibold tracking-tight text-ink">
+              <a href={`#${slug(r.tag)}`} class="no-underline hover:underline">
+                {r.name}
+              </a>
+            </h2>
+            {r.isPrerelease && (
+              <span class="rounded-full bg-lime-soft px-2 py-0.5 text-xs font-medium text-lime-text">
+                Pre-release
+              </span>
+            )}
+            {r.publishedAt && (
+              <time
+                datetime={r.publishedAt}
+                class="text-sm text-ink-300"
+              >
+                {fmtDate(r.publishedAt)}
+              </time>
+            )}
+            <a
+              href={r.url}
+              class="ml-auto text-sm text-ink-500 no-underline hover:text-ink"
+            >
+              {r.tag} ↗
+            </a>
+          </header>
+          {r.bodyHtml ? (
+            <div class="docs-prose" set:html={r.bodyHtml} />
+          ) : (
+            <p class="text-ink-300">No release notes.</p>
+          )}
+        </section>
+      ))}
+    </div>
+  )
+}

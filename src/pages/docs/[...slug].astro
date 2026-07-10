@@ -1,7 +1,25 @@
 ---
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import DocsLayout from '../../layouts/DocsLayout.astro';
-import { getDocsSource, entryToSlug, DOCS_BASE_URL } from '../../lib/docs/source';
+import Breadcrumbs from '../../components/docs/Breadcrumbs.astro';
+import PageNav from '../../components/docs/PageNav.astro';
+import LastModified from '../../components/docs/LastModified.astro';
+import Tabs from '../../components/docs/mdx/Tabs.astro';
+import Tab from '../../components/docs/mdx/Tab.astro';
+import Steps from '../../components/docs/mdx/Steps.astro';
+import Step from '../../components/docs/mdx/Step.astro';
+import Accordions from '../../components/docs/mdx/Accordions.astro';
+import Accordion from '../../components/docs/mdx/Accordion.astro';
+import TypeTable from '../../components/docs/mdx/TypeTable.astro';
+import Banner from '../../components/docs/mdx/Banner.astro';
+import {
+  getDocsSource,
+  entryToSlug,
+  getNeighbours,
+  getBreadcrumbs,
+  getLastModified,
+  DOCS_BASE_URL,
+} from '../../lib/docs/source';
 
 export async function getStaticPaths() {
   const entries = await getCollection('docs');
@@ -21,6 +39,48 @@ const tree = source.getPageTree();
 // Current page metadata from the fumadocs source (for the active nav state).
 const page = source.getPage(entry.id === 'index' ? [] : entry.id.split('/'));
 const currentUrl = page?.url ?? DOCS_BASE_URL;
+
+const neighbours = getNeighbours(tree, currentUrl);
+const crumbs = getBreadcrumbs(tree, currentUrl);
+const lastModified = getLastModified(entry.id);
+
+// Custom components authors can use in MDX without importing them per file.
+const mdxComponents = {
+  Tabs,
+  Tab,
+  Steps,
+  Step,
+  Accordions,
+  Accordion,
+  TypeTable,
+  Banner,
+};
+
+// Structured data for search engines: the article plus its breadcrumb trail.
+const pageUrl = new URL(currentUrl, Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'TechArticle',
+      headline: entry.data.title,
+      description: entry.data.description,
+      url: pageUrl,
+      ...(lastModified ? { dateModified: lastModified } : {}),
+      inLanguage: 'en',
+      isPartOf: { '@type': 'WebSite', name: 'Shoutrrr', url: Astro.site?.href },
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: crumbs.map((crumb, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: crumb.name,
+        ...(crumb.url ? { item: new URL(crumb.url, Astro.site).href } : {}),
+      })),
+    },
+  ],
+};
 ---
 
 <DocsLayout
@@ -29,7 +89,9 @@ const currentUrl = page?.url ?? DOCS_BASE_URL;
   tree={tree}
   headings={headings}
   currentUrl={currentUrl}
+  jsonLd={jsonLd}
 >
+  <Breadcrumbs crumbs={crumbs} />
   <h1 class="mb-2 font-display text-[2.25rem] leading-tight tracking-tight text-ink">
     {entry.data.title}
   </h1>
@@ -39,6 +101,8 @@ const currentUrl = page?.url ?? DOCS_BASE_URL;
     )
   }
   <div class="docs-prose">
-    <Content />
+    <Content components={mdxComponents} />
   </div>
+  {lastModified && <LastModified date={lastModified} />}
+  <PageNav neighbours={neighbours} />
 </DocsLayout>
