@@ -60,9 +60,19 @@ X_REDIRECT_URI="${APP_URL}/accounts/callback/x"
 ## LinkedIn
 
 Register an app at
-[linkedin.com/developers](https://www.linkedin.com/developers) and add its
-credentials. The redirect URI defaults to
-`${APP_URL}/accounts/callback/linkedin`.
+[linkedin.com/developers](https://www.linkedin.com/developers). In the app's
+**Products** tab, add both of these products:
+
+- [Sign In with LinkedIn using OpenID Connect](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2) — provides the `openid`, `profile`, and `email` scopes.
+- [Share on LinkedIn](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin) — provides the `w_member_social` scope required to publish posts.
+
+Shoutrrr requests all four scopes when connecting an account. If either product
+is missing, LinkedIn may show only a generic **Bummer, something went wrong**
+error during authorization.
+
+Add the app credentials to your `.env`. The redirect URI defaults to
+`${APP_URL}/accounts/callback/linkedin` and must also be listed under the app's
+authorized redirect URLs.
 
 ```dotenv
 LINKEDIN_CLIENT_ID=
