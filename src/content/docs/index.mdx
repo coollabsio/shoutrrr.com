@@ -28,6 +28,10 @@ all from a single, fast interface.
 | **X** (Twitter) | OAuth 2.0        | ≤280 chars, up to 4 media  | Yes              |
 | **Bluesky**     | App password     | ≤300 graphemes, up to 4 images | Yes          |
 | **LinkedIn**    | OAuth 2.0 (OIDC) | ≤3000 chars, up to 9 images | Single post     |
+| **Facebook**    | OAuth 2.0        | ≤63,206 chars, up to 10 media | Single post   |
+| **Instagram**   | OAuth 2.0        | ≤2200 chars, up to 10 media | Single post     |
+| **Threads**     | OAuth 2.0        | ≤500 chars, up to 10 media | Yes              |
+| **Discord**     | Webhook          | ≤2000 chars, up to 10 media | Auto-split       |
 
 When a post is too long for a platform that supports threads, Shoutrrr splits it
 into a thread automatically. Each target publishes independently and retries on
@@ -45,5 +49,5 @@ failure.
 ## Next steps
 
 - [Self-hosting](/docs/getting-started) — get an instance running with Docker.
-- [Connecting accounts](/docs/connecting-accounts) — link X, Bluesky, and LinkedIn.
+- [Connecting accounts](/docs/connecting-accounts) — link X, Bluesky, LinkedIn, Meta, and Discord.
 - [Configuration](/docs/configuration) — environment variables and tuning.

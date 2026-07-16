@@ -1,12 +1,13 @@
 ---
 title: Connecting accounts
-description: Link your X, Bluesky, and LinkedIn accounts so Shoutrrr can publish on your behalf.
+description: Link your X, Bluesky, LinkedIn, Meta (Facebook, Instagram, Threads), and Discord accounts so Shoutrrr can publish on your behalf.
 order: 2
 ---
 
-Shoutrrr publishes through your own accounts. Bluesky works out of the box; X and
-LinkedIn publish through developer apps you register, so they need a few
-credentials in your environment.
+Shoutrrr publishes through your own accounts. Bluesky and Discord work without a
+developer app; X, LinkedIn, and the Meta networks (Facebook, Instagram, Threads)
+publish through apps you register, so they need a few credentials in your
+environment.
 
 :::warning
 Publishing and scheduling rely on a running queue worker and scheduler. The
@@ -43,6 +44,55 @@ LINKEDIN_CLIENT_ID=
 LINKEDIN_CLIENT_SECRET=
 LINKEDIN_REDIRECT_URI="${APP_URL}/accounts/callback/linkedin"
 ```
+
+## Facebook & Instagram
+
+Facebook and Instagram are both powered by a **single Meta app**. Register one at
+[developers.facebook.com](https://developers.facebook.com), add Facebook Login,
+and share its credentials with your `.env`. The redirect URI defaults to
+`${APP_URL}/accounts/callback/meta` — register that exact value on the app.
+
+```dotenv
+FACEBOOK_CLIENT_ID=
+FACEBOOK_CLIENT_SECRET=
+FACEBOOK_REDIRECT_URI="${APP_URL}/accounts/callback/meta"
+FACEBOOK_GRAPH_VERSION=v25.0
+```
+
+When connecting, you pick which Facebook **Page** to publish as. To connect an
+**Instagram** account, that Page must have a linked Instagram
+[Professional (Business) account](https://help.instagram.com/502981923235522) — a
+Page without one can't be connected as Instagram.
+
+:::note
+To publish for accounts other than your own test users, Meta requires **App
+Review** and **Business Verification** on the app, with the relevant `pages_*` and
+`instagram_*` permissions approved.
+:::
+
+## Threads
+
+Threads uses a **separate Meta app** from Facebook and Instagram. Create a Threads
+app at [developers.facebook.com](https://developers.facebook.com) with the Threads
+API use case, then add its credentials. The redirect URI defaults to
+`${APP_URL}/accounts/callback/threads`.
+
+```dotenv
+THREADS_CLIENT_ID=
+THREADS_CLIENT_SECRET=
+THREADS_REDIRECT_URI="${APP_URL}/accounts/callback/threads"
+```
+
+## Discord
+
+No developer app or environment variables required. In Discord, open **Server
+Settings → Integrations → Webhooks**, create a webhook for the channel you want to
+post to, and copy its **Webhook URL**. Paste that URL on the **Connected accounts**
+screen to link the channel.
+
+Shoutrrr only accepts official Discord webhook URLs (`discord.com` or
+`discordapp.com`, including the `canary`/`ptb` subdomains). Posts longer than
+Discord's 2000-character limit are split automatically across multiple messages.
 
 ## Optional: social login
 
