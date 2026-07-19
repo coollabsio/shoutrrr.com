@@ -1,0 +1,47 @@
+---
+// src/components/docs/api/SchemaTable.astro
+import { schemaVariants, flattenSchema } from '../../../lib/api/schema.js';
+
+interface Props { schema: any; }
+const { schema } = Astro.props;
+const variants = schemaVariants(schema).map((v) => ({ label: v.label, rows: flattenSchema(v.schema) }));
+const hasRows = variants.some((v) => v.rows.length > 0);
+---
+{hasRows && (
+  <div class="api-schema not-prose">
+    {variants.map((variant) => (
+      variant.rows.length > 0 && (
+        <div class="api-schema-variant">
+          {variant.label && <p class="api-variant-label"><code>{variant.label}</code></p>}
+          <div class="docs-type-table">
+            <table>
+              <thead>
+                <tr><th>Field</th><th>Type</th><th>Notes</th></tr>
+              </thead>
+              <tbody>
+                {variant.rows.map((row: any) => (
+                  <tr>
+                    <td>
+                      <code class="type-name" style={`margin-left:${row.depth * 1}rem`}>{row.name}</code>
+                      {row.required && <span class="type-required">required</span>}
+                      {row.description && <span class="type-desc">{row.description}</span>}
+                    </td>
+                    <td>
+                      <code class="type-kind">{row.type}</code>
+                      {row.nullable && <span class="api-nullable">nullable</span>}
+                    </td>
+                    <td>
+                      {row.constraints.length
+                        ? row.constraints.map((c: any) => <code class="type-default">{c}</code>)
+                        : <span class="type-dash">—</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )
+    ))}
+  </div>
+)}

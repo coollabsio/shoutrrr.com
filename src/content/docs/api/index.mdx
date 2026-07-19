@@ -1,0 +1,151 @@
+---
+title: API
+description: Automate Shoutrrr from your own code — create, schedule, and publish posts over a REST API.
+order: 20
+tags: [api]
+---
+
+Shoutrrr exposes a REST API so you can create, schedule, and publish posts —
+and manage the accounts they go to — from your own code. It's the same surface
+the app uses, so anything you can do in the UI you can do over HTTP.
+
+Every request and response is JSON, over HTTPS. The base URL is:
+
+```
+https://app.shoutrrr.com/api/v1
+```
+
+Looking for AI-assistant access instead of writing code? See the [MCP
+server](/docs/mcp) — it wraps this same functionality for tools like Claude and
+Cursor. Use the API when you're scripting; use MCP when an assistant acts on
+your behalf.
+
+## Authentication
+
+The API authenticates with a bearer token. Send it in the `Authorization`
+header on every request:
+
+```
+Authorization: Bearer <token>
+```
+
+Create a token from your Shoutrrr account settings (**Settings → API tokens**).
+A request without a valid token returns `401 Unauthenticated`.
+
+:::warning
+Treat tokens like passwords — they act on your account with your permissions.
+Only send them over HTTPS, never commit them to source control, and revoke any
+token you suspect has leaked.
+:::
+
+## Quickstart
+
+<Steps>
+
+<Step>
+
+**Create a draft post.** Send `base_text` and a `destination` (`all`, a `set`,
+or a single `account`). The response contains the new post's `id`.
+
+```bash
+curl -X POST 'https://app.shoutrrr.com/api/v1/posts' \
+  -H 'Authorization: Bearer <token>' \
+  -H 'Content-Type: application/json' \
+  -d '{ "base_text": "Hello from the API", "destination": { "kind": "all" } }'
+```
+
+</Step>
+
+<Step>
+
+**Publish it.** Publishing is asynchronous — the API returns `202 Accepted`
+immediately and processes each target in the background.
+
+```bash
+curl -X POST 'https://app.shoutrrr.com/api/v1/posts/<id>/publish' \
+  -H 'Authorization: Bearer <token>'
+```
+
+</Step>
+
+<Step>
+
+**Poll for status.** Fetch the post to watch each target move through
+`publishing` → `published` (or `failed`).
+
+```bash
+curl 'https://app.shoutrrr.com/api/v1/posts/<id>' \
+  -H 'Authorization: Bearer <token>'
+```
+
+</Step>
+
+</Steps>
+
+Prefer to schedule instead of publish now? `POST /posts/{id}/schedule` with a
+`scheduled_at` timestamp, or `POST /posts/{id}/queue` to drop it into the next
+open posting-schedule slot.
+
+## Pagination
+
+List endpoints (`/posts`, `/account-sets`, `/connected-accounts`, a post's
+`/shares`) are cursor-paginated. Each response carries a `pagination` object:
+
+<TypeTable type={{
+  per_page: { type: "integer", description: "Items per page (1–100, default set by the server)." },
+  next_cursor: { type: "string | null", description: "Cursor for the next page, or null on the last page." },
+  prev_cursor: { type: "string | null", description: "Cursor for the previous page." },
+  has_more: { type: "boolean", description: "Whether another page follows." }
+}} />
+
+To walk every page, pass the returned `next_cursor` back as the `cursor` query
+parameter until `has_more` is `false`:
+
+```bash
+curl 'https://app.shoutrrr.com/api/v1/posts?per_page=50&cursor=<next_cursor>' \
+  -H 'Authorization: Bearer <token>'
+```
+
+## Errors
+
+Errors use standard HTTP status codes and a JSON body with a human-readable
+`message`. Validation errors (`422`) additionally include a field-keyed
+`errors` map:
+
+```json
+{
+  "message": "The name field is required.",
+  "errors": { "name": ["The name field is required."] }
+}
+```
+
+| Status | Meaning |
+| --- | --- |
+| `401` | Missing or invalid bearer token. |
+| `403` | Authenticated, but not allowed to perform this action. |
+| `404` | The resource (post, target, share) doesn't exist. |
+| `409` | Edit conflict — the post changed since you loaded it (see below). |
+| `422` | Validation failed; inspect `errors` for per-field messages. |
+
+**Optimistic concurrency.** When updating a post, pass the `expected_updated_at`
+you last saw. If someone else changed the post in the meantime, the API returns
+`409 Conflict` instead of silently overwriting their edit — re-fetch, reconcile,
+and retry.
+
+**Async publishing.** `publish` and `retry` return `202 Accepted` with the post
+in a `publishing` state. Poll `GET /posts/{id}` and read each target's `status`,
+`error_kind`, and `error_message` to track progress. Only failed targets can be
+retried, via `POST /posts/{id}/targets/{targetId}/retry`.
+
+## Endpoint reference
+
+Full request and response schemas for every endpoint, grouped by resource:
+
+- [Posts](/docs/api/posts) — create, read, update, delete
+- [Post actions](/docs/api/post-actions) — schedule, queue, publish, retry
+- [Account sets](/docs/api/account-sets)
+- [Connected accounts](/docs/api/connected-accounts)
+- [Media](/docs/api/media)
+- [Calendar](/docs/api/calendar)
+- [Posting schedule](/docs/api/posting-schedule)
+- [Shares](/docs/api/shares)

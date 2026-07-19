@@ -1,0 +1,13 @@
+---
+// src/components/docs/api/ApiReference.astro
+import Operation from './Operation.astro';
+import { getApiTags } from '../../../lib/api/openapi.js';
+
+interface Props { tag: string; }
+const { tag } = Astro.props;
+const group = getApiTags().find((t: any) => t.tag === tag);
+if (!group) throw new Error(`Unknown API tag: ${tag}`);
+---
+<div class="api-reference">
+  {group.operations.map((op: any) => <Operation op={op} />)}
+</div>

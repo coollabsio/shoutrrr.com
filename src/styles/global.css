@@ -596,3 +596,45 @@ header {
 .docs-type-table .type-dash {
   color: oklch(0.55 0 0);
 }
+
+/* ── API reference ─────────────────────────────────────────────────────── */
+.api-method {
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.15em 0.5em;
+  border-radius: 6px;
+  color: oklch(1 0 0);
+}
+.api-method-get { background: oklch(0.55 0.13 250); }
+.api-method-post { background: oklch(0.55 0.14 145); }
+.api-method-patch { background: oklch(0.6 0.14 80); }
+.api-method-put { background: oklch(0.6 0.14 80); }
+.api-method-delete { background: oklch(0.58 0.2 25); }
+.api-schema-variant { margin: 0.75rem 0; }
+.api-variant-label { margin: 0 0 0.35rem; font-size: 0.8rem; color: oklch(0.5 0 0); }
+.api-nullable {
+  margin-left: 0.4rem; font-size: 0.68rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.03em; color: oklch(0.55 0 0);
+}
+.api-schema .type-default + .type-default { margin-left: 0.35rem; }
+
+.api-op { margin: 2.5rem 0; padding-top: 1.5rem; border-top: 1px solid oklch(0.92 0 0); }
+.api-op:first-of-type { border-top: none; padding-top: 0; }
+.api-op h3 { display: flex; }
+.api-op-path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.95rem; font-weight: 500; color: oklch(0.3 0 0);
+}
+.api-op h3 .heading-link { display: inline-flex; align-items: center; gap: 0.6rem; }
+.api-op-summary { margin: 0.5rem 0; }
+.api-op-auth { font-size: 0.85rem; color: oklch(0.5 0 0); }
+.api-op h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; color: oklch(0.5 0 0); margin: 1.4rem 0 0.5rem; }
+.api-response { margin: 0.75rem 0; }
+.api-response-status { display: flex; align-items: center; gap: 0.6rem; margin: 0.5rem 0 0.25rem; }
+.api-status { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.8rem; font-weight: 700; padding: 0.1em 0.45em; border-radius: 5px; }
+.api-status-2xx { background: oklch(0.94 0.06 145); color: oklch(0.4 0.13 145); }
+.api-status-4xx { background: oklch(0.94 0.06 60); color: oklch(0.45 0.13 60); }
+.api-status-5xx { background: oklch(0.94 0.08 25); color: oklch(0.45 0.18 25); }

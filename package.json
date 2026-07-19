@@ -7,7 +7,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "icons": "node scripts/generate-icons.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "test": "node src/lib/api/__tests__/constants.test.mjs && node src/lib/api/__tests__/spec.test.mjs && node src/lib/api/__tests__/schema.test.mjs && node src/lib/api/__tests__/samples.test.mjs && node src/lib/api/__tests__/openapi.test.mjs && node src/lib/api/__tests__/search-records.test.mjs && node src/components/marketing/__tests__/char-counter.test.mjs && node src/components/marketing/__tests__/platform-overrides.test.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.14",
