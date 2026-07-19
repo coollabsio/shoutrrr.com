@@ -1,5 +1,6 @@
 ---
 import BrandIcon from './marketing/BrandIcon.astro';
+import Logo from './Logo.astro';
 const GITHUB = 'https://github.com/coollabsio/shoutrrr';
 const socials = [
   { name: 'github', href: GITHUB, label: 'GitHub' },
@@ -44,7 +45,7 @@ const year = new Date().getFullYear();
   >
     <div>
       <div class="mb-3.5 flex items-center gap-2.5">
-        <img src="/shoutrrr.png" alt="" width="28" height="28" class="h-7 w-7" />
+        <Logo class="h-7 w-7 text-lime" />
         <span class="text-[17px] font-bold">Shoutrrr</span>
       </div>
       <p class="m-0 max-w-[240px] text-[13.5px] leading-[1.6] text-ink-400">

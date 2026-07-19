@@ -1,0 +1,58 @@
+---
+/**
+ * Documents an object's shape (props, config keys, API fields):
+ *
+ *   <TypeTable type={{
+ *     url:   { type: "string",  required: true, description: "Webhook URL." },
+ *     retry: { type: "number",  default: "3",   description: "Send attempts." },
+ *   }} />
+ */
+interface TypeEntry {
+  type: string;
+  description?: string;
+  default?: string;
+  required?: boolean;
+}
+interface Props {
+  type: Record<string, TypeEntry>;
+}
+const { type } = Astro.props;
+const rows = Object.entries(type);
+---
+
+<div class="docs-type-table not-prose">
+  <table>
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Type</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map(([name, info]) => (
+          <tr>
+            <td>
+              <code class="type-name">{name}</code>
+              {info.required && <span class="type-required">required</span>}
+              {info.description && (
+                <span class="type-desc">{info.description}</span>
+              )}
+            </td>
+            <td>
+              <code class="type-kind">{info.type}</code>
+            </td>
+            <td>
+              {info.default ? (
+                <code class="type-default">{info.default}</code>
+              ) : (
+                <span class="type-dash">—</span>
+              )}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>

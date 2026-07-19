@@ -2,6 +2,8 @@
 title: Introduction
 description: Shoutrrr is the open-source, self-hostable alternative to Buffer, Typefully & Hootsuite — write once, publish everywhere.
 order: 0
+tags: [overview]
+separator: Overview
 ---
 
 Shoutrrr is a social media scheduling tool you run yourself. Connect your
@@ -26,7 +28,7 @@ all from a single, fast interface.
 | Platform        | Connect with     | Limits per post            | Threads          |
 | --------------- | ---------------- | -------------------------- | ---------------- |
 | **X** (Twitter) | OAuth 2.0        | ≤280 chars, up to 4 media  | Yes              |
-| **Bluesky**     | App password     | ≤300 graphemes, up to 4 images | Yes          |
+| **Bluesky**     | ATProto OAuth (or app password) | ≤300 graphemes, up to 4 images | Yes |
 | **LinkedIn**    | OAuth 2.0 (OIDC) | ≤3000 chars, up to 9 images | Single post     |
 | **Facebook**    | OAuth 2.0        | ≤63,206 chars, up to 10 media | Single post   |
 | **Instagram**   | OAuth 2.0        | ≤2200 chars, up to 10 media | Single post     |
@@ -45,9 +47,11 @@ failure.
 - **Analytics** — follower and post-count trends per account, plus per-post engagement (likes, reposts, replies, impressions).
 - **Workspaces & team** — multiple workspaces with role-based memberships, email invitations, and ownership transfer.
 - **Secure by default** — email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login. Account tokens are stored encrypted and refreshed automatically.
+- **AI-ready** — a built-in MCP server lets assistants draft, schedule, and (with your confirmation) publish, scoped to a single workspace.
 
 ## Next steps
 
 - [Self-hosting](/docs/getting-started) — get an instance running with Docker.
 - [Connecting accounts](/docs/connecting-accounts) — link X, Bluesky, LinkedIn, Meta, and Discord.
 - [Configuration](/docs/configuration) — environment variables and tuning.
+- [MCP server](/docs/mcp) — connect AI assistants to your instance.

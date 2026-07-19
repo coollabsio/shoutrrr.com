@@ -6,6 +6,7 @@
    * (muted→grays, primary→lime, border→line).
    */
   import { animate } from 'motion';
+  import Logo from './Logo.svelte';
   import Calendar from '@lucide/svelte/icons/calendar';
   import ChevronLeft from '@lucide/svelte/icons/chevron-left';
   import ChevronRight from '@lucide/svelte/icons/chevron-right';
@@ -224,7 +225,7 @@
                   <!-- avatar + thread connector -->
                   <div class="flex flex-col items-center">
                     <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white">
-                      <img src="/shoutrrr.png" alt="" class="size-8" />
+                      <Logo class="size-8 text-lime" />
                     </span>
                     {#if i < tweets.length - 1}
                       <span class="my-1 w-0.5 flex-1 rounded bg-line"></span>

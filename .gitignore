@@ -2,6 +2,8 @@
 dist/
 # generated types
 .astro/
+# build-time fetch cache (GitHub releases, etc.)
+.cache/
 
 # dependencies
 node_modules/
@@ -22,3 +24,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# superpowers brainstorming/planning docs (local only)
+docs/superpowers/

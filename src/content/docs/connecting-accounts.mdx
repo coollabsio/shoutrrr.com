@@ -2,12 +2,14 @@
 title: Connecting accounts
 description: Link your X, Bluesky, LinkedIn, Meta (Facebook, Instagram, Threads), and Discord accounts so Shoutrrr can publish on your behalf.
 order: 2
+tags: [setup, accounts]
 ---
 
-Shoutrrr publishes through your own accounts. Bluesky and Discord work without a
-developer app; X, LinkedIn, and the Meta networks (Facebook, Instagram, Threads)
-publish through apps you register, so they need a few credentials in your
-environment.
+Shoutrrr publishes through your own accounts. Bluesky works out of the box — no
+developer app or credentials — thanks to ATProto OAuth, and Discord works
+without a developer app too. X, LinkedIn, and the Meta networks (Facebook,
+Instagram, Threads) publish through apps you register, so they need a few
+credentials in your environment.
 
 :::warning
 Publishing and scheduling rely on a running queue worker and scheduler. The
@@ -16,9 +18,33 @@ provided Docker setups start both for you automatically.
 
 ## Bluesky
 
-Nothing extra to configure. Each user connects with a Bluesky
-[app password](https://bsky.app/settings/app-passwords) from the **Connected
-accounts** screen — no developer app required.
+Bluesky connects over **ATProto OAuth** — the recommended method — with nothing
+to configure. There's no developer app to register and no client ID or secret to
+set: Shoutrrr publishes its own OAuth client-metadata document from your
+instance, and the DPoP signing key is generated and stored automatically on
+first use.
+
+From the **Connected accounts** screen, click **Connect Bluesky**, enter your
+handle (e.g. `you.bsky.social`) or leave it blank to pick your account on
+Bluesky, then authorize. To connect an account on a self-hosted PDS or another
+ATProto service, open **Advanced** and set the **Service URL**.
+
+:::note
+OAuth requires your instance to be reachable at its real, public `APP_URL` over
+HTTPS — Bluesky's authorization server fetches your client-metadata and JWKS
+documents directly from that URL during the handshake. If you run behind a
+reverse proxy, make sure the [HTTPS settings](/docs/configuration#reverse-proxies--https)
+are correct so the generated `client_id` and callback URLs use `https://`.
+:::
+
+### App passwords (fallback)
+
+If OAuth isn't an option, you can connect with a Bluesky
+[app password](https://bsky.app/settings/app-passwords) instead — open **Use app
+password** on the connect dialog. This is **not recommended**: app passwords
+bypass two-factor authentication, and disconnecting the account in Shoutrrr does
+not revoke the password on Bluesky — manage those from Bluesky's app-password
+settings.
 
 ## X (Twitter)
 
@@ -35,9 +61,19 @@ X_REDIRECT_URI="${APP_URL}/accounts/callback/x"
 ## LinkedIn
 
 Register an app at
-[linkedin.com/developers](https://www.linkedin.com/developers) and add its
-credentials. The redirect URI defaults to
-`${APP_URL}/accounts/callback/linkedin`.
+[linkedin.com/developers](https://www.linkedin.com/developers). In the app's
+**Products** tab, add both of these products:
+
+- [Sign In with LinkedIn using OpenID Connect](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/sign-in-with-linkedin-v2) — provides the `openid`, `profile`, and `email` scopes.
+- [Share on LinkedIn](https://learn.microsoft.com/en-us/linkedin/consumer/integrations/self-serve/share-on-linkedin) — provides the `w_member_social` scope required to publish posts.
+
+Shoutrrr requests all four scopes when connecting an account. If either product
+is missing, LinkedIn may show only a generic **Bummer, something went wrong**
+error during authorization.
+
+Add the app credentials to your `.env`. The redirect URI defaults to
+`${APP_URL}/accounts/callback/linkedin` and must also be listed under the app's
+authorized redirect URLs.
 
 ```dotenv
 LINKEDIN_CLIENT_ID=

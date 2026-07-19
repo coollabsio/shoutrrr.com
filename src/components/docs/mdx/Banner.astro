@@ -1,0 +1,45 @@
+---
+/**
+ * Prominent inline announcement. Give it an `id` to make it dismissible
+ * (the choice is remembered per-reader via localStorage).
+ *
+ *   <Banner id="v2-beta" variant="info">Shoutrrr v2 is in beta.</Banner>
+ */
+interface Props {
+  id?: string;
+  variant?: 'info' | 'warn' | 'success';
+}
+const { id, variant = 'info' } = Astro.props;
+const dismissible = Boolean(id);
+---
+
+<div
+  class:list={['docs-banner', `docs-banner-${variant}`]}
+  data-banner-id={id}
+  role="note"
+>
+  <div class="docs-banner-content"><slot /></div>
+  {
+    dismissible && (
+      <button
+        type="button"
+        class="docs-banner-close"
+        data-banner-close
+        aria-label="Dismiss"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M18 6 6 18" />
+          <path d="m6 6 12 12" />
+        </svg>
+      </button>
+    )
+  }
+</div>
