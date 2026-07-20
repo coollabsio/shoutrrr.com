@@ -20,6 +20,7 @@ import Check from 'lucide-astro/Check';
 import Cloud from 'lucide-astro/Cloud';
 
 const GITHUB = 'https://github.com/coollabsio/shoutrrr';
+const CLOUD = 'https://app.shoutrrr.com';
 
 const pillars = [
   {
@@ -102,13 +103,14 @@ const faqs = [
     class="mx-auto grid max-w-site items-center gap-10 overflow-hidden px-6 pb-10 pt-14 md:grid-cols-[1.05fr_1fr] md:gap-14 md:overflow-visible md:pt-[72px]"
   >
     <div class="min-w-0">
-      <div
+      <a
+        href={CLOUD}
         data-reveal
-        class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface-sunken px-3 py-1.5 text-[12.5px] font-medium text-ink-600"
+        class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface-sunken px-3 py-1.5 text-[12.5px] font-medium text-ink-600 no-underline transition-colors hover:border-line-strong"
       >
         <Cloud class="h-4 w-4 text-lime-text" stroke-width={1.8} />
-        Managed Cloud coming soon
-      </div>
+        Shoutrrr Cloud is live →
+      </a>
       <h1
         data-reveal
         data-reveal-delay="0.06"
@@ -125,9 +127,10 @@ const faqs = [
         class="mb-8 mt-[22px] max-w-[480px] text-[18px] leading-[1.6] text-ink-500"
       >
         Shoutrrr is the open-source alternative to Buffer, Typefully, and
-        Hootsuite. Write a post once and fan it out to X, Bluesky, and LinkedIn
-        at the same time — or queue it on a recurring schedule. Self-host it free
-        today, or let our managed Cloud run it for you, coming soon.
+        Hootsuite. Start on managed Shoutrrr Cloud, or self-host the open-source
+        app — the same product, your choice. Write a post once and fan it out to
+        X, Bluesky, and LinkedIn at the same time, or queue it on a recurring
+        schedule.
       </p>
       <div
         data-reveal
@@ -135,18 +138,18 @@ const faqs = [
         class="mb-[26px] flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap"
       >
         <a
-          href="#get"
+          href={CLOUD}
           data-hover
           data-hover-lift="-3"
           class="rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
-          >Deploy Shoutrrr →</a
+          >Get started →</a
         >
         <a
-          href="#showcase"
+          href="#pricing"
           data-hover
           data-hover-lift="-3"
           class="rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
-          >See the product</a
+          >Self-host</a
         >
       </div>
       <div
@@ -155,12 +158,12 @@ const faqs = [
         class="flex flex-wrap items-center gap-x-[18px] gap-y-2 text-[13px] text-ink-300"
       >
         <span class="flex items-center gap-1.5"
-          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> One-command
-          Docker deploy</span
+          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> Set up in
+          seconds</span
         >
         <span class="flex items-center gap-1.5"
-          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> Bring your own
-          keys</span
+          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> Self-host
+          anytime, no lock-in</span
         >
       </div>
     </div>
