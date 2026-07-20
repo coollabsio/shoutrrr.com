@@ -185,24 +185,23 @@ const faqs = [
 
   <!-- ===== TRUST STRIP ===== -->
   <section class="mx-auto max-w-site px-6 pb-16 pt-6">
-    <div
-      data-reveal
-      class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3.5 rounded-2xl border border-line-soft bg-surface-sunken px-6 py-[22px]"
-    >
-      <span class="text-[13px] font-semibold text-ink-400"
-        >Publishes independently to</span
+    <div data-reveal class="text-center">
+      <p
+        class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400"
       >
-      {
-        networks.map((n) => (
-          <span class="flex items-center gap-2 text-sm font-semibold text-ink-700">
-            <BrandIcon name={n.icon} brand class="h-[18px] w-[18px]" />
-            {n.name}
-          </span>
-        ))
-      }
-      <span class="border-l border-line-strong pl-4 text-[13px] text-ink-300"
-        >and more on the roadmap</span
-      >
+        Publishes independently to
+      </p>
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+        {
+          networks.map((n) => (
+            <span class="inline-flex items-center gap-2 rounded-full border border-line-soft bg-surface-sunken px-4 py-2 text-[13.5px] font-semibold text-ink-700 transition-colors hover:border-line-strong">
+              <BrandIcon name={n.icon} brand class="h-[17px] w-[17px]" />
+              {n.name}
+            </span>
+          ))
+        }
+        <span class="px-1 text-[13px] text-ink-300">+ more on the roadmap</span>
+      </div>
     </div>
   </section>
 
@@ -228,110 +227,6 @@ const faqs = [
           );
         })
       }
-    </div>
-  </section>
-
-  <!-- ===== INTERACTIVE SHOWCASE ===== -->
-  <section id="showcase" class="border-y border-line-soft bg-surface-sunken">
-    <div class="mx-auto max-w-site px-6 py-24">
-      <div data-reveal class="mx-auto mb-11 max-w-[620px] text-center">
-        <div
-          class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
-        >
-          One fast interface
-        </div>
-        <h2
-          class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
-        >
-          Everything from drafting to results
-        </h2>
-        <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
-          Compose, queue, and measure without ever leaving the app — or
-          switching between five browser tabs.
-        </p>
-      </div>
-      <div data-reveal data-reveal-delay="0.08">
-        <Showcase client:visible />
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== FEATURES GRID ===== -->
-  <section id="features" class="mx-auto max-w-site px-6 py-24">
-    <div data-reveal class="mb-11 max-w-[560px]">
-      <div
-        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
-      >
-        The whole toolkit
-      </div>
-      <h2
-        class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
-      >
-        Built for individuals and teams alike
-      </h2>
-    </div>
-    <div
-      data-reveal
-      class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3"
-    >
-      {
-        features.map((f) => {
-          const Icon = f.icon;
-          return (
-            <div class="bg-surface p-7 transition-colors hover:bg-surface-raised">
-              <Icon class="mb-3.5 h-[22px] w-[22px] text-ink-700" stroke-width={1.7} />
-              <h3 class="mb-2 text-base font-bold -tracking-[0.01em]">{f.title}</h3>
-              <p class="m-0 text-sm leading-[1.6] text-ink-500">{f.body}</p>
-            </div>
-          );
-        })
-      }
-    </div>
-  </section>
-
-  <!-- ===== SECURITY (dark) ===== -->
-  <section id="security" class="bg-ink-900 text-white">
-    <div
-      class="mx-auto grid max-w-site items-center gap-14 px-6 py-24 md:grid-cols-2"
-    >
-      <div data-reveal>
-        <div
-          class="mb-4 text-xs font-semibold uppercase tracking-[0.14em]"
-          style="color:oklch(0.83 0.18 128.85)"
-        >
-          Secure by default
-        </div>
-        <h2
-          class="font-display text-[clamp(30px,4vw,46px)] font-medium leading-[1.06]"
-        >
-          Your accounts,<br />locked down tight
-        </h2>
-        <p class="mt-[18px] max-w-[440px] text-base leading-[1.65] text-white/70">
-          Email and password with verification out of the box, plus every modern
-          factor you'd want layered on top. Account tokens are encrypted at rest
-          and never stored in plain text.
-        </p>
-      </div>
-      <div class="grid grid-cols-2 gap-3.5">
-        {
-          security.map((s, i) => (
-            <div
-              data-reveal
-              data-reveal-delay={(i * 0.06).toFixed(2)}
-              class="rounded-[13px] border border-white/10 bg-white/[0.03] p-5"
-            >
-              <div
-                class="mb-1.5 text-[13px] font-bold"
-                style="color:oklch(0.83 0.18 128.85)"
-              >
-                {s.tag}
-              </div>
-              <div class="mb-1 text-sm font-semibold">{s.title}</div>
-              <div class="text-[13px] leading-[1.5] text-white/60">{s.body}</div>
-            </div>
-          ))
-        }
-      </div>
     </div>
   </section>
 
@@ -439,6 +334,110 @@ const faqs = [
       <p data-reveal class="mt-8 text-center text-[13.5px] text-ink-400">
         Same app, same features — your choice.
       </p>
+    </div>
+  </section>
+
+  <!-- ===== INTERACTIVE SHOWCASE ===== -->
+  <section id="showcase" class="border-y border-line-soft bg-surface-sunken">
+    <div class="mx-auto max-w-site px-6 py-24">
+      <div data-reveal class="mx-auto mb-11 max-w-[620px] text-center">
+        <div
+          class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+        >
+          One fast interface
+        </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+        >
+          Everything from drafting to results
+        </h2>
+        <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
+          Compose, queue, and measure without ever leaving the app — or
+          switching between five browser tabs.
+        </p>
+      </div>
+      <div data-reveal data-reveal-delay="0.08">
+        <Showcase client:visible />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES GRID ===== -->
+  <section id="features" class="mx-auto max-w-site px-6 py-24">
+    <div data-reveal class="mb-11 max-w-[560px]">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        The whole toolkit
+      </div>
+      <h2
+        class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+      >
+        Built for individuals and teams alike
+      </h2>
+    </div>
+    <div
+      data-reveal
+      class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {
+        features.map((f) => {
+          const Icon = f.icon;
+          return (
+            <div class="bg-surface p-7 transition-colors hover:bg-surface-raised">
+              <Icon class="mb-3.5 h-[22px] w-[22px] text-ink-700" stroke-width={1.7} />
+              <h3 class="mb-2 text-base font-bold -tracking-[0.01em]">{f.title}</h3>
+              <p class="m-0 text-sm leading-[1.6] text-ink-500">{f.body}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <!-- ===== SECURITY (dark) ===== -->
+  <section id="security" class="bg-ink-900 text-white">
+    <div
+      class="mx-auto grid max-w-site items-center gap-14 px-6 py-24 md:grid-cols-2"
+    >
+      <div data-reveal>
+        <div
+          class="mb-4 text-xs font-semibold uppercase tracking-[0.14em]"
+          style="color:oklch(0.83 0.18 128.85)"
+        >
+          Secure by default
+        </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,46px)] font-medium leading-[1.06]"
+        >
+          Your accounts,<br />locked down tight
+        </h2>
+        <p class="mt-[18px] max-w-[440px] text-base leading-[1.65] text-white/70">
+          Email and password with verification out of the box, plus every modern
+          factor you'd want layered on top. Account tokens are encrypted at rest
+          and never stored in plain text.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-3.5">
+        {
+          security.map((s, i) => (
+            <div
+              data-reveal
+              data-reveal-delay={(i * 0.06).toFixed(2)}
+              class="rounded-[13px] border border-white/10 bg-white/[0.03] p-5"
+            >
+              <div
+                class="mb-1.5 text-[13px] font-bold"
+                style="color:oklch(0.83 0.18 128.85)"
+              >
+                {s.tag}
+              </div>
+              <div class="mb-1 text-sm font-semibold">{s.title}</div>
+              <div class="text-[13px] leading-[1.5] text-white/60">{s.body}</div>
+            </div>
+          ))
+        }
+      </div>
     </div>
   </section>
 
