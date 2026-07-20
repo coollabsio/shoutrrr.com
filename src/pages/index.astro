@@ -26,7 +26,7 @@ const pillars = [
   {
     icon: Server,
     title: 'Self-host or Cloud',
-    body: 'Run it on your own box with a single Docker image today — or use our fully managed Cloud when it lands. Same app, your choice.',
+    body: 'Run it on your own box with a single Docker image, or start in seconds on our managed Cloud — the same app, your choice.',
   },
   {
     icon: KeyRound,
@@ -49,7 +49,7 @@ const features = [
   { icon: Users, title: 'Workspaces & team', body: 'Multiple workspaces with role-based memberships, email invitations, and ownership transfer. Every record is scoped to its workspace.' },
   { icon: Bell, title: 'Notifications', body: 'In-app alerts the moment a post publishes or fails, or when an account needs your attention to keep posting.' },
   { icon: ShieldCheck, title: 'Secure by default', body: 'Email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login.' },
-  { icon: Zap, title: 'Fast & flexible', body: 'A single, snappy interface — self-host it on your own infrastructure now, with a fully managed Cloud option coming soon. No lock-in either way.' },
+  { icon: Zap, title: 'Fast & flexible', body: 'A single, snappy interface — self-host it on your own infrastructure, or run it on our managed Cloud. No lock-in either way.' },
 ];
 
 const security = [
@@ -72,15 +72,19 @@ const faqs = [
   },
   {
     q: 'Is Shoutrrr really free?',
-    a: 'Yes — the open-source app is free under Apache 2.0, with no paid seats or locked features. A managed Cloud version (optional, paid) is coming soon for teams who would rather not run it themselves.',
+    a: 'The open-source app is free forever under Apache 2.0 — self-host it with no paid seats or locked features. Managed Shoutrrr Cloud is $10/mo (which includes $5 of X usage) for teams who would rather not run it themselves.',
   },
   {
     q: 'Do I have to self-host?',
-    a: 'Not for long. Today you self-host with a single Docker image, and the open-source app will always be free. A fully managed Cloud — same features, run by us — is on the way if you would rather skip the setup.',
+    a: 'No. Shoutrrr Cloud is live — sign up and start posting in seconds. Self-hosting stays free and open source if you would rather run it yourself.',
   },
   {
     q: 'How do I install it?',
-    a: 'Pull the prebuilt Docker image — it bundles the web app, queue worker, and scheduler in one container and defaults to SQLite with no external services. Prefer zero setup? The managed Cloud is coming soon.',
+    a: 'Self-hosting: pull the prebuilt Docker image — it bundles the web app, queue worker, and scheduler in one container and defaults to SQLite with no external services. Prefer zero setup? Skip it entirely with Shoutrrr Cloud.',
+  },
+  {
+    q: 'Cloud or self-host — which should I pick?',
+    a: 'Pick Cloud if you want zero ops: we run and update everything for $10/mo. Pick self-host if you want full control of your infrastructure and data — it is free and open source. Same app either way. See pricing above.',
   },
   {
     q: 'Can I use it with my team?',
@@ -455,25 +459,23 @@ const faqs = [
         <p
           class="mx-auto mt-[18px] max-w-[480px] text-[17px] leading-[1.6] text-ink-500"
         >
-          Spin up your own instance in minutes — free, open source, yours.
-          Prefer not to run it yourself? A fully managed Cloud version is coming
-          soon.
+          Get started on managed Cloud in seconds — or spin up your own
+          instance, free and open source. Same app, your choice.
         </p>
         <div class="mt-7 flex flex-wrap justify-center gap-3">
+          <a
+            href={CLOUD}
+            data-hover
+            data-hover-lift="-3"
+            class="inline-flex items-center gap-2 rounded-xl border border-lime-ring bg-lime px-[26px] py-3.5 text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            ><Cloud class="h-[18px] w-[18px]" stroke-width={1.8} /> Get started →</a
+          >
           <a
             href={GITHUB}
             data-hover
             data-hover-lift="-3"
-            class="inline-flex items-center gap-2 rounded-xl border border-lime-ring bg-lime px-[26px] py-3.5 text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
-            ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker
-            →</a
-          >
-          <a
-            href={`${GITHUB}#readme`}
-            data-hover
-            data-hover-lift="-3"
             class="inline-flex items-center gap-2 rounded-xl border border-line-strong bg-surface px-[26px] py-3.5 text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
-            ><BrandIcon name="github" class="h-[18px] w-[18px]" /> Read the docs</a
+            ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker →</a
           >
         </div>
         <div
@@ -484,8 +486,8 @@ const faqs = [
         <div
           class="mt-4 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-400"
         >
-          <Cloud class="h-4 w-4 text-lime-text" stroke-width={1.8} /> …or skip the
-          setup — managed Cloud coming soon
+          <Server class="h-4 w-4 text-lime-text" stroke-width={1.8} /> …or
+          self-host free with the command above
         </div>
       </div>
     </div>
