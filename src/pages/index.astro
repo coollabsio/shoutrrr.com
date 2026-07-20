@@ -45,7 +45,7 @@ const features = [
   { icon: Send, title: 'Multi-account publishing', body: 'Fan one post out to many accounts at once with optional per-platform overrides. Each target publishes independently and retries on failure.' },
   { icon: CalendarDays, title: 'Queue & calendar', body: 'Set recurring posting slots in your timezone, drop drafts into the queue, and review everything on a month calendar. Publish instantly anytime.' },
   { icon: LineChart, title: 'Analytics', body: 'Follower and post-count trends per account, plus per-post engagement: likes, reposts, replies, and impressions.' },
-  { icon: Link2, title: 'Connected accounts', body: 'Link via OAuth (X, LinkedIn) or app password (Bluesky), group accounts into reusable sets, and get nudged when one needs reconnecting.' },
+  { icon: Link2, title: 'Connected accounts', body: 'Connect X, LinkedIn, Instagram, Facebook, Threads, Bluesky, and Discord via OAuth or app password, group accounts into reusable sets, and get nudged when one needs reconnecting.' },
   { icon: Users, title: 'Workspaces & team', body: 'Multiple workspaces with role-based memberships, email invitations, and ownership transfer. Every record is scoped to its workspace.' },
   { icon: Bell, title: 'Notifications', body: 'In-app alerts the moment a post publishes or fails, or when an account needs your attention to keep posting.' },
   { icon: ShieldCheck, title: 'Secure by default', body: 'Email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login.' },
@@ -62,13 +62,17 @@ const security = [
 const networks = [
   { name: 'X', icon: 'x' as const },
   { name: 'LinkedIn', icon: 'linkedin' as const },
+  { name: 'Instagram', icon: 'instagram' as const },
+  { name: 'Facebook', icon: 'facebook' as const },
+  { name: 'Threads', icon: 'threads' as const },
   { name: 'Bluesky', icon: 'bluesky' as const },
+  { name: 'Discord', icon: 'discord' as const },
 ];
 
 const faqs = [
   {
     q: 'What platforms does Shoutrrr support?',
-    a: 'X, Bluesky, and LinkedIn today. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
+    a: 'Seven networks today — X, LinkedIn, Instagram, Facebook, Threads, Bluesky, and Discord. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
   },
   {
     q: 'Is Shoutrrr really free?',
@@ -133,8 +137,8 @@ const faqs = [
         Shoutrrr is the open-source alternative to Buffer, Typefully, and
         Hootsuite. Start on managed Shoutrrr Cloud, or self-host the open-source
         app — the same product, your choice. Write a post once and fan it out to
-        X, Bluesky, and LinkedIn at the same time, or queue it on a recurring
-        schedule.
+        X, LinkedIn, Instagram, and four more networks at the same time, or queue
+        it on a recurring schedule.
       </p>
       <div
         data-reveal
@@ -183,7 +187,7 @@ const faqs = [
   <section class="mx-auto max-w-site px-6 pb-16 pt-6">
     <div
       data-reveal
-      class="flex flex-wrap items-center justify-center gap-x-10 gap-y-3.5 rounded-2xl border border-line-soft bg-surface-sunken px-6 py-[22px]"
+      class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3.5 rounded-2xl border border-line-soft bg-surface-sunken px-6 py-[22px]"
     >
       <span class="text-[13px] font-semibold text-ink-400"
         >Publishes independently to</span
@@ -196,8 +200,8 @@ const faqs = [
           </span>
         ))
       }
-      <span class="border-l border-line-strong pl-6 text-[13px] text-ink-300"
-        >more networks coming soon</span
+      <span class="border-l border-line-strong pl-4 text-[13px] text-ink-300"
+        >and more on the roadmap</span
       >
     </div>
   </section>
@@ -224,118 +228,6 @@ const faqs = [
           );
         })
       }
-    </div>
-  </section>
-
-  <!-- ===== PRICING ===== -->
-  <section id="pricing">
-    <div class="mx-auto max-w-site px-6 py-24">
-      <div data-reveal class="mx-auto mb-11 max-w-[620px] text-center">
-        <div
-          class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
-        >
-          Cloud or self-host
-        </div>
-        <h2
-          class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
-        >
-          Two ways to run Shoutrrr
-        </h2>
-        <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
-          Same app, same features. Let us run it for you, or run it yourself —
-          the open-source app is free forever.
-        </p>
-      </div>
-      <div class="mx-auto grid max-w-[860px] gap-5 md:grid-cols-2">
-        <!-- Cloud card (recommended) -->
-        <div
-          data-reveal
-          data-hover
-          class="relative flex flex-col rounded-2xl border border-lime-ring bg-surface p-8"
-        >
-          <div
-            class="absolute right-5 top-5 rounded-full bg-lime-soft px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-lime-deep"
-          >
-            Recommended
-          </div>
-          <div class="mb-1 flex items-center gap-2 text-lime-deep">
-            <Cloud class="h-5 w-5" stroke-width={1.8} />
-            <span class="font-display text-[21px] font-medium">Shoutrrr Cloud</span>
-          </div>
-          <div class="mt-3 flex items-baseline gap-1.5">
-            <span class="font-display text-[40px] font-medium leading-none">$10</span>
-            <span class="text-[15px] text-ink-400">/ month</span>
-          </div>
-          <p class="mt-1.5 text-[13.5px] text-ink-400">
-            includes $5 of X (Twitter) API usage
-          </p>
-          <ul class="mt-6 flex flex-col gap-3 text-[14.5px] text-ink-600">
-            <li class="flex items-start gap-2.5">
-              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
-              Fully managed and always up to date
-            </li>
-            <li class="flex items-start gap-2.5">
-              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
-              We run the infrastructure — no servers to babysit
-            </li>
-            <li class="flex items-start gap-2.5">
-              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
-              Set up in seconds, cancel anytime
-            </li>
-          </ul>
-          <a
-            href={CLOUD}
-            data-hover
-            data-hover-lift="-3"
-            class="mt-8 rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
-            >Get started →</a
-          >
-        </div>
-
-        <!-- Self-host card -->
-        <div
-          data-reveal
-          data-reveal-delay="0.08"
-          data-hover
-          class="flex flex-col rounded-2xl border border-line-soft bg-surface p-8"
-        >
-          <div class="mb-1 flex items-center gap-2 text-ink-700">
-            <Server class="h-5 w-5" stroke-width={1.8} />
-            <span class="font-display text-[21px] font-medium">Self-host</span>
-          </div>
-          <div class="mt-3 flex items-baseline gap-1.5">
-            <span class="font-display text-[40px] font-medium leading-none">Free</span>
-            <span class="text-[15px] text-ink-400">forever</span>
-          </div>
-          <p class="mt-1.5 text-[13.5px] text-ink-400">
-            Apache 2.0, open source
-          </p>
-          <ul class="mt-6 flex flex-col gap-3 text-[14.5px] text-ink-600">
-            <li class="flex items-start gap-2.5">
-              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
-              Your infrastructure, your data
-            </li>
-            <li class="flex items-start gap-2.5">
-              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
-              No per-seat pricing, ever
-            </li>
-            <li class="flex items-start gap-2.5">
-              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
-              One Docker image — web, worker, scheduler
-            </li>
-          </ul>
-          <a
-            href={GITHUB}
-            data-hover
-            data-hover-lift="-3"
-            class="mt-8 inline-flex items-center justify-center gap-2 rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
-            ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker →</a
-          >
-        </div>
-      </div>
-      <p data-reveal class="mt-8 text-center text-[13.5px] text-ink-400">
-        Same app, same features — your choice.
-      </p>
     </div>
   </section>
 
@@ -440,6 +332,113 @@ const faqs = [
           ))
         }
       </div>
+    </div>
+  </section>
+
+  <!-- ===== PRICING ===== -->
+  <section id="pricing">
+    <div class="mx-auto max-w-site px-6 py-24">
+      <div data-reveal class="mx-auto mb-11 max-w-[620px] text-center">
+        <div
+          class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+        >
+          Cloud or self-host
+        </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+        >
+          Two ways to run Shoutrrr
+        </h2>
+        <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
+          Same app, same features. Let us run it for you, or run it yourself —
+          the open-source app is free forever.
+        </p>
+      </div>
+      <div class="mx-auto grid max-w-[860px] gap-5 md:grid-cols-2">
+        <!-- Cloud card -->
+        <div
+          data-reveal
+          data-hover
+          class="flex flex-col rounded-2xl border border-lime-ring bg-surface p-8"
+        >
+          <div class="mb-1 flex items-center gap-2 text-lime-deep">
+            <Cloud class="h-5 w-5" stroke-width={1.8} />
+            <span class="font-display text-[21px] font-medium">Shoutrrr Cloud</span>
+          </div>
+          <div class="mt-3 flex items-baseline gap-1.5">
+            <span class="font-display text-[40px] font-medium leading-none">$10</span>
+            <span class="text-[15px] text-ink-400">/ month</span>
+          </div>
+          <p class="mt-1.5 text-[13.5px] text-ink-400">
+            includes $5 of X (Twitter) API usage
+          </p>
+          <ul class="mb-8 mt-6 flex flex-col gap-3 text-[14.5px] text-ink-600">
+            <li class="flex items-start gap-2.5">
+              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
+              Fully managed and always up to date
+            </li>
+            <li class="flex items-start gap-2.5">
+              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
+              We run the infrastructure — no servers to babysit
+            </li>
+            <li class="flex items-start gap-2.5">
+              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
+              Set up in seconds, cancel anytime
+            </li>
+          </ul>
+          <a
+            href={CLOUD}
+            data-hover
+            data-hover-lift="-3"
+            class="mt-auto rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            >Get started →</a
+          >
+        </div>
+
+        <!-- Self-host card -->
+        <div
+          data-reveal
+          data-reveal-delay="0.08"
+          data-hover
+          class="flex flex-col rounded-2xl border border-line-soft bg-surface p-8"
+        >
+          <div class="mb-1 flex items-center gap-2 text-ink-700">
+            <Server class="h-5 w-5" stroke-width={1.8} />
+            <span class="font-display text-[21px] font-medium">Self-host</span>
+          </div>
+          <div class="mt-3 flex items-baseline gap-1.5">
+            <span class="font-display text-[40px] font-medium leading-none">Free</span>
+            <span class="text-[15px] text-ink-400">forever</span>
+          </div>
+          <p class="mt-1.5 text-[13.5px] text-ink-400">
+            Apache 2.0, open source
+          </p>
+          <ul class="mb-8 mt-6 flex flex-col gap-3 text-[14.5px] text-ink-600">
+            <li class="flex items-start gap-2.5">
+              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
+              Your infrastructure, your data
+            </li>
+            <li class="flex items-start gap-2.5">
+              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
+              No per-seat pricing, ever
+            </li>
+            <li class="flex items-start gap-2.5">
+              <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
+              One Docker image — web, worker, scheduler
+            </li>
+          </ul>
+          <a
+            href={GITHUB}
+            data-hover
+            data-hover-lift="-3"
+            class="mt-auto inline-flex items-center justify-center gap-2 rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+            ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker →</a
+          >
+        </div>
+      </div>
+      <p data-reveal class="mt-8 text-center text-[13.5px] text-ink-400">
+        Same app, same features — your choice.
+      </p>
     </div>
   </section>
 

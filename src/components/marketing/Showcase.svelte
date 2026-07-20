@@ -43,7 +43,7 @@
   // The base draft, split into the 3 X-sized sections the auto-splitter produces.
   // Lengths sum to ~635 → three posts at the 280 limit, justifying "3-post thread".
   const sections = [
-    { count: 224, text: 'Shipped Shoutrrr 1.0 today 🚀\n\nThe open-source social scheduler is here: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading. No per-seat pricing.' },
+    { count: 224, text: 'Shipped Shoutrrr 1.0 today 🚀\n\nThe open-source social scheduler is here: draft once, then fan it out to X, LinkedIn, Instagram, and more at the same time — with a live per-network character count and auto-threading. No per-seat pricing.' },
     { count: 206, text: 'Run it your way.\n\nSelf-host the open-source app free on your own box, or start on our fully managed Cloud. Your posts, your audience, your data — Apache 2.0, runs anywhere Docker does.' },
     { count: 150, text: 'Get started in about a minute:\n\ndocker pull ghcr.io/coollabsio/shoutrrr\n\nStar it on GitHub and deploy today → github.com/coollabsio/shoutrrr' },
   ];
