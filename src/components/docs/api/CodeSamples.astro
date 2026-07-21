@@ -1,0 +1,25 @@
+---
+// src/components/docs/api/CodeSamples.astro
+import { Code } from 'astro:components';
+import Tabs from '../mdx/Tabs.astro';
+import Tab from '../mdx/Tab.astro';
+import { buildCodeSamples } from '../../../lib/api/samples.js';
+import { API_BASE_URL } from '../../../lib/api/openapi.js';
+
+interface Props { method: string; path: string; body?: any; multipart?: boolean; }
+const { method, path, body = null, multipart = false } = Astro.props;
+const s = buildCodeSamples({ method, path, baseUrl: API_BASE_URL, body, multipart });
+const langs: { label: string; code: string; lang: any }[] = [
+  { label: 'cURL', code: s.curl, lang: 'bash' },
+  { label: 'JavaScript', code: s.js, lang: 'javascript' },
+  { label: 'Python', code: s.python, lang: 'python' },
+  { label: 'PHP', code: s.php, lang: 'php' },
+];
+---
+<Tabs items={langs.map((l) => l.label)} group="api-lang">
+  {langs.map((l) => (
+    <Tab>
+      <Code code={l.code} lang={l.lang} theme="github-light" />
+    </Tab>
+  ))}
+</Tabs>

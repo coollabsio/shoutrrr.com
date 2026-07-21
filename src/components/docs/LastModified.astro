@@ -1,0 +1,28 @@
+---
+interface Props {
+  date: string; // ISO timestamp
+}
+const { date } = Astro.props;
+const formatted = new Date(date).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<p class="mt-10 flex items-center gap-1.5 text-sm text-ink-300">
+  <svg
+    class="size-3.5"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M12 8v4l2 2"></path>
+    <circle cx="12" cy="12" r="10"></circle>
+  </svg>
+  Last updated on <time datetime={date}>{formatted}</time>
+</p>

@@ -8,6 +8,7 @@
    * Limits match the README: X ≤280, Bluesky ≤300 graphemes, LinkedIn ≤3000.
    */
   import { animate } from 'motion';
+  import Logo from './Logo.svelte';
   import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
   import Check from '@lucide/svelte/icons/check';
   import Heart from '@lucide/svelte/icons/heart';
@@ -485,7 +486,7 @@
     <div class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-white">
       <div class="flex gap-3 p-4">
         <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white">
-          <img src="/shoutrrr.png" alt="" class="size-8" />
+          <Logo class="size-8 text-lime" />
         </span>
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1 text-[15px] leading-tight">

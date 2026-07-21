@@ -2,6 +2,8 @@
 title: Self-hosting
 description: Run your own Shoutrrr instance with Docker in a few minutes.
 order: 1
+tags: [setup, self-hosting]
+separator: Get started
 ---
 
 The recommended way to host Shoutrrr is the prebuilt Docker image. It runs the
@@ -67,6 +69,11 @@ For a real public deployment:
 - Set `SESSION_SECURE_COOKIE=true`.
 - Keep `APP_ENV=production` and `APP_DEBUG=false`.
 
+If you serve Shoutrrr through a TLS-terminating reverse proxy (Coolify/Traefik,
+Nginx, Caddy, Cloudflare Tunnel…), also set `TRUSTED_PROXIES=*` and
+`OCTANE_HTTPS=true` so redirects, OAuth callbacks, and assets use `https://`
+instead of `http://`. See [Reverse proxies & HTTPS](/docs/configuration#reverse-proxies--https).
+
 :::warning
 Keep your `APP_KEY` safe and stable. It encrypts your stored account tokens —
 if you lose or change it, connected accounts will need to be re-linked.
@@ -99,10 +106,21 @@ volumes for you.
 2. Set the **Build Pack** to **Docker Compose** and the file to `docker-compose.production.yaml`.
 3. Under the `app` service, add a **Domain** pointing at port **8080**. Coolify provisions TLS automatically.
 4. Add `APP_KEY`, `APP_URL` (matching the domain), `APP_ENV=production`, and `APP_DEBUG=false` as environment variables — plus any account credentials (see [Connecting accounts](/docs/connecting-accounts)).
-5. Click **Deploy**.
+5. Because Coolify terminates TLS at its proxy, also add `TRUSTED_PROXIES=*`, `OCTANE_HTTPS=true`, and `SESSION_SECURE_COOKIE=true` so links and OAuth callbacks use HTTPS (see [Reverse proxies & HTTPS](/docs/configuration#reverse-proxies--https)).
+6. Click **Deploy**.
 
 The Compose file declares named volumes for storage and the SQLite database, so
 your data and uploads survive redeploys.
+
+:::warning
+On standard Coolify installs, the `coolify-proxy` (Traefik) container already
+binds host port **8080**. If your Compose file publishes `8080:8080` on the host
+(e.g. an older copy of `docker-compose.production.yaml`), deployment fails with a
+port-in-use error. Let Coolify route to the container via the **Domain** you set
+above instead of publishing the port — or remap the host side to a free port
+such as `8081:8080`. You do not need to publish a host port for Coolify to reach
+the app.
+:::
 
 ## Resetting test data
 

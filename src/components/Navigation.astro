@@ -1,5 +1,6 @@
 ---
 import BrandIcon from './marketing/BrandIcon.astro';
+import Logo from './Logo.astro';
 import Menu from 'lucide-astro/Menu';
 import X from 'lucide-astro/X';
 import ChevronRight from 'lucide-astro/ChevronRight';
@@ -26,13 +27,7 @@ const CLOUD = 'https://app.shoutrrr.com';
   >
     <!-- Logo -->
     <a href="/" class="flex items-center gap-2.5 text-ink no-underline">
-      <img
-        src="/shoutrrr.png"
-        alt=""
-        width="30"
-        height="30"
-        class="h-[30px] w-[30px]"
-      />
+      <Logo class="h-[30px] w-[30px] text-lime" />
       <span class="text-[18px] font-bold -tracking-[0.01em]">Shoutrrr</span>
     </a>
 
