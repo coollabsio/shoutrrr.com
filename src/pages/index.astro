@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Aura from '../components/marketing/Aura.astro';
+import PaperGradient from '../components/marketing/PaperGradient.svelte';
 import BrandIcon from '../components/marketing/BrandIcon.astro';
 import ComposerMockup from '../components/marketing/ComposerMockup.svelte';
 import Showcase from '../components/marketing/Showcase.svelte';
@@ -352,7 +353,7 @@ const faqs = [
           Everything from drafting to results
         </h2>
         <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
-          Compose, queue, and measure without ever leaving the app — or
+          Compose, queue, reply, and measure without ever leaving the app — or
           switching between five browser tabs.
         </p>
       </div>
@@ -447,18 +448,29 @@ const faqs = [
       data-reveal
       class="relative overflow-hidden rounded-3xl border border-line-strong bg-surface-raised px-6 py-16 text-center sm:px-10 sm:py-[72px]"
     >
-      <Aura variant="cta" />
+      <PaperGradient
+        client:visible
+        colors={['#ecfccb', '#d9f99d', '#bef264', '#a3e635']}
+        class="pointer-events-none absolute inset-0 z-0 opacity-50"
+        style="mask-image:radial-gradient(130% 120% at 50% -8%, #000 34%, transparent 78%);-webkit-mask-image:radial-gradient(130% 120% at 50% -8%, #000 34%, transparent 78%)"
+      />
       <div class="relative z-10">
+        <div
+          class="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+        >
+          Start posting today
+        </div>
         <h2
           class="font-display text-[clamp(32px,4.5vw,52px)] font-medium leading-[1.05]"
         >
-          Own your posting workflow
+          Publish everywhere.<br />Own everything.
         </h2>
         <p
-          class="mx-auto mt-[18px] max-w-[480px] text-[17px] leading-[1.6] text-ink-500"
+          class="mx-auto mt-[18px] max-w-[496px] text-[17px] leading-[1.6] text-ink-500"
         >
-          Get started on managed Cloud in seconds — or spin up your own
-          instance, free and open source. Same app, your choice.
+          Start on managed Cloud in about a minute, or self-host the same
+          open-source app on your own box. No per-seat pricing, no lock-in —
+          move between them whenever you want.
         </p>
         <div class="mt-7 flex flex-wrap justify-center gap-3">
           <a
@@ -466,7 +478,7 @@ const faqs = [
             data-hover
             data-hover-lift="-3"
             class="inline-flex items-center gap-2 rounded-xl border border-lime-ring bg-lime px-[26px] py-3.5 text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
-            ><Cloud class="h-[18px] w-[18px]" stroke-width={1.8} /> Get started →</a
+            ><Cloud class="h-[18px] w-[18px]" stroke-width={1.8} /> Start on Cloud →</a
           >
           <a
             href={GITHUB}
@@ -477,15 +489,15 @@ const faqs = [
           >
         </div>
         <div
-          class="mt-[22px] break-all font-mono text-[11px] text-ink-400 sm:text-[12.5px]"
+          class="mt-6 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-400"
         >
-          docker pull ghcr.io/coollabsio/shoutrrr:latest
+          <Server class="h-4 w-4 text-lime-text" stroke-width={1.8} /> Prefer your
+          own server? It's one command:
         </div>
         <div
-          class="mt-4 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-ink-400"
+          class="mt-2 break-all font-mono text-[11px] text-ink-500 sm:text-[12.5px]"
         >
-          <Server class="h-4 w-4 text-lime-text" stroke-width={1.8} /> …or
-          self-host free with the command above
+          docker pull ghcr.io/coollabsio/shoutrrr:latest
         </div>
       </div>
     </div>
