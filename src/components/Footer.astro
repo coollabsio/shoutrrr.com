@@ -2,6 +2,7 @@
 import BrandIcon from './marketing/BrandIcon.astro';
 import Logo from './Logo.astro';
 const GITHUB = 'https://github.com/coollabsio/shoutrrr';
+const CLOUD = 'https://app.shoutrrr.com';
 const socials = [
   { name: 'github', href: GITHUB, label: 'GitHub' },
   { name: 'x', href: 'https://x.com/heyandras', label: 'X' },
@@ -11,10 +12,10 @@ const cols = [
   {
     title: 'Product',
     links: [
+      { href: CLOUD, label: 'Shoutrrr Cloud' },
+      { href: '/#pricing', label: 'Pricing' },
       { href: '/#features', label: 'Features' },
       { href: '/#showcase', label: 'Composer' },
-      { href: '/#showcase', label: 'Calendar' },
-      { href: '/#showcase', label: 'Analytics' },
     ],
   },
   {
@@ -29,10 +30,10 @@ const cols = [
   {
     title: 'Resources',
     links: [
-      { href: '/#get', label: 'Self-hosting guide' },
+      { href: CLOUD, label: 'Log in' },
+      { href: '/docs', label: 'Self-hosting' },
       { href: '/#security', label: 'Security' },
       { href: 'https://coollabs.io/discord', label: 'Community' },
-      { href: `${GITHUB}/blob/main/LICENSE`, label: 'License (Apache 2.0)' },
     ],
   },
 ];
@@ -50,7 +51,7 @@ const year = new Date().getFullYear();
       </div>
       <p class="m-0 max-w-[240px] text-[13.5px] leading-[1.6] text-ink-400">
         The open-source social scheduler. Draft once, post everywhere, keep your
-        data. Self-host it, or use the managed Cloud — coming soon.
+        data. Self-host it free, or start on managed Shoutrrr Cloud.
       </p>
       <div class="mt-5 flex items-center gap-2">
         {

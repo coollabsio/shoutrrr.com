@@ -19,6 +19,7 @@
     "@fontsource-variable/noto-sans": "^5.2.10",
     "@lucide/svelte": "^1.21.0",
     "@orama/orama": "^3.1.18",
+    "@paper-design/shaders": "^0.0.77",
     "astro": "^5.17.1",
     "fumadocs-core": "^16.10.5",
     "lucide-astro": "^0.556.0",

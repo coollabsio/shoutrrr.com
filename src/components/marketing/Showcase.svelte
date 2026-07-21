@@ -18,13 +18,16 @@
   import Repeat2 from '@lucide/svelte/icons/repeat-2';
   import Heart from '@lucide/svelte/icons/heart';
   import BarChart3 from '@lucide/svelte/icons/bar-chart-3';
+  import CheckCheck from '@lucide/svelte/icons/check-check';
+  import Archive from '@lucide/svelte/icons/archive';
 
-  type Tab = 'composer' | 'calendar' | 'analytics';
+  type Tab = 'composer' | 'calendar' | 'engagement' | 'analytics';
   let tab = $state<Tab>('composer');
 
   const TABS: { key: Tab; label: string; short: string }[] = [
     { key: 'composer', label: 'Composer', short: 'Composer' },
     { key: 'calendar', label: 'Queue & calendar', short: 'Calendar' },
+    { key: 'engagement', label: 'Engagement', short: 'Inbox' },
     { key: 'analytics', label: 'Analytics', short: 'Analytics' },
   ];
 
@@ -44,8 +47,8 @@
   // The base draft, split into the 3 X-sized sections the auto-splitter produces.
   // Lengths sum to ~635 → three posts at the 280 limit, justifying "3-post thread".
   const sections = [
-    { count: 224, text: 'Shipped Shoutrrr 1.0 today 🚀\n\nThe open-source social scheduler is here: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading. No per-seat pricing.' },
-    { count: 206, text: 'Run it your way.\n\nSelf-host the open-source app free on your own box, or use our fully managed Cloud when it lands soon. Your posts, your audience, your data — Apache 2.0, runs anywhere Docker does.' },
+    { count: 224, text: 'Shipped Shoutrrr 1.0 today 🚀\n\nThe open-source social scheduler is here: draft once, then fan it out to X, LinkedIn, Instagram, and more at the same time — with a live per-network character count and auto-threading. No per-seat pricing.' },
+    { count: 206, text: 'Run it your way.\n\nSelf-host the open-source app free on your own box, or start on our fully managed Cloud. Your posts, your audience, your data — Apache 2.0, runs anywhere Docker does.' },
     { count: 150, text: 'Get started in about a minute:\n\ndocker pull ghcr.io/coollabsio/shoutrrr\n\nStar it on GitHub and deploy today → github.com/coollabsio/shoutrrr' },
   ];
   const threadTotal = sections.reduce((s, x) => s + x.count, 0);
@@ -77,6 +80,58 @@
   ];
   // Mobile shows a compact agenda instead of the dense grid (same as the app).
   const agenda = cells.filter((c) => !c.out && c.chips && c.chips.length);
+
+  // ── Engagement tab data ────────────────────────────────────────────
+  // The unified reply inbox: every mention & comment across networks in one
+  // triage list, with the selected conversation open on the right.
+  type Reply = {
+    id: string;
+    platform: keyof typeof GLYPHS;
+    name: string;
+    handle: string; // '' for LinkedIn, which shows names not @handles
+    initials: string;
+    time: string;
+    text: string;
+    on: string;
+    unread?: boolean;
+    replied?: boolean;
+    selected?: boolean;
+  };
+  const replies: Reply[] = [
+    {
+      id: 'r1', platform: 'x', name: 'Priya Nair', handle: '@priyabuilds', initials: 'PN',
+      time: '12m', unread: true, selected: true, on: 'Shipped Shoutrrr 1.0 today',
+      text: "Been waiting for an open-source scheduler that isn't per-seat. Does it handle Bluesky threads too?",
+    },
+    {
+      id: 'r2', platform: 'x', name: 'Marco Reyes', handle: '@marcodev', initials: 'MR',
+      time: '34m', replied: true, on: 'Run it your way',
+      text: 'Just deployed with the Docker one-liner — took two minutes flat. 🙌',
+    },
+    {
+      id: 'r3', platform: 'bluesky', name: 'devsandra', handle: '@devsandra.bsky', initials: 'DS',
+      time: '1h', unread: true, on: 'Shipped Shoutrrr 1.0 today',
+      text: 'How does auto-split pick the break points — sentence boundaries?',
+    },
+    {
+      id: 'r4', platform: 'linkedin', name: 'Liang Wei', handle: '', initials: 'LW',
+      time: '2h', on: 'Run it your way',
+      text: 'Congrats on the launch — self-hosting this for our team this week.',
+    },
+    {
+      id: 'r5', platform: 'x', name: 'Tomás Alvarez', handle: '@tomdesigns', initials: 'TA',
+      time: '3h', on: 'Shipped Shoutrrr 1.0 today',
+      text: 'The live per-network character count is such a nice touch.',
+    },
+  ];
+  const engFilters = ['All', 'Unread', 'X', 'LinkedIn', 'Bluesky'];
+  // The open conversation (Priya's mention) as it reads on the right.
+  const convoPost =
+    'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler is here: draft once, fan it out to X, LinkedIn, and Bluesky at the same time.';
+  const convo = [
+    { ours: false, text: "Been waiting for an open-source scheduler that isn't per-seat. Does it handle Bluesky threads too?", time: '12m' },
+    { ours: true, text: 'It does — auto-threading works on X and Bluesky from the same draft. Give it a spin and let me know how it feels 🚀', time: '4m' },
+  ];
 
   // ── Analytics tab data ─────────────────────────────────────────────
   const lineColors = ['oklch(0.705 0.213 47.604)', 'oklch(0.5 0.13 250)', 'oklch(0.68 0.15 230)'];
@@ -345,6 +400,132 @@
                 </div>
               {/each}
             </div>
+          </div>
+        </div>
+      {:else if tab === 'engagement'}
+        <!-- ░░ ENGAGEMENT ░░ -->
+        <div class="flex flex-1 flex-col md:grid md:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] md:items-stretch">
+          <!-- triage inbox -->
+          <div class="flex flex-col md:border-r md:border-line">
+            <!-- filter chips -->
+            <div class="flex items-center gap-1.5 overflow-x-auto overflow-y-hidden border-b border-line px-3 py-2.5">
+              {#each engFilters as f (f)}
+                <span
+                  class="shrink-0 rounded-full px-2.5 py-1 text-[12px] font-medium"
+                  class:bg-ink={f === 'All'}
+                  class:text-white={f === 'All'}
+                  class:text-ink-300={f !== 'All'}
+                  class:border={f !== 'All'}
+                  class:border-line={f !== 'All'}
+                >{f}</span>
+              {/each}
+              <span class="ml-auto shrink-0 pl-2 text-[11px] tabular-nums text-ink-300">2 unread</span>
+            </div>
+            <!-- reply list -->
+            <div class="flex-1 divide-y divide-line">
+              {#each replies as r (r.id)}
+                <div
+                  class="flex gap-3 border-l-2 px-3 py-3"
+                  class:border-lime-ring={r.unread}
+                  class:border-transparent={!r.unread}
+                  class:bg-surface-sunken={r.selected}
+                  style={r.unread && !r.selected ? 'background:oklch(0.841 0.238 128.85 / 0.05)' : ''}
+                >
+                  <!-- avatar + platform badge -->
+                  <div class="relative shrink-0">
+                    <span class="grid size-9 place-items-center rounded-full text-[11px] font-semibold text-ink-600" style="background:oklch(0.96 0 0)">{r.initials}</span>
+                    <span class="absolute -bottom-0.5 -right-0.5 grid size-4 place-items-center rounded-full bg-surface text-ink-500 ring-1 ring-line">{@html GLYPHS[r.platform]}</span>
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-baseline gap-1.5">
+                      <span class="min-w-0 truncate text-[13.5px]" class:font-semibold={r.unread} class:font-medium={!r.unread}>{r.name}</span>
+                      {#if r.handle}
+                        <span class="min-w-0 truncate text-[12px] text-ink-300">{r.handle}</span>
+                      {/if}
+                      <span class="ml-auto shrink-0 text-[11px] tabular-nums text-ink-300">{r.time}</span>
+                    </div>
+                    <p class="mt-0.5 line-clamp-2 text-[13px] leading-[1.45]" class:text-ink-700={r.unread} class:text-ink-400={!r.unread}>{r.text}</p>
+                    <div class="mt-1 flex items-center gap-1.5 text-[11px] text-ink-300">
+                      {#if r.replied}
+                        <span class="inline-flex items-center gap-1 font-medium text-lime-text">
+                          <CheckCheck class="size-3" />Replied
+                        </span>
+                      {/if}
+                      <span class="min-w-0 truncate">on “{r.on}”</span>
+                    </div>
+                  </div>
+                </div>
+              {/each}
+            </div>
+            <!-- keyboard shortcut hints (desktop, same as the app) -->
+            <div class="hidden shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t border-line px-3 py-2 md:flex">
+              {#each [['↑ ↓', 'move'], ['A', 'archive'], ['O', 'open'], ['R', 'reply']] as [k, label] (label)}
+                <span class="inline-flex items-center gap-1.5 text-[11px] text-ink-300">
+                  <kbd class="rounded border border-line bg-surface-sunken px-1.5 py-0.5 font-mono text-[10px] font-medium text-ink-500">{k}</kbd>
+                  {label}
+                </span>
+              {/each}
+            </div>
+          </div>
+
+          <!-- conversation desk (desktop only; mobile taps into a sheet in the app) -->
+          <div class="hidden min-w-0 flex-col bg-surface-sunken md:flex">
+            <!-- header -->
+            <div class="flex shrink-0 items-center gap-2.5 border-b border-line bg-surface px-4 py-3">
+              <div class="relative shrink-0">
+                <span class="grid size-8 place-items-center rounded-full text-[11px] font-semibold text-ink-600" style="background:oklch(0.96 0 0)">PN</span>
+                <span class="absolute -bottom-0.5 -right-0.5 grid size-3.5 place-items-center rounded-full bg-surface text-ink-500 ring-1 ring-line">{@html GLYPHS.x}</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="truncate text-[13.5px] font-semibold">Priya Nair</div>
+                <div class="truncate text-[11.5px] text-ink-300">X · to @shoutrrr</div>
+              </div>
+              <span class="inline-flex h-7 items-center gap-1 rounded-md px-2 text-[12px] text-ink-400">Open in</span>
+              <span class="inline-flex h-7 items-center gap-1.5 rounded-md px-2 text-ink-400"><Archive class="size-4" /></span>
+            </div>
+            <!-- thread -->
+            <div class="flex-1 space-y-3.5 p-4">
+              <!-- your post excerpt -->
+              <div class="rounded-xl border border-line bg-surface p-3">
+                <div class="mb-1 text-[10.5px] font-medium uppercase tracking-[0.06em] text-ink-300">Your post</div>
+                <p class="line-clamp-2 text-[13px] leading-[1.5] text-ink-500">{convoPost}</p>
+              </div>
+              {#each convo as m (m.text)}
+                {#if m.ours}
+                  <div class="flex flex-col items-end gap-1">
+                    <div class="max-w-[85%] rounded-2xl rounded-br-sm border border-lime-ring bg-lime px-3.5 py-2.5">
+                      <p class="whitespace-pre-wrap break-words text-[13px] leading-[1.45] text-lime-deep">{m.text}</p>
+                      <div class="mt-1 text-right text-[10.5px] text-lime-deep/60">You · {m.time}</div>
+                    </div>
+                  </div>
+                {:else}
+                  <div class="flex min-w-0 gap-2.5">
+                    <span class="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-ink-600" style="background:oklch(0.96 0 0)">PN</span>
+                    <div class="max-w-[85%] rounded-2xl rounded-bl-sm border border-line bg-surface px-3.5 py-2.5">
+                      <div class="mb-0.5 flex items-baseline gap-1.5">
+                        <span class="truncate text-[12px] font-semibold">Priya Nair</span>
+                        <span class="shrink-0 text-[10.5px] text-ink-300">· {m.time}</span>
+                      </div>
+                      <p class="whitespace-pre-wrap break-words text-[13px] leading-[1.45] text-ink-800">{m.text}</p>
+                    </div>
+                  </div>
+                {/if}
+              {/each}
+            </div>
+            <!-- quick reply box -->
+            <div class="shrink-0 border-t border-line bg-surface p-3">
+              <div class="flex items-end gap-2 rounded-xl border border-line bg-surface px-3 py-2.5">
+                <span class="flex-1 text-[13px] text-ink-300">Reply to @priyabuilds…</span>
+                <span class="inline-flex h-7 items-center gap-1.5 rounded-md border border-lime-ring bg-lime px-2.5 text-[12px] font-medium text-lime-deep">
+                  <Send class="size-3.5" />Reply
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- mobile hint: the conversation opens as a sheet in the app -->
+          <div class="border-t border-line px-4 py-3 text-center text-[12px] text-ink-300 md:hidden">
+            Tap any reply to open the conversation and respond in place.
           </div>
         </div>
       {:else}

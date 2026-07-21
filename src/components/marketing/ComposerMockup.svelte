@@ -78,7 +78,7 @@
   let autoSplit = $state(true);
   let draft = $state({
     baseText:
-      'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading. Self-host it free, or use our managed Cloud soon. No per-seat pricing. Grab it on GitHub and deploy in a minute.',
+      'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, LinkedIn, Instagram, and more at the same time — with a live per-network character count and auto-threading. Self-host it free, or start on our managed Cloud. No per-seat pricing. Grab it on GitHub and deploy in a minute.',
     overrides: {} as Record<string, boolean>,
     overrideTexts: {} as Record<string, string>,
   });
@@ -90,7 +90,7 @@
   // How the post lands on X — the payoff of the autoplay loop. Engagement is
   // illustrative; the copy is the first beat of the real hero draft.
   const xPost = {
-    text: 'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, Bluesky, and LinkedIn at the same time — with a live per-network character count and auto-threading.',
+    text: 'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler: draft once, then fan it out to X, LinkedIn, Instagram, and more at the same time — with a live per-network character count and auto-threading.',
     time: 'now',
     replies: '18',
     reposts: '64',
