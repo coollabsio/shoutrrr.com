@@ -3,6 +3,8 @@ import BrandIcon from './marketing/BrandIcon.astro';
 import Menu from 'lucide-astro/Menu';
 import X from 'lucide-astro/X';
 import ChevronRight from 'lucide-astro/ChevronRight';
+import Sun from 'lucide-astro/Sun';
+import Moon from 'lucide-astro/Moon';
 const links = [
   { href: '/#features', label: 'Features' },
   { href: '/#showcase', label: 'Product' },
@@ -59,6 +61,16 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
         class="rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
         >Deploy it</a
       >
+      <button
+        id="theme-toggle"
+        type="button"
+        class="relative grid size-9 place-items-center rounded-[9px] text-ink-700 transition-colors hover:bg-surface-sunken"
+        aria-label="Toggle dark mode"
+        aria-pressed="false"
+      >
+        <Sun id="icon-sun" class="size-[18px]" />
+        <Moon id="icon-moon" class="absolute hidden size-[18px]" />
+      </button>
       <!-- Mobile toggle -->
       <button
         id="menu-toggle"
@@ -114,6 +126,27 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
   const menu = document.getElementById('mobile-menu');
   const iconMenu = document.getElementById('icon-menu');
   const iconClose = document.getElementById('icon-close');
+
+  const themeToggle = document.getElementById('theme-toggle');
+  const iconSun = document.getElementById('icon-sun');
+  const iconMoon = document.getElementById('icon-moon');
+  const themeMeta = document.getElementById('theme-color-meta');
+
+  function paintTheme(isDark: boolean) {
+    iconSun?.classList.toggle('hidden', isDark);
+    iconMoon?.classList.toggle('hidden', !isDark);
+    themeToggle?.setAttribute('aria-pressed', String(isDark));
+    themeMeta?.setAttribute('content', isDark ? '#343434' : '#ffffff');
+  }
+
+  // Sync button/meta to the class the inline head script already applied.
+  paintTheme(document.documentElement.classList.contains('dark'));
+
+  themeToggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    paintTheme(isDark);
+  });
 
   function setOpen(open: boolean) {
     if (!menu || !toggle) return;
