@@ -342,3 +342,15 @@ html.dark .docs-prose .admonition {
   border-color: var(--line);
   background: var(--surface-sunken);
 }
+html.dark .docs-prose .admonition-type-warn,
+html.dark .docs-prose .admonition-type-warning {
+  border-left-color: oklch(0.8 0.16 75);
+}
+html.dark .docs-prose .admonition-type-error,
+html.dark .docs-prose .admonition-type-danger {
+  border-left-color: oklch(0.68 0.21 25);
+}
+html.dark .docs-prose .admonition-type-info,
+html.dark .docs-prose .admonition-type-note {
+  border-left-color: var(--lime-ring);
+}
