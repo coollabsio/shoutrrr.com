@@ -4,11 +4,85 @@
 
 :root {
   color-scheme: light;
-  /* oklch tokens mirrored for raw CSS (gradients, masks, inline use). */
-  --primary: oklch(0.841 0.238 128.85);
-  --primary-deep: oklch(0.405 0.101 131.063);
-  --foreground: oklch(0.205 0 0);
   --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0 0);
+  --surface: oklch(1 0 0);
+  --surface-sunken: oklch(0.985 0 0);
+  --surface-raised: oklch(0.99 0 0);
+  --line: oklch(0.92 0 0);
+  --line-soft: oklch(0.94 0 0);
+  --line-strong: oklch(0.9 0 0);
+  --ink: oklch(0.205 0 0);
+  --ink-900: oklch(0.145 0 0);
+  --ink-800: oklch(0.22 0 0);
+  --ink-700: oklch(0.3 0 0);
+  --ink-600: oklch(0.4 0 0);
+  --ink-500: oklch(0.46 0 0);
+  --ink-400: oklch(0.5 0 0);
+  --ink-300: oklch(0.55 0 0);
+  --ink-200: oklch(0.6 0 0);
+  --lime: oklch(0.841 0.238 128.85);
+  --lime-deep: oklch(0.405 0.101 131.063);
+  --lime-ring: oklch(0.79 0.2 128.85);
+  --lime-soft: oklch(0.96 0.07 128);
+  --lime-text: oklch(0.48 0.12 131);
+  /* kept for raw gradient/mask use */
+  --primary: var(--lime);
+  --primary-deep: var(--lime-deep);
+}
+
+html.dark {
+  color-scheme: dark;
+  --background: oklch(0.205 0 0);
+  --foreground: oklch(0.95 0 0);
+  --surface: oklch(0.205 0 0);
+  --surface-sunken: oklch(0.18 0 0);
+  --surface-raised: oklch(0.245 0 0);
+  --line: oklch(0.32 0 0);
+  --line-soft: oklch(0.28 0 0);
+  --line-strong: oklch(0.38 0 0);
+  --ink: oklch(0.95 0 0);
+  --ink-900: oklch(0.16 0 0); /* stays dark: used as bg/scrim only */
+  --ink-800: oklch(0.92 0 0);
+  --ink-700: oklch(0.9 0 0);
+  --ink-600: oklch(0.82 0 0);
+  --ink-500: oklch(0.72 0 0);
+  --ink-400: oklch(0.68 0 0);
+  --ink-300: oklch(0.6 0 0);
+  --ink-200: oklch(0.55 0 0);
+  --lime: oklch(0.86 0.21 128.85);
+  --lime-deep: oklch(0.405 0.101 131.063);
+  --lime-ring: oklch(0.5 0.14 130);
+  --lime-soft: oklch(0.28 0.06 130);
+  --lime-text: oklch(0.82 0.18 128.85);
+  --primary: var(--lime);
+  --primary-deep: var(--lime-deep);
+}
+
+.theme-light {
+  color-scheme: light;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0 0);
+  --surface: oklch(1 0 0);
+  --surface-sunken: oklch(0.985 0 0);
+  --surface-raised: oklch(0.99 0 0);
+  --line: oklch(0.92 0 0);
+  --line-soft: oklch(0.94 0 0);
+  --line-strong: oklch(0.9 0 0);
+  --ink: oklch(0.205 0 0);
+  --ink-900: oklch(0.145 0 0);
+  --ink-800: oklch(0.22 0 0);
+  --ink-700: oklch(0.3 0 0);
+  --ink-600: oklch(0.4 0 0);
+  --ink-500: oklch(0.46 0 0);
+  --ink-400: oklch(0.5 0 0);
+  --ink-300: oklch(0.55 0 0);
+  --ink-200: oklch(0.6 0 0);
+  --lime: oklch(0.841 0.238 128.85);
+  --lime-deep: oklch(0.405 0.101 131.063);
+  --lime-ring: oklch(0.79 0.2 128.85);
+  --lime-soft: oklch(0.96 0.07 128);
+  --lime-text: oklch(0.48 0.12 131);
 }
 
 * {

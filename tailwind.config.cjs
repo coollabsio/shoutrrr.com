@@ -1,42 +1,38 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
       colors: {
-        // Brand — lime/chartreuse, matched 1:1 to the Shoutrrr app (oklch).
         lime: {
-          DEFAULT: 'oklch(0.841 0.238 128.85)', // primary surface
-          deep: 'oklch(0.405 0.101 131.063)', // text on lime
-          ring: 'oklch(0.79 0.2 128.85)', // border on lime
-          soft: 'oklch(0.96 0.07 128)', // tinted fill
-          text: 'oklch(0.48 0.12 131)', // eyebrow/labels (AA on white)
+          DEFAULT: 'var(--lime)',
+          deep: 'var(--lime-deep)',
+          ring: 'var(--lime-ring)',
+          soft: 'var(--lime-soft)',
+          text: 'var(--lime-text)',
         },
-        // Neutral ink ramp (warm-neutral grays from the design).
         ink: {
-          DEFAULT: 'oklch(0.205 0 0)',
-          900: 'oklch(0.145 0 0)', // dark sections
-          800: 'oklch(0.22 0 0)',
-          700: 'oklch(0.3 0 0)',
-          600: 'oklch(0.4 0 0)',
-          500: 'oklch(0.46 0 0)',
-          400: 'oklch(0.5 0 0)',
-          300: 'oklch(0.55 0 0)',
-          200: 'oklch(0.6 0 0)',
+          DEFAULT: 'var(--ink)',
+          900: 'var(--ink-900)',
+          800: 'var(--ink-800)',
+          700: 'var(--ink-700)',
+          600: 'var(--ink-600)',
+          500: 'var(--ink-500)',
+          400: 'var(--ink-400)',
+          300: 'var(--ink-300)',
+          200: 'var(--ink-200)',
         },
-        // Hairlines.
         line: {
-          DEFAULT: 'oklch(0.92 0 0)',
-          soft: 'oklch(0.94 0 0)',
-          strong: 'oklch(0.9 0 0)',
+          DEFAULT: 'var(--line)',
+          soft: 'var(--line-soft)',
+          strong: 'var(--line-strong)',
         },
-        // Surfaces.
         surface: {
-          DEFAULT: 'oklch(1 0 0)',
-          sunken: 'oklch(0.985 0 0)',
-          raised: 'oklch(0.99 0 0)',
+          DEFAULT: 'var(--surface)',
+          sunken: 'var(--surface-sunken)',
+          raised: 'var(--surface-raised)',
         },
-        // Network brand dots.
         net: {
           x: 'oklch(0.2 0 0)',
           li: 'oklch(0.5 0.13 250)',
