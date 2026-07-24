@@ -63,8 +63,8 @@ module.exports = {
         '3xl': '1.5rem',
       },
       boxShadow: {
-        card: '0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14)',
-        panel: '0 24px 60px -36px oklch(0.2 0 0 / 0.3)',
+        card: '0 24px 60px -28px oklch(0 0 0 / 0.5), 0 4px 14px -8px oklch(0 0 0 / 0.3)',
+        panel: '0 24px 60px -36px oklch(0 0 0 / 0.45)',
       },
       maxWidth: {
         site: '1180px',
