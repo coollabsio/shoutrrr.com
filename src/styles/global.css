@@ -83,6 +83,8 @@ html.dark {
   --lime-ring: oklch(0.79 0.2 128.85);
   --lime-soft: oklch(0.96 0.07 128);
   --lime-text: oklch(0.48 0.12 131);
+  --primary: var(--lime);
+  --primary-deep: var(--lime-deep);
 }
 
 * {

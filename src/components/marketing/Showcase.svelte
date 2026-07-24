@@ -130,7 +130,7 @@
 </div>
 
 <div
-  class="flex min-h-[460px] flex-col overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-panel"
+  class="theme-light flex min-h-[460px] flex-col overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-panel"
 >
   {#key tab}
     <div

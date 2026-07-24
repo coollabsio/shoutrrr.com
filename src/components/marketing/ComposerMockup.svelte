@@ -309,7 +309,7 @@
 
 <div
   bind:this={cardEl}
-  class="relative z-10 w-full min-w-0 overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-card"
+  class="theme-light relative z-10 w-full min-w-0 overflow-hidden rounded-2xl border border-line-strong bg-surface shadow-card"
 >
   <!-- platform tabs -->
   <div
