@@ -35,7 +35,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
          motion can actually run them. -->
     <script is:inline>
       document.documentElement.classList.add('js');
-      if (localStorage.getItem('theme') === 'dark') {
+      // Default to the OS preference; an explicit stored choice always wins.
+      var t = localStorage.getItem('theme');
+      if (
+        t === 'dark' ||
+        (t !== 'light' &&
+          window.matchMedia('(prefers-color-scheme: dark)').matches)
+      ) {
         document.documentElement.classList.add('dark');
       }
     </script>

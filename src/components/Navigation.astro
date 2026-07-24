@@ -144,6 +144,15 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
     paintTheme(isDark);
   });
 
+  // Follow the OS while the user hasn't picked an explicit theme.
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', (e) => {
+      if (localStorage.getItem('theme')) return;
+      document.documentElement.classList.toggle('dark', e.matches);
+      paintTheme(e.matches);
+    });
+
   function setOpen(open: boolean) {
     if (!menu || !toggle) return;
     menu.setAttribute('data-open', String(open));
