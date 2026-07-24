@@ -29,6 +29,8 @@
   /* kept for raw gradient/mask use */
   --primary: var(--lime);
   --primary-deep: var(--lime-deep);
+  --shadow-card: 0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14);
+  --shadow-panel: 0 24px 60px -36px oklch(0.2 0 0 / 0.3);
 }
 
 html.dark {
@@ -57,6 +59,8 @@ html.dark {
   --lime-text: oklch(0.82 0.18 128.85);
   --primary: var(--lime);
   --primary-deep: var(--lime-deep);
+  --shadow-card: 0 24px 60px -28px oklch(0 0 0 / 0.5), 0 4px 14px -8px oklch(0 0 0 / 0.3);
+  --shadow-panel: 0 24px 60px -36px oklch(0 0 0 / 0.45);
 }
 
 .theme-light {
@@ -85,6 +89,8 @@ html.dark {
   --lime-text: oklch(0.48 0.12 131);
   --primary: var(--lime);
   --primary-deep: var(--lime-deep);
+  --shadow-card: 0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14);
+  --shadow-panel: 0 24px 60px -36px oklch(0.2 0 0 / 0.3);
 }
 
 * {

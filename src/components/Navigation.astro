@@ -68,8 +68,8 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
         aria-label="Toggle dark mode"
         aria-pressed="false"
       >
-        <Sun id="icon-sun" class="size-[18px]" />
-        <Moon id="icon-moon" class="absolute hidden size-[18px]" />
+        <Sun id="icon-sun" class="size-[18px] dark:hidden" />
+        <Moon id="icon-moon" class="absolute hidden size-[18px] dark:block" />
       </button>
       <!-- Mobile toggle -->
       <button
@@ -128,13 +128,9 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
   const iconClose = document.getElementById('icon-close');
 
   const themeToggle = document.getElementById('theme-toggle');
-  const iconSun = document.getElementById('icon-sun');
-  const iconMoon = document.getElementById('icon-moon');
   const themeMeta = document.getElementById('theme-color-meta');
 
   function paintTheme(isDark: boolean) {
-    iconSun?.classList.toggle('hidden', isDark);
-    iconMoon?.classList.toggle('hidden', !isDark);
     themeToggle?.setAttribute('aria-pressed', String(isDark));
     themeMeta?.setAttribute('content', isDark ? '#343434' : '#ffffff');
   }
