@@ -298,3 +298,47 @@ body {
 .docs-prose .admonition-type-note {
   border-left-color: oklch(0.79 0.2 128.85);
 }
+
+/* ── Docs prose — dark overrides ─────────────────────────────────────── */
+html.dark .docs-prose h2 {
+  border-bottom-color: var(--line);
+}
+html.dark .docs-prose a {
+  color: var(--lime-text);
+  text-decoration-color: oklch(0.5 0.14 130 / 0.6);
+}
+html.dark .docs-prose a:hover {
+  text-decoration-color: var(--lime-text);
+}
+html.dark .docs-prose li::marker {
+  color: var(--ink-300);
+}
+html.dark .docs-prose :not(pre) > code {
+  background: var(--lime-soft);
+  color: var(--lime-text);
+}
+html.dark .docs-prose pre {
+  background: var(--surface-sunken) !important;
+  border-color: var(--line);
+}
+html.dark .docs-prose blockquote {
+  border-left-color: var(--lime-ring);
+  color: var(--ink-300);
+}
+html.dark .docs-prose img {
+  border-color: var(--line);
+}
+html.dark .docs-prose th,
+html.dark .docs-prose td {
+  border-color: var(--line);
+}
+html.dark .docs-prose th {
+  background: var(--surface-sunken);
+}
+html.dark .docs-prose hr {
+  border-top-color: var(--line);
+}
+html.dark .docs-prose .admonition {
+  border-color: var(--line);
+  background: var(--surface-sunken);
+}

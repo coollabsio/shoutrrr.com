@@ -110,7 +110,7 @@
   <!-- svelte-ignore a11y_click_events_have_key_events -->
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div
-    class="fixed inset-0 z-[100] flex items-start justify-center bg-ink-900/30 px-4 pt-[12vh] backdrop-blur-sm"
+    class="fixed inset-0 z-[100] flex items-start justify-center bg-ink-900/30 px-4 pt-[12vh] backdrop-blur-sm dark:bg-black/60"
     onclick={close}
   >
     <div
@@ -216,5 +216,22 @@
     color: oklch(0.405 0.101 131.063);
     padding: 0.05em 0.3em;
     border-radius: 4px;
+  }
+
+  /* ── Dark overrides ───────────────────────────────────────────────── */
+  :global(html.dark) .search-trigger:focus-visible {
+    border-color: var(--lime-ring);
+    box-shadow: 0 0 0 3px oklch(0.5 0.14 130 / 0.3);
+  }
+  :global(html.dark) .result-content :global(mark) {
+    background: var(--lime-soft);
+    color: var(--lime-text);
+  }
+  :global(html.dark) .result-content :global(strong) {
+    color: var(--foreground);
+  }
+  :global(html.dark) .result-content :global(code) {
+    background: var(--lime-soft);
+    color: var(--lime-text);
   }
 </style>
