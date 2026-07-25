@@ -343,7 +343,7 @@
           {#if isPublishing}
             <LoaderCircle class="size-3 animate-spin text-ink-300" aria-label="Publishing" />
           {:else if isPublished}
-            <Check class="size-3 text-lime-deep" aria-label="Published" />
+            <Check class="size-3 text-lime-deep dark:text-lime-text" aria-label="Published" />
           {:else}
             {info.sections > 1 ? `${info.sections}×` : accountLen}
           {/if}
@@ -477,7 +477,7 @@
       </span>
       <span>Live on X</span>
       <span
-        class="ml-auto inline-flex items-center gap-1 rounded-full bg-lime-soft px-2 py-0.5 text-[11px] font-medium text-lime-deep"
+        class="ml-auto inline-flex items-center gap-1 rounded-full bg-lime-soft px-2 py-0.5 text-[11px] font-medium text-lime-deep dark:text-lime-text"
       >
         <Check class="size-3" /> Published
       </span>
