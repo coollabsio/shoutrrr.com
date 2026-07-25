@@ -1,9 +1,9 @@
 <script lang="ts">
   /**
-   * Product tour — each tab is a faithful, light-themed replica of the real
-   * app screen it names (resources/js/components/compose, posts/calendar,
-   * analytics). Shadcn tokens are mapped onto the marketing palette
-   * (muted→grays, primary→lime, border→line).
+   * Product tour — each tab is a faithful replica of the real app screen it
+   * names (resources/js/components/compose, posts/calendar, analytics).
+   * Shadcn tokens are mapped onto the marketing palette (muted→grays,
+   * primary→lime, border→line), so it themes with the site in light and dark.
    */
   import { animate } from 'motion';
   import Logo from './Logo.svelte';
@@ -39,7 +39,7 @@
 
   // ── Composer tab data ──────────────────────────────────────────────
   const composerTabs = [
-    { id: 'x', platform: 'x', handle: '@shoutrrr', chip: '3×', active: true, tile: 'border border-line bg-white text-black' },
+    { id: 'x', platform: 'x', handle: '@shoutrrr', chip: '3×', active: true, tile: 'border border-line bg-white text-black dark:bg-black dark:text-white' },
     { id: 'li', platform: 'linkedin', handle: 'Shoutrrr', chip: '1', active: false, tile: 'bg-blue-600 text-white' },
     { id: 'bs', platform: 'bluesky', handle: '@shoutrrr.bsky', chip: '3×', active: false, tile: 'bg-sky-500 text-white' },
   ];
@@ -226,13 +226,13 @@
               {#each sections as s, i (i)}
                 {#if i > 0}
                   <div class="my-3.5 flex select-none items-center gap-2">
-                    <span class="h-px flex-1" style="background:linear-gradient(to right,transparent,oklch(0.92 0 0))"></span>
+                    <span class="h-px flex-1" style="background:linear-gradient(to right,transparent,var(--line))"></span>
                     <span class="inline-flex shrink-0 items-center gap-2 rounded-full border border-line bg-surface px-2 py-[3px] font-mono text-[10.5px] tabular-nums text-ink-300">
                       <span class="font-medium text-ink">0{i + 1}/03</span>
-                      <span class="size-[3px] rounded-full" style="background:oklch(0.55 0 0 / 0.5)"></span>
+                      <span class="size-[3px] rounded-full" style="background:var(--mock-dot)"></span>
                       <span>{s.count}/280</span>
                     </span>
-                    <span class="h-px flex-1" style="background:linear-gradient(to left,transparent,oklch(0.92 0 0))"></span>
+                    <span class="h-px flex-1" style="background:linear-gradient(to left,transparent,var(--line))"></span>
                   </div>
                 {/if}
                 <p class="whitespace-pre-wrap break-words text-[15px] leading-[1.55] text-ink-800">{s.text}</p>
@@ -240,7 +240,7 @@
             </div>
             <!-- char counter -->
             <div class="flex items-center justify-between px-4 py-3.5 text-[12px] text-ink-300 sm:px-5">
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-[oklch(0.96_0_0)] px-2.5 py-0.5 text-[11.5px] font-medium text-ink">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-[var(--mock-fill)] px-2.5 py-0.5 text-[11.5px] font-medium text-ink">
                 <span class="size-[5px] rounded-full bg-ink"></span>
                 3-post thread
               </span>
@@ -250,7 +250,7 @@
             <div class="flex items-center gap-1.5 border-t border-line bg-surface-sunken px-3 py-2.5">
               <span class="inline-flex h-7 items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300">
                 <ImageIcon class="size-3.5" /><span>Media</span>
-                <span class="rounded-full bg-ink px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-white">1</span>
+                <span class="rounded-full bg-ink px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-surface">1</span>
               </span>
               <div class="ml-auto"></div>
               <span class="inline-flex h-7 items-center gap-1.5 rounded-md border border-transparent px-2.5 text-[12px] text-ink-300">
@@ -274,12 +274,12 @@
               <span class="grid size-3.5 place-items-center text-ink-600">{@html GLYPHS.x}</span>
               How it lands on X
             </div>
-            <div class="overflow-hidden rounded-2xl border border-line bg-white">
+            <div class="overflow-hidden rounded-2xl border border-line bg-white dark:border-[#38444d] dark:bg-[#15202b]">
               {#each tweets as tw, i (i)}
                 <div class="flex gap-3 px-4 pt-3">
                   <!-- avatar + thread connector -->
                   <div class="flex flex-col items-center">
-                    <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white">
+                    <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white dark:border-[#38444d] dark:bg-[#15202b]">
                       <Logo class="size-8 text-lime" />
                     </span>
                     {#if i < tweets.length - 1}
@@ -289,16 +289,16 @@
                   <!-- tweet body -->
                   <div class="min-w-0 flex-1 pb-3">
                     <div class="flex items-center gap-1 text-[15px] leading-tight">
-                      <span class="font-bold text-[#0f1419]">Shoutrrr</span>
+                      <span class="font-bold text-[#0f1419] dark:text-[#e7e9ea]">Shoutrrr</span>
                       <svg class="size-[18px] shrink-0 text-[#1d9bf0]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z" />
                       </svg>
-                      <span class="truncate text-[#536471]">@shoutrrr</span>
-                      <span class="text-[#536471]">·</span>
-                      <span class="shrink-0 text-[#536471]">{tw.time}</span>
+                      <span class="truncate text-[#536471] dark:text-[#8b98a5]">@shoutrrr</span>
+                      <span class="text-[#536471] dark:text-[#8b98a5]">·</span>
+                      <span class="shrink-0 text-[#536471] dark:text-[#8b98a5]">{tw.time}</span>
                     </div>
-                    <p class="mt-0.5 whitespace-pre-wrap break-words text-[14px] leading-[1.4] text-[#0f1419]">{tw.text}</p>
-                    <div class="mt-3 flex max-w-[340px] items-center justify-between text-[#536471]">
+                    <p class="mt-0.5 whitespace-pre-wrap break-words text-[14px] leading-[1.4] text-[#0f1419] dark:text-[#e7e9ea]">{tw.text}</p>
+                    <div class="mt-3 flex max-w-[340px] items-center justify-between text-[#536471] dark:text-[#8b98a5]">
                       <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums"><MessageCircle class="size-[15px]" />{tw.replies}</span>
                       <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums"><Repeat2 class="size-[15px]" />{tw.reposts}</span>
                       <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums"><Heart class="size-[15px]" />{tw.likes}</span>
@@ -342,7 +342,7 @@
                 <div class="mb-2 flex items-center gap-2">
                   <span
                     class={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-[12px] font-semibold tabular-nums ${day.today ? 'bg-lime text-lime-deep' : 'text-ink-600'}`}
-                    style={day.today ? '' : 'background:oklch(0.96 0 0)'}
+                    style={day.today ? '' : 'background:var(--mock-fill)'}
                   >{day.n}</span>
                   <span class="text-[12px] font-medium text-ink-400">
                     June 2026{day.today ? ' · Today' : ''}
@@ -387,9 +387,9 @@
                       {#each (c.chips ?? []).slice(0, 2) as chip (chip.txt)}
                         <div
                           class="relative flex h-[18px] items-center gap-1.5 truncate rounded-sm pl-2 pr-1.5 text-[10.5px] font-medium tabular-nums"
-                          style="background:oklch(0.95 0.05 230 / 0.5);color:oklch(0.45 0.13 245)"
+                          style="background:var(--mock-sched-bg);color:var(--mock-sched-fg)"
                         >
-                          <span class="absolute inset-y-0.5 left-0 w-[2px] rounded-full" style="background:oklch(0.6 0.15 240)"></span>
+                          <span class="absolute inset-y-0.5 left-0 w-[2px] rounded-full" style="background:var(--mock-sched-bar)"></span>
                           <span class="shrink-0 opacity-80">{@html GLYPHS[chip.p]}</span>
                           <span class="hidden shrink-0 opacity-75 sm:inline">{chip.t}</span>
                           <span class="truncate">{chip.txt}</span>
@@ -413,7 +413,7 @@
                 <span
                   class="shrink-0 rounded-full px-2.5 py-1 text-[12px] font-medium"
                   class:bg-ink={f === 'All'}
-                  class:text-white={f === 'All'}
+                  class:text-surface={f === 'All'}
                   class:text-ink-300={f !== 'All'}
                   class:border={f !== 'All'}
                   class:border-line={f !== 'All'}
@@ -429,11 +429,11 @@
                   class:border-lime-ring={r.unread}
                   class:border-transparent={!r.unread}
                   class:bg-surface-sunken={r.selected}
-                  style={r.unread && !r.selected ? 'background:oklch(0.841 0.238 128.85 / 0.05)' : ''}
+                  style={r.unread && !r.selected ? 'background:var(--mock-unread)' : ''}
                 >
                   <!-- avatar + platform badge -->
                   <div class="relative shrink-0">
-                    <span class="grid size-9 place-items-center rounded-full text-[11px] font-semibold text-ink-600" style="background:oklch(0.96 0 0)">{r.initials}</span>
+                    <span class="grid size-9 place-items-center rounded-full text-[11px] font-semibold text-ink-600" style="background:var(--mock-fill)">{r.initials}</span>
                     <span class="absolute -bottom-0.5 -right-0.5 grid size-4 place-items-center rounded-full bg-surface text-ink-500 ring-1 ring-line">{@html GLYPHS[r.platform]}</span>
                   </div>
                   <div class="min-w-0 flex-1">
@@ -473,7 +473,7 @@
             <!-- header -->
             <div class="flex shrink-0 items-center gap-2.5 border-b border-line bg-surface px-4 py-3">
               <div class="relative shrink-0">
-                <span class="grid size-8 place-items-center rounded-full text-[11px] font-semibold text-ink-600" style="background:oklch(0.96 0 0)">PN</span>
+                <span class="grid size-8 place-items-center rounded-full text-[11px] font-semibold text-ink-600" style="background:var(--mock-fill)">PN</span>
                 <span class="absolute -bottom-0.5 -right-0.5 grid size-3.5 place-items-center rounded-full bg-surface text-ink-500 ring-1 ring-line">{@html GLYPHS.x}</span>
               </div>
               <div class="min-w-0 flex-1">
@@ -500,7 +500,7 @@
                   </div>
                 {:else}
                   <div class="flex min-w-0 gap-2.5">
-                    <span class="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-ink-600" style="background:oklch(0.96 0 0)">PN</span>
+                    <span class="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full text-[10px] font-semibold text-ink-600" style="background:var(--mock-fill)">PN</span>
                     <div class="max-w-[85%] rounded-2xl rounded-bl-sm border border-line bg-surface px-3.5 py-2.5">
                       <div class="mb-0.5 flex items-baseline gap-1.5">
                         <span class="truncate text-[12px] font-semibold">Priya Nair</span>
@@ -553,7 +553,7 @@
           <div class="rounded-xl border border-line bg-surface p-4">
             <svg viewBox="0 0 600 180" class="block h-auto w-full" preserveAspectRatio="none" role="img" aria-label="Follower growth across accounts">
               {#each [45, 90, 135] as y (y)}
-                <line x1="0" y1={y} x2="600" y2={y} stroke="oklch(0.92 0 0)" stroke-width="1" stroke-dasharray="3 3" />
+                <line x1="0" y1={y} x2="600" y2={y} style="stroke:var(--line)" stroke-width="1" stroke-dasharray="3 3" />
               {/each}
               <line x1="520" y1="0" x2="520" y2="180" stroke="oklch(0.841 0.238 128.85)" stroke-width="1.5" stroke-dasharray="3 3" />
               <polyline points="0,150 90,140 180,128 270,120 360,96 450,86 540,60 600,52" fill="none" stroke={lineColors[0]} stroke-width="2" />
@@ -567,7 +567,7 @@
             {#each accounts as a (a.platform)}
               <div class="rounded-xl border border-line bg-surface px-4 py-3">
                 <div class="flex items-center gap-2">
-                  <span class="grid size-6 shrink-0 place-items-center rounded-full bg-[oklch(0.96_0_0)] text-ink">
+                  <span class="grid size-6 shrink-0 place-items-center rounded-full bg-[var(--mock-fill)] text-ink">
                     {@html GLYPHS[a.platform as keyof typeof GLYPHS]}
                   </span>
                   <span class="truncate text-[11px] text-ink-300">{a.name}</span>
@@ -588,7 +588,7 @@
                 <div class="flex items-center gap-3 py-2.5">
                   <span
                     class="grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-semibold tabular-nums"
-                    style={p.top ? 'background:oklch(0.93 0.06 160);color:oklch(0.5 0.13 160)' : 'background:oklch(0.96 0 0);color:oklch(0.5 0 0)'}
+                    style={p.top ? 'background:var(--mock-top-bg);color:var(--mock-top-fg)' : 'background:var(--mock-fill);color:var(--mock-fill-fg)'}
                   >{p.rank}</span>
                   <div class="min-w-0 flex-1">
                     <p class="truncate text-[13px] font-medium leading-snug">{p.title}</p>
@@ -602,7 +602,7 @@
                   <span
                     class="shrink-0 text-[12px] font-semibold tabular-nums"
                     class:text-ink-300={!p.top}
-                    style={p.top ? 'color:oklch(0.5 0.13 160)' : ''}
+                    style={p.top ? 'color:var(--mock-top-fg)' : ''}
                   >{p.eng}</span>
                 </div>
               {/each}

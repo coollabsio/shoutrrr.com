@@ -4,11 +4,85 @@
 
 :root {
   color-scheme: light;
-  /* oklch tokens mirrored for raw CSS (gradients, masks, inline use). */
-  --primary: oklch(0.841 0.238 128.85);
-  --primary-deep: oklch(0.405 0.101 131.063);
-  --foreground: oklch(0.205 0 0);
   --background: oklch(1 0 0);
+  --foreground: oklch(0.205 0 0);
+  --surface: oklch(1 0 0);
+  --surface-sunken: oklch(0.985 0 0);
+  --surface-raised: oklch(0.99 0 0);
+  --line: oklch(0.92 0 0);
+  --line-soft: oklch(0.94 0 0);
+  --line-strong: oklch(0.9 0 0);
+  --ink: oklch(0.205 0 0);
+  --ink-900: oklch(0.145 0 0);
+  --ink-800: oklch(0.22 0 0);
+  --ink-700: oklch(0.3 0 0);
+  --ink-600: oklch(0.4 0 0);
+  --ink-500: oklch(0.46 0 0);
+  --ink-400: oklch(0.5 0 0);
+  --ink-300: oklch(0.55 0 0);
+  --ink-200: oklch(0.6 0 0);
+  --lime: oklch(0.841 0.238 128.85);
+  --lime-deep: oklch(0.405 0.101 131.063);
+  --lime-ring: oklch(0.79 0.2 128.85);
+  --lime-soft: oklch(0.96 0.07 128);
+  --lime-text: oklch(0.48 0.12 131);
+  /* kept for raw gradient/mask use */
+  --primary: var(--lime);
+  --primary-deep: var(--lime-deep);
+  --shadow-card: 0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14);
+  --shadow-panel: 0 24px 60px -36px oklch(0.2 0 0 / 0.3);
+  /* Product-mockup fills. Referenced from inline `style=` in the composer and
+     showcase components, where Tailwind `dark:` variants can't reach. Dark
+     values track the Shoutrrr app's own dark palette (muted / chart hues). */
+  --mock-fill: oklch(0.96 0 0);
+  --mock-fill-fg: oklch(0.5 0 0);
+  --mock-dot: oklch(0.55 0 0 / 0.5);
+  --mock-sched-bg: oklch(0.95 0.05 230 / 0.5);
+  --mock-sched-fg: oklch(0.45 0.13 245);
+  --mock-sched-bar: oklch(0.6 0.15 240);
+  --mock-top-bg: oklch(0.93 0.06 160);
+  --mock-top-fg: oklch(0.5 0.13 160);
+  --mock-unread: oklch(0.841 0.238 128.85 / 0.05);
+}
+
+html.dark {
+  color-scheme: dark;
+  --background: oklch(0.205 0 0);
+  --foreground: oklch(0.95 0 0);
+  --surface: oklch(0.205 0 0);
+  --surface-sunken: oklch(0.18 0 0);
+  --surface-raised: oklch(0.245 0 0);
+  --line: oklch(0.32 0 0);
+  --line-soft: oklch(0.28 0 0);
+  --line-strong: oklch(0.38 0 0);
+  --ink: oklch(0.95 0 0);
+  --ink-900: oklch(0.16 0 0); /* stays dark: used as bg/scrim only */
+  --ink-800: oklch(0.92 0 0);
+  --ink-700: oklch(0.9 0 0);
+  --ink-600: oklch(0.82 0 0);
+  --ink-500: oklch(0.72 0 0);
+  --ink-400: oklch(0.68 0 0);
+  --ink-300: oklch(0.6 0 0);
+  --ink-200: oklch(0.55 0 0);
+  --lime: oklch(0.86 0.21 128.85);
+  --lime-deep: oklch(0.405 0.101 131.063);
+  --lime-ring: oklch(0.5 0.14 130);
+  --lime-soft: oklch(0.28 0.06 130);
+  --lime-text: oklch(0.82 0.18 128.85);
+  --primary: var(--lime);
+  --primary-deep: var(--lime-deep);
+  --shadow-card: 0 24px 60px -28px oklch(0 0 0 / 0.5), 0 4px 14px -8px oklch(0 0 0 / 0.3);
+  --shadow-panel: 0 24px 60px -36px oklch(0 0 0 / 0.45);
+  /* Mockup fills, re-stepped for the dark card surface (app --muted / chart). */
+  --mock-fill: oklch(0.269 0 0);
+  --mock-fill-fg: oklch(0.708 0 0);
+  --mock-dot: oklch(0.708 0 0 / 0.5);
+  --mock-sched-bg: oklch(0.42 0.09 245 / 0.35);
+  --mock-sched-fg: oklch(0.8 0.11 240);
+  --mock-sched-bar: oklch(0.65 0.16 240);
+  --mock-top-bg: oklch(0.35 0.08 160);
+  --mock-top-fg: oklch(0.82 0.15 160);
+  --mock-unread: oklch(0.841 0.238 128.85 / 0.08);
 }
 
 * {
@@ -262,6 +336,72 @@ header {
 .docs-prose .admonition-type-info,
 .docs-prose .admonition-type-note {
   border-left-color: oklch(0.79 0.2 128.85);
+}
+
+/* ── Docs prose — dark overrides ─────────────────────────────────────── */
+html.dark .docs-prose h2 {
+  border-bottom-color: var(--line);
+}
+html.dark .docs-prose a {
+  color: var(--lime-text);
+  text-decoration-color: oklch(0.5 0.14 130 / 0.6);
+}
+html.dark .docs-prose a:hover {
+  text-decoration-color: var(--lime-text);
+}
+html.dark .docs-prose li::marker {
+  color: var(--ink-300);
+}
+html.dark .docs-prose :not(pre) > code {
+  background: var(--lime-soft);
+  color: var(--lime-text);
+}
+html.dark .docs-prose pre {
+  background: var(--surface-sunken) !important;
+  border-color: var(--line);
+}
+/* Shiki dual-theme: swap the baked light token colors for the github-dark
+   palette (exposed as --shiki-dark* per token). We keep our own charcoal
+   block background above for cohesion, so only the text colors are swapped. */
+html.dark .docs-prose .astro-code,
+html.dark .docs-prose .astro-code span {
+  color: var(--shiki-dark) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+html.dark .docs-prose blockquote {
+  border-left-color: var(--lime-ring);
+  color: var(--ink-300);
+}
+html.dark .docs-prose img {
+  border-color: var(--line);
+}
+html.dark .docs-prose th,
+html.dark .docs-prose td {
+  border-color: var(--line);
+}
+html.dark .docs-prose th {
+  background: var(--surface-sunken);
+}
+html.dark .docs-prose hr {
+  border-top-color: var(--line);
+}
+html.dark .docs-prose .admonition {
+  border-color: var(--line);
+  background: var(--surface-sunken);
+}
+html.dark .docs-prose .admonition-type-warn,
+html.dark .docs-prose .admonition-type-warning {
+  border-left-color: oklch(0.8 0.16 75);
+}
+html.dark .docs-prose .admonition-type-error,
+html.dark .docs-prose .admonition-type-danger {
+  border-left-color: oklch(0.68 0.21 25);
+}
+html.dark .docs-prose .admonition-type-info,
+html.dark .docs-prose .admonition-type-note {
+  border-left-color: var(--lime-ring);
 }
 
 /* ── Code block copy button ────────────────────────────────────────────── */
@@ -638,3 +778,113 @@ header {
 .api-status-2xx { background: oklch(0.94 0.06 145); color: oklch(0.4 0.13 145); }
 .api-status-4xx { background: oklch(0.94 0.06 60); color: oklch(0.45 0.13 60); }
 .api-status-5xx { background: oklch(0.94 0.08 25); color: oklch(0.45 0.18 25); }
+
+/* ── Dark overrides for the docs/API components added in the cloud-launch
+   merge. Structural surfaces/borders/muted text map to theme tokens; vivid
+   badges (method + status chips) get dark-tinted variants. Light-mode rules
+   above are untouched. ─────────────────────────────────────────────────── */
+/* Code copy button */
+html.dark .code-copy {
+  border-color: var(--line);
+  background: var(--surface-raised);
+  color: var(--ink-300);
+}
+html.dark .code-copy:hover {
+  color: var(--foreground);
+}
+html.dark .code-copy.copied {
+  color: var(--lime-text);
+  border-color: var(--lime-ring);
+}
+/* Tabs */
+html.dark .docs-prose .docs-tabs {
+  border-color: var(--line);
+}
+html.dark .docs-tablist {
+  background: var(--surface-sunken);
+  border-bottom-color: var(--line);
+}
+html.dark .docs-tab-trigger {
+  color: var(--ink-300);
+}
+html.dark .docs-tab-trigger:hover {
+  color: var(--foreground);
+}
+html.dark .docs-tab-trigger[aria-selected='true'] {
+  color: var(--lime-text);
+  border-bottom-color: var(--lime-ring);
+}
+/* Steps */
+html.dark .docs-step::before {
+  background: var(--lime-soft);
+  color: var(--lime-text);
+}
+html.dark .docs-step::after {
+  background: var(--line);
+}
+/* Accordion */
+html.dark .docs-prose .docs-accordion {
+  border-color: var(--line);
+  background: var(--surface-raised);
+}
+html.dark .docs-accordion-summary {
+  color: var(--foreground);
+}
+html.dark .docs-accordion-chevron {
+  color: var(--ink-300);
+}
+/* Banner */
+html.dark .docs-prose .docs-banner {
+  border-color: var(--line);
+  background: var(--surface-sunken);
+}
+html.dark .docs-banner-close {
+  color: var(--ink-300);
+}
+html.dark .docs-banner-close:hover {
+  color: var(--foreground);
+  background: var(--surface-raised);
+}
+/* Type table */
+html.dark .docs-prose .docs-type-table {
+  border-color: var(--line);
+}
+html.dark .docs-type-table th {
+  background: var(--surface-sunken);
+  border-bottom-color: var(--line);
+  color: var(--ink-300);
+}
+html.dark .docs-type-table td {
+  border-bottom-color: var(--line);
+}
+html.dark .docs-type-table tr:last-child td {
+  border-bottom: none;
+}
+html.dark .docs-type-table .type-name {
+  color: var(--lime-text);
+  background: var(--lime-soft);
+}
+html.dark .docs-type-table .type-kind,
+html.dark .docs-type-table .type-default {
+  color: var(--ink-400);
+}
+html.dark .docs-type-table .type-desc,
+html.dark .docs-type-table .type-dash {
+  color: var(--ink-300);
+}
+/* API reference */
+html.dark .api-op {
+  border-top-color: var(--line);
+}
+html.dark .api-op-path {
+  color: var(--foreground);
+}
+html.dark .api-op-auth,
+html.dark .api-op h4,
+html.dark .api-variant-label,
+html.dark .api-nullable {
+  color: var(--ink-300);
+}
+html.dark .api-status-2xx { background: oklch(0.33 0.07 145); color: oklch(0.86 0.16 145); }
+html.dark .api-status-4xx { background: oklch(0.35 0.07 70); color: oklch(0.87 0.14 80); }
+html.dark .api-status-5xx { background: oklch(0.33 0.09 25); color: oklch(0.84 0.16 25); }

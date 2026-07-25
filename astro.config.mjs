@@ -17,7 +17,13 @@ export default defineConfig({
     remarkPlugins: [remarkDirective, remarkCallout],
     rehypePlugins: [rehypeHeadingAnchors],
     shikiConfig: {
-      theme: 'github-light',
+      // Dual themes: Shiki bakes light colors inline and dark colors as
+      // `--shiki-dark*` custom properties; global.css activates them under
+      // `html.dark` (see the .astro-code dark rule).
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
       wrap: false,
     },
   },

@@ -38,6 +38,19 @@ const iconVersion = '2026-06-megaphone';
          motion can actually run them. -->
     <script is:inline>
       document.documentElement.classList.add('js');
+      // Default to the OS preference; an explicit stored choice always wins.
+      // Guarded because localStorage/matchMedia can throw where storage is
+      // disabled (privacy modes, sandboxed iframes, cookie-blocked embeds).
+      try {
+        var t = localStorage.getItem('theme');
+        if (
+          t === 'dark' ||
+          (t !== 'light' &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
     </script>
 
     <!-- Open Graph -->
@@ -64,7 +77,7 @@ const iconVersion = '2026-06-megaphone';
     <link rel="icon" type="image/png" sizes="48x48" href={`/favicon-48x48.png?v=${iconVersion}`} />
     <link rel="apple-touch-icon" sizes="180x180" href={`/apple-touch-icon.png?v=${iconVersion}`} />
     <link rel="manifest" href={`/site.webmanifest?v=${iconVersion}`} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta id="theme-color-meta" name="theme-color" content="#ffffff" />
 
     {
       jsonLd && (

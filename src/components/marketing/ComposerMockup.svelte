@@ -44,7 +44,7 @@
   };
 
   const ACCOUNTS: Account[] = [
-    { id: 'x', platform: 'x', handle: '@acme', limit: 280, tile: 'border border-line bg-white text-black' },
+    { id: 'x', platform: 'x', handle: '@acme', limit: 280, tile: 'border border-line bg-white text-black dark:bg-black dark:text-white' },
     { id: 'li', platform: 'linkedin', handle: 'Acme Inc', limit: 3000, tile: 'bg-blue-600 text-white' },
     { id: 'bs', platform: 'bluesky', handle: '@acme.bsky', limit: 300, tile: 'bg-sky-500 text-white' },
   ];
@@ -343,7 +343,7 @@
           {#if isPublishing}
             <LoaderCircle class="size-3 animate-spin text-ink-300" aria-label="Publishing" />
           {:else if isPublished}
-            <Check class="size-3 text-lime-deep" aria-label="Published" />
+            <Check class="size-3 text-lime-deep dark:text-lime-text" aria-label="Published" />
           {:else}
             {info.sections > 1 ? `${info.sections}×` : accountLen}
           {/if}
@@ -377,7 +377,7 @@
     <div class="flex min-w-0 items-center gap-2.5">
       {#if activeInfo.sections > 1}
         <span
-          class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[oklch(0.96_0_0)] px-2.5 py-0.5 text-[11.5px] font-medium text-ink"
+          class="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--mock-fill)] px-2.5 py-0.5 text-[11.5px] font-medium text-ink"
         >
           <span class="size-[5px] rounded-full bg-ink"></span>
           {activeInfo.sections}-post thread
@@ -406,7 +406,7 @@
       <ImageIcon class="size-3.5" />
       <span>Media</span>
       <span
-        class="rounded-full bg-ink px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none tabular-nums text-white"
+        class="rounded-full bg-ink px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none tabular-nums text-surface"
         >1</span
       >
     </button>
@@ -477,20 +477,20 @@
       </span>
       <span>Live on X</span>
       <span
-        class="ml-auto inline-flex items-center gap-1 rounded-full bg-lime-soft px-2 py-0.5 text-[11px] font-medium text-lime-deep"
+        class="ml-auto inline-flex items-center gap-1 rounded-full bg-lime-soft px-2 py-0.5 text-[11px] font-medium text-lime-deep dark:text-lime-text"
       >
         <Check class="size-3" /> Published
       </span>
     </div>
 
-    <div class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-white">
+    <div class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-line bg-white dark:border-[#38444d] dark:bg-[#15202b]">
       <div class="flex gap-3 p-4">
-        <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white">
+        <span class="grid size-10 shrink-0 place-items-center rounded-full border border-line bg-white dark:border-[#38444d] dark:bg-[#15202b]">
           <Logo class="size-8 text-lime" />
         </span>
         <div class="min-w-0 flex-1">
           <div class="flex items-center gap-1 text-[15px] leading-tight">
-            <span class="font-bold text-[#0f1419]">Shoutrrr</span>
+            <span class="font-bold text-[#0f1419] dark:text-[#e7e9ea]">Shoutrrr</span>
             <svg
               class="size-[18px] shrink-0 text-[#1d9bf0]"
               viewBox="0 0 24 24"
@@ -501,14 +501,14 @@
                 d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"
               />
             </svg>
-            <span class="truncate text-[#536471]">@shoutrrr</span>
-            <span class="text-[#536471]">·</span>
-            <span class="shrink-0 text-[#536471]">{xPost.time}</span>
+            <span class="truncate text-[#536471] dark:text-[#8b98a5]">@shoutrrr</span>
+            <span class="text-[#536471] dark:text-[#8b98a5]">·</span>
+            <span class="shrink-0 text-[#536471] dark:text-[#8b98a5]">{xPost.time}</span>
           </div>
-          <p class="mt-0.5 whitespace-pre-wrap break-words text-[14px] leading-[1.45] text-[#0f1419]">
+          <p class="mt-0.5 whitespace-pre-wrap break-words text-[14px] leading-[1.45] text-[#0f1419] dark:text-[#e7e9ea]">
             {xPost.text}
           </p>
-          <div class="mt-3 flex max-w-[340px] items-center justify-between text-[#536471]">
+          <div class="mt-3 flex max-w-[340px] items-center justify-between text-[#536471] dark:text-[#8b98a5]">
             <span class="inline-flex items-center gap-1.5 text-[12.5px] tabular-nums">
               <MessageCircle class="size-[15px]" />{xPost.replies}
             </span>

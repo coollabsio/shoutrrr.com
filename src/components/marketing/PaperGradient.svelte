@@ -9,6 +9,7 @@
 
   let {
     colors,
+    darkColors,
     speed = 0.16,
     distortion = 0.8,
     swirl = 0.6,
@@ -16,6 +17,9 @@
     style = '',
   }: {
     colors: string[];
+    /** Palette used while `html.dark` is set. Without it a light palette
+     *  would wash the surface out and strand the text on top. */
+    darkColors?: string[];
     speed?: number;
     distortion?: number;
     swirl?: number;
@@ -26,8 +30,17 @@
   let host: HTMLDivElement;
 
   onMount(() => {
-    let mount: { dispose: () => void } | null = null;
+    let mount: {
+      dispose: () => void;
+      setUniforms: (u: Record<string, unknown>) => void;
+    } | null = null;
     let cancelled = false;
+    let observer: MutationObserver | null = null;
+
+    const palette = () =>
+      darkColors && document.documentElement.classList.contains('dark')
+        ? darkColors
+        : colors;
 
     void import('@paper-design/shaders').then(
       ({ ShaderMount, meshGradientFragmentShader, getShaderColorFromString }) => {
@@ -35,13 +48,16 @@
         const reduce = window.matchMedia(
           '(prefers-reduced-motion: reduce)',
         ).matches;
+        const paletteUniforms = (list: string[]) => ({
+          u_colors: list.map((c) => getShaderColorFromString(c)),
+          u_colorsCount: list.length,
+        });
 
         mount = new ShaderMount(
           host,
           meshGradientFragmentShader,
           {
-            u_colors: colors.map((c) => getShaderColorFromString(c)),
-            u_colorsCount: colors.length,
+            ...paletteUniforms(palette()),
             u_distortion: distortion,
             u_swirl: swirl,
             u_grainMixer: 0,
@@ -61,11 +77,23 @@
           undefined,
           reduce ? 0 : speed,
         );
+
+        if (darkColors) {
+          // Repaint when the toggle flips `dark` on <html>.
+          observer = new MutationObserver(() =>
+            mount?.setUniforms(paletteUniforms(palette())),
+          );
+          observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class'],
+          });
+        }
       },
     );
 
     return () => {
       cancelled = true;
+      observer?.disconnect();
       mount?.dispose();
     };
   });

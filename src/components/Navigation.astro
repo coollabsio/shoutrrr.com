@@ -4,6 +4,8 @@ import Logo from './Logo.astro';
 import Menu from 'lucide-astro/Menu';
 import X from 'lucide-astro/X';
 import ChevronRight from 'lucide-astro/ChevronRight';
+import Sun from 'lucide-astro/Sun';
+import Moon from 'lucide-astro/Moon';
 const links = [
   { href: '/#features', label: 'Features' },
   { href: '/#showcase', label: 'Product' },
@@ -20,7 +22,7 @@ const CLOUD = 'https://app.shoutrrr.com';
 ---
 
 <header
-  class="sticky top-0 z-50 border-b border-line bg-white/85 backdrop-blur-lg backdrop-saturate-150"
+  class="sticky top-0 z-50 border-b border-line bg-surface/85 backdrop-blur-lg backdrop-saturate-150"
 >
   <nav
     class="mx-auto flex max-w-site items-center justify-between gap-6 px-5 py-3 sm:px-6 sm:py-3.5"
@@ -56,6 +58,16 @@ const CLOUD = 'https://app.shoutrrr.com';
         class="rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
         >Get started</a
       >
+      <button
+        id="theme-toggle"
+        type="button"
+        class="relative grid size-9 place-items-center rounded-[9px] text-ink-700 transition-colors hover:bg-surface-sunken"
+        aria-label="Toggle dark mode"
+        aria-pressed="false"
+      >
+        <Sun id="icon-sun" class="size-[18px] dark:hidden" />
+        <Moon id="icon-moon" class="absolute hidden size-[18px] dark:block" />
+      </button>
       <!-- Mobile toggle -->
       <button
         id="menu-toggle"
@@ -111,6 +123,32 @@ const CLOUD = 'https://app.shoutrrr.com';
   const menu = document.getElementById('mobile-menu');
   const iconMenu = document.getElementById('icon-menu');
   const iconClose = document.getElementById('icon-close');
+
+  const themeToggle = document.getElementById('theme-toggle');
+  const themeMeta = document.getElementById('theme-color-meta');
+
+  function paintTheme(isDark: boolean) {
+    themeToggle?.setAttribute('aria-pressed', String(isDark));
+    themeMeta?.setAttribute('content', isDark ? '#343434' : '#ffffff');
+  }
+
+  // Sync button/meta to the class the inline head script already applied.
+  paintTheme(document.documentElement.classList.contains('dark'));
+
+  themeToggle?.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    paintTheme(isDark);
+  });
+
+  // Follow the OS while the user hasn't picked an explicit theme.
+  window
+    .matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', (e) => {
+      if (localStorage.getItem('theme')) return;
+      document.documentElement.classList.toggle('dark', e.matches);
+      paintTheme(e.matches);
+    });
 
   function setOpen(open: boolean) {
     if (!menu || !toggle) return;
