@@ -1,5 +1,6 @@
 ---
 import BrandIcon from './marketing/BrandIcon.astro';
+import Logo from './Logo.astro';
 import Menu from 'lucide-astro/Menu';
 import X from 'lucide-astro/X';
 import ChevronRight from 'lucide-astro/ChevronRight';
@@ -8,6 +9,7 @@ import Moon from 'lucide-astro/Moon';
 const links = [
   { href: '/#features', label: 'Features' },
   { href: '/#showcase', label: 'Product' },
+  { href: '/#pricing', label: 'Pricing' },
   { href: '/#security', label: 'Security' },
   { href: '/docs', label: 'Docs' },
   { href: '/philosophy', label: 'Philosophy' },
@@ -16,6 +18,7 @@ const links = [
   { href: '/#faq', label: 'FAQ' },
 ];
 const GITHUB = 'https://github.com/coollabsio/shoutrrr';
+const CLOUD = 'https://app.shoutrrr.com';
 ---
 
 <header
@@ -26,13 +29,7 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
   >
     <!-- Logo -->
     <a href="/" class="flex items-center gap-2.5 text-ink no-underline">
-      <img
-        src="/shoutrrr.png"
-        alt=""
-        width="30"
-        height="30"
-        class="h-[30px] w-[30px]"
-      />
+      <Logo class="h-[30px] w-[30px] text-lime" />
       <span class="text-[18px] font-bold -tracking-[0.01em]">Shoutrrr</span>
     </a>
 
@@ -57,9 +54,9 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
         ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
       >
       <a
-        href="/#get"
+        href={CLOUD}
         class="rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
-        >Deploy it</a
+        >Get started</a
       >
       <button
         id="theme-toggle"
@@ -111,9 +108,9 @@ const GITHUB = 'https://github.com/coollabsio/shoutrrr';
             ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
           >
           <a
-            href="/#get"
+            href={CLOUD}
             class="inline-flex items-center justify-center rounded-xl border border-lime-ring bg-lime px-4 py-3 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
-            >Deploy it</a
+            >Get started</a
           >
         </div>
       </nav>

@@ -1,0 +1,7 @@
+---
+// src/components/docs/api/MethodBadge.astro
+interface Props { method: string; }
+const { method } = Astro.props;
+const cls = `api-method api-method-${method.toLowerCase()}`;
+---
+<span class={cls}>{method}</span>

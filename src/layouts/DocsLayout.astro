@@ -5,6 +5,7 @@ import Layout from './Layout.astro';
 import DocsSidebar from '../components/docs/DocsSidebar.astro';
 import DocsSearch from '../components/docs/DocsSearch.svelte';
 import Toc from '../components/docs/Toc.astro';
+import { getAllTags } from '../lib/docs/source';
 
 interface Props {
   title: string;
@@ -12,18 +13,20 @@ interface Props {
   tree: Root;
   headings: MarkdownHeading[];
   currentUrl: string;
+  jsonLd?: unknown;
 }
 
-const { title, description, tree, headings, currentUrl } = Astro.props;
+const { title, description, tree, headings, currentUrl, jsonLd } = Astro.props;
+const tags = await getAllTags();
 ---
 
-<Layout title={`${title} — Shoutrrr Docs`} description={description}>
+<Layout title={`${title} — Shoutrrr Docs`} description={description} jsonLd={jsonLd}>
   <div class="mx-auto flex w-full max-w-site gap-8 px-5 sm:px-6">
     <!-- Sidebar (desktop) -->
     <aside
       class="sticky top-[70px] hidden h-[calc(100vh-70px)] w-64 shrink-0 overflow-y-auto py-8 pr-2 lg:block"
     >
-      <DocsSearch client:idle />
+      <DocsSearch client:idle tags={tags} />
       <nav aria-label="Documentation" class="mt-5">
         <DocsSidebar tree={tree} currentUrl={currentUrl} />
       </nav>
@@ -41,7 +44,7 @@ const { title, description, tree, headings, currentUrl } = Astro.props;
           Documentation menu
         </summary>
         <div class="border-t border-line px-3 py-3">
-          <DocsSearch client:idle />
+          <DocsSearch client:idle tags={tags} />
           <nav aria-label="Documentation" class="mt-4">
             <DocsSidebar tree={tree} currentUrl={currentUrl} />
           </nav>
@@ -54,4 +57,7 @@ const { title, description, tree, headings, currentUrl } = Astro.props;
     <!-- Table of contents -->
     <Toc headings={headings} />
   </div>
+  <script>
+    import '../scripts/docs-enhance.ts';
+  </script>
 </Layout>

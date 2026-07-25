@@ -1,0 +1,70 @@
+---
+// src/components/docs/api/Operation.astro
+import MethodBadge from './MethodBadge.astro';
+import SchemaTable from './SchemaTable.astro';
+import CodeSamples from './CodeSamples.astro';
+import { operationAnchor } from '../../../lib/api/openapi.js';
+import { exampleFromSchema } from '../../../lib/api/schema.js';
+
+interface Props { op: any; }
+const { op } = Astro.props;
+const anchor = operationAnchor(op);
+
+// Request body: pick the first content type; JSON vs multipart drives samples.
+const bodyContent = op.requestBody?.content ?? {};
+const jsonSchema = bodyContent['application/json']?.schema ?? null;
+const multipartSchema = bodyContent['multipart/form-data']?.schema ?? null;
+const reqSchema = jsonSchema ?? multipartSchema;
+const isMultipart = !jsonSchema && !!multipartSchema;
+const sampleBody = reqSchema ? exampleFromSchema(reqSchema) : null;
+
+const pathParams = op.parameters.filter((p: any) => p.in === 'path');
+const queryParams = op.parameters.filter((p: any) => p.in === 'query');
+
+// Turn a parameter list into a pseudo-object schema so SchemaTable can render it.
+const paramsSchema = (params: any) => ({
+  type: 'object',
+  required: params.filter((p: any) => p.required).map((p: any) => p.name),
+  properties: Object.fromEntries(params.map((p: any) => [p.name, { ...p.schema, description: p.description }])),
+});
+
+const statuses = Object.entries(op.responses);
+---
+<section class="api-op">
+  <h3 id={anchor}>
+    <a class="heading-link" href={`#${anchor}`}>
+      <MethodBadge method={op.method} />
+      <code class="api-op-path">{op.path}</code>
+      <span class="heading-anchor" aria-hidden="true"></span>
+    </a>
+  </h3>
+  {op.summary && <p class="api-op-summary">{op.summary}</p>}
+  <p class="api-op-auth">Requires <code>Authorization: Bearer &lt;token&gt;</code>.</p>
+
+  {pathParams.length > 0 && (<><h4>Path parameters</h4><SchemaTable schema={paramsSchema(pathParams)} /></>)}
+  {queryParams.length > 0 && (<><h4>Query parameters</h4><SchemaTable schema={paramsSchema(queryParams)} /></>)}
+
+  {reqSchema && (
+    <>
+      <h4>Request body{isMultipart && ' (multipart/form-data)'}</h4>
+      <SchemaTable schema={reqSchema} />
+    </>
+  )}
+
+  <h4>Example request</h4>
+  <CodeSamples method={op.method} path={op.path} body={sampleBody} multipart={isMultipart} />
+
+  <h4>Responses</h4>
+  {statuses.map(([status, res]: any) => {
+    const schema = res?.content?.['application/json']?.schema ?? null;
+    return (
+      <div class="api-response">
+        <p class="api-response-status">
+          <code class={`api-status api-status-${status[0]}xx`}>{status}</code>
+          {res?.description && <span>{res.description}</span>}
+        </p>
+        {schema && <SchemaTable schema={schema} />}
+      </div>
+    );
+  })}
+</section>

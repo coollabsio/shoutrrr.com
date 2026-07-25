@@ -1,0 +1,42 @@
+---
+/**
+ * Tabbed content. Wrap one <Tab> per label, in the same order as `items`:
+ *
+ *   <Tabs items={["npm", "pnpm", "yarn"]} group="pm">
+ *     <Tab>```sh\nnpm i shoutrrr\n```</Tab>
+ *     <Tab>```sh\npnpm add shoutrrr\n```</Tab>
+ *     <Tab>```sh\nyarn add shoutrrr\n```</Tab>
+ *   </Tabs>
+ *
+ * Pass a shared `group` to sync + remember the choice across tab sets on the
+ * page (e.g. pick "pnpm" once and every install snippet follows).
+ */
+interface Props {
+  items: string[];
+  group?: string;
+}
+
+const { items, group } = Astro.props;
+---
+
+<div class="docs-tabs not-prose" data-tabs data-group={group}>
+  <div role="tablist" class="docs-tablist">
+    {
+      items.map((label, i) => (
+        <button
+          type="button"
+          role="tab"
+          data-tab-trigger
+          data-value={label}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          class="docs-tab-trigger"
+        >
+          {label}
+        </button>
+      ))
+    }
+  </div>
+  <div class="docs-tab-panels">
+    <slot />
+  </div>
+</div>

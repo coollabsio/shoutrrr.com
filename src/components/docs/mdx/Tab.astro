@@ -1,0 +1,8 @@
+---
+// One panel inside <Tabs>. Visibility is driven by docs-enhance.ts; the first
+// panel shows by default via CSS so it's correct before hydration.
+---
+
+<div role="tabpanel" data-tab-panel class="docs-tab-panel">
+  <slot />
+</div>
