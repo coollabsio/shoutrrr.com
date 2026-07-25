@@ -31,6 +31,18 @@
   --primary-deep: var(--lime-deep);
   --shadow-card: 0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14);
   --shadow-panel: 0 24px 60px -36px oklch(0.2 0 0 / 0.3);
+  /* Product-mockup fills. Referenced from inline `style=` in the composer and
+     showcase components, where Tailwind `dark:` variants can't reach. Dark
+     values track the Shoutrrr app's own dark palette (muted / chart hues). */
+  --mock-fill: oklch(0.96 0 0);
+  --mock-fill-fg: oklch(0.5 0 0);
+  --mock-dot: oklch(0.55 0 0 / 0.5);
+  --mock-sched-bg: oklch(0.95 0.05 230 / 0.5);
+  --mock-sched-fg: oklch(0.45 0.13 245);
+  --mock-sched-bar: oklch(0.6 0.15 240);
+  --mock-top-bg: oklch(0.93 0.06 160);
+  --mock-top-fg: oklch(0.5 0.13 160);
+  --mock-unread: oklch(0.841 0.238 128.85 / 0.05);
 }
 
 html.dark {
@@ -61,36 +73,16 @@ html.dark {
   --primary-deep: var(--lime-deep);
   --shadow-card: 0 24px 60px -28px oklch(0 0 0 / 0.5), 0 4px 14px -8px oklch(0 0 0 / 0.3);
   --shadow-panel: 0 24px 60px -36px oklch(0 0 0 / 0.45);
-}
-
-.theme-light {
-  color-scheme: light;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.205 0 0);
-  --surface: oklch(1 0 0);
-  --surface-sunken: oklch(0.985 0 0);
-  --surface-raised: oklch(0.99 0 0);
-  --line: oklch(0.92 0 0);
-  --line-soft: oklch(0.94 0 0);
-  --line-strong: oklch(0.9 0 0);
-  --ink: oklch(0.205 0 0);
-  --ink-900: oklch(0.145 0 0);
-  --ink-800: oklch(0.22 0 0);
-  --ink-700: oklch(0.3 0 0);
-  --ink-600: oklch(0.4 0 0);
-  --ink-500: oklch(0.46 0 0);
-  --ink-400: oklch(0.5 0 0);
-  --ink-300: oklch(0.55 0 0);
-  --ink-200: oklch(0.6 0 0);
-  --lime: oklch(0.841 0.238 128.85);
-  --lime-deep: oklch(0.405 0.101 131.063);
-  --lime-ring: oklch(0.79 0.2 128.85);
-  --lime-soft: oklch(0.96 0.07 128);
-  --lime-text: oklch(0.48 0.12 131);
-  --primary: var(--lime);
-  --primary-deep: var(--lime-deep);
-  --shadow-card: 0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14);
-  --shadow-panel: 0 24px 60px -36px oklch(0.2 0 0 / 0.3);
+  /* Mockup fills, re-stepped for the dark card surface (app --muted / chart). */
+  --mock-fill: oklch(0.269 0 0);
+  --mock-fill-fg: oklch(0.708 0 0);
+  --mock-dot: oklch(0.708 0 0 / 0.5);
+  --mock-sched-bg: oklch(0.42 0.09 245 / 0.35);
+  --mock-sched-fg: oklch(0.8 0.11 240);
+  --mock-sched-bar: oklch(0.65 0.16 240);
+  --mock-top-bg: oklch(0.35 0.08 160);
+  --mock-top-fg: oklch(0.82 0.15 160);
+  --mock-unread: oklch(0.841 0.238 128.85 / 0.08);
 }
 
 * {
