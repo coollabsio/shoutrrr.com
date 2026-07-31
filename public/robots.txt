@@ -1,0 +1,7 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Canonical sitemap (marketing + docs). Served by src/pages/sitemap.xml.ts,
+# which mirrors the @astrojs/sitemap-generated URL list.
+Sitemap: https://shoutrrr.com/sitemap.xml
