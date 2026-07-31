@@ -9,6 +9,11 @@
   --surface: oklch(1 0 0);
   --surface-sunken: oklch(0.985 0 0);
   --surface-raised: oklch(0.99 0 0);
+  /* Translucent nav fill. Must carry its own alpha — a Tailwind `bg-surface/NN`
+     modifier silently produces nothing on a var-based color, leaving the bar
+     see-through and muddy over dark sections. Kept mostly opaque so the bar
+     reads as a clean light surface even when a dark section scrolls under it. */
+  --nav-bg: oklch(1 0 0 / 0.9);
   --line: oklch(0.92 0 0);
   --line-soft: oklch(0.94 0 0);
   --line-strong: oklch(0.9 0 0);
@@ -31,6 +36,9 @@
   --primary-deep: var(--lime-deep);
   --shadow-card: 0 24px 60px -28px oklch(0.2 0 0 / 0.35), 0 4px 14px -8px oklch(0.2 0 0 / 0.14);
   --shadow-panel: 0 24px 60px -36px oklch(0.2 0 0 / 0.3);
+  /* Punchier ease-out for direct interactions (press, hover, accordion) — the
+     ambient scroll-reveal keeps its gentler curve in motion-init.ts. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   /* Product-mockup fills. Referenced from inline `style=` in the composer and
      showcase components, where Tailwind `dark:` variants can't reach. Dark
      values track the Shoutrrr app's own dark palette (muted / chart hues). */
@@ -52,6 +60,7 @@ html.dark {
   --surface: oklch(0.205 0 0);
   --surface-sunken: oklch(0.18 0 0);
   --surface-raised: oklch(0.245 0 0);
+  --nav-bg: oklch(0.205 0 0 / 0.8);
   --line: oklch(0.32 0 0);
   --line-soft: oklch(0.28 0 0);
   --line-strong: oklch(0.38 0 0);
@@ -122,7 +131,16 @@ header {
 .font-display {
   font-optical-sizing: auto;
   font-variation-settings: 'opsz' 72;
-  letter-spacing: -0.02em;
+  /* Base tracking suits section headings (~30–46px). Tracking is size-specific
+     (Apple): tighten large display, loosen small display — see helpers below. */
+  letter-spacing: -0.015em;
+}
+/* Apply alongside .font-display to correct tracking for its size band. */
+.track-hero {
+  letter-spacing: -0.022em; /* 48px+ hero/CTA display — too airy without it */
+}
+.track-title {
+  letter-spacing: -0.005em; /* ~21px card titles — -0.02em reads cramped here */
 }
 
 /* Honor the no-anchor jump offset under the sticky header. */
@@ -135,6 +153,76 @@ header {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* ── Press feedback ────────────────────────────────────────────────────
+   Pressable CTAs scale down a hair on :active so they feel like they hear
+   the click. Uses the standalone `scale` property (not `transform`) so it
+   composes with the motion.dev hover-lift, which writes `transform`. */
+.press {
+  /* Includes the hover-transitioned props (filter/bg/border/color) too, since
+     this rule can win the cascade over Tailwind's `transition-*` on the same
+     element — folding them in keeps those hover fades intact. */
+  transition:
+    scale 140ms var(--ease-out-strong),
+    filter 140ms var(--ease-out-strong),
+    color 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+.press:active {
+  scale: 0.98;
+}
+
+/* ── FAQ accordion open/close ──────────────────────────────────────────
+   Native <details> snaps open. `::details-content` + interpolate-size lets
+   us animate height→auto with no JS. Unsupported browsers just snap (today's
+   behavior — no regression). Scoped to `.faq` so docs accordions are untouched. */
+:root {
+  interpolate-size: allow-keywords;
+}
+.faq::details-content {
+  height: 0;
+  overflow: clip;
+  opacity: 0;
+  transition:
+    height 220ms var(--ease-out-strong),
+    opacity 200ms var(--ease-out-strong),
+    content-visibility 220ms allow-discrete;
+}
+.faq[open]::details-content {
+  height: auto;
+  opacity: 1;
+}
+
+/* ── Theme cross-fade ──────────────────────────────────────────────────
+   Only active during an explicit toggle (class added ~260ms), so day-to-day
+   interactions never pay for a global transition. Eases the dark↔light flip. */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    fill 200ms ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the color/filter hover fades; only drop the scale press. */
+  .press:active {
+    scale: 1;
+  }
+  .faq::details-content {
+    transition: none;
+  }
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition: none !important;
+  }
 }
 
 /* ── Motion resting states ─────────────────────────────────────────────

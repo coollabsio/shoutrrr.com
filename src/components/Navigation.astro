@@ -22,7 +22,8 @@ const CLOUD = 'https://app.shoutrrr.com';
 ---
 
 <header
-  class="sticky top-0 z-50 border-b border-line bg-surface/85 backdrop-blur-lg backdrop-saturate-150"
+  data-scrolled="false"
+  class="sticky top-0 z-50 border-b border-transparent bg-[var(--nav-bg)] backdrop-blur-lg backdrop-saturate-150 transition-[border-color,box-shadow] duration-300 ease-out data-[scrolled=true]:border-line data-[scrolled=true]:shadow-sm"
 >
   <nav
     class="mx-auto flex max-w-site items-center justify-between gap-6 px-5 py-3 sm:px-6 sm:py-3.5"
@@ -50,12 +51,12 @@ const CLOUD = 'https://app.shoutrrr.com';
     <div class="flex items-center gap-2 sm:gap-3">
       <a
         href={GITHUB}
-        class="hidden items-center gap-1.5 rounded-[9px] px-3 py-2 text-sm font-medium text-ink-700 no-underline transition-colors hover:bg-surface-sunken sm:inline-flex"
+        class="press hidden items-center gap-1.5 rounded-[9px] px-3 py-2 text-sm font-medium text-ink-700 no-underline transition-colors hover:bg-surface-sunken sm:inline-flex"
         ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
       >
       <a
         href={CLOUD}
-        class="rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
+        class="press rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
         >Get started</a
       >
       <button
@@ -104,12 +105,12 @@ const CLOUD = 'https://app.shoutrrr.com';
         <div class="mt-3 grid grid-cols-2 gap-2 border-t border-line pt-4">
           <a
             href={GITHUB}
-            class="inline-flex items-center justify-center gap-2 rounded-xl border border-line-strong bg-surface px-4 py-3 text-sm font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+            class="press inline-flex items-center justify-center gap-2 rounded-xl border border-line-strong bg-surface px-4 py-3 text-sm font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
             ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
           >
           <a
             href={CLOUD}
-            class="inline-flex items-center justify-center rounded-xl border border-lime-ring bg-lime px-4 py-3 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            class="press inline-flex items-center justify-center rounded-xl border border-lime-ring bg-lime px-4 py-3 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
             >Get started</a
           >
         </div>
@@ -135,10 +136,29 @@ const CLOUD = 'https://app.shoutrrr.com';
   // Sync button/meta to the class the inline head script already applied.
   paintTheme(document.documentElement.classList.contains('dark'));
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let themeFadeTimer: ReturnType<typeof setTimeout> | undefined;
+
+  // Briefly enable a global color transition so the dark↔light flip eases
+  // instead of snapping. Scoped in time (~260ms) so nothing else pays for it.
+  function withThemeFade(apply: () => void) {
+    const root = document.documentElement;
+    if (reduceMotion.matches) {
+      apply();
+      return;
+    }
+    root.classList.add('theme-transition');
+    apply();
+    if (themeFadeTimer) clearTimeout(themeFadeTimer);
+    themeFadeTimer = setTimeout(() => root.classList.remove('theme-transition'), 260);
+  }
+
   themeToggle?.addEventListener('click', () => {
-    const isDark = document.documentElement.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    paintTheme(isDark);
+    withThemeFade(() => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      paintTheme(isDark);
+    });
   });
 
   // Follow the OS while the user hasn't picked an explicit theme.
@@ -146,9 +166,19 @@ const CLOUD = 'https://app.shoutrrr.com';
     .matchMedia('(prefers-color-scheme: dark)')
     .addEventListener('change', (e) => {
       if (localStorage.getItem('theme')) return;
-      document.documentElement.classList.toggle('dark', e.matches);
-      paintTheme(e.matches);
+      withThemeFade(() => {
+        document.documentElement.classList.toggle('dark', e.matches);
+        paintTheme(e.matches);
+      });
     });
+
+  // Scroll-edge divider: the translucent bar floats borderless at the top and
+  // only grows a divider + faint shadow once content scrolls beneath it.
+  const header = document.querySelector('header');
+  const setScrolled = () =>
+    header?.setAttribute('data-scrolled', String(window.scrollY > 8));
+  setScrolled();
+  window.addEventListener('scroll', setScrolled, { passive: true });
 
   function setOpen(open: boolean) {
     if (!menu || !toggle) return;

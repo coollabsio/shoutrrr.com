@@ -123,7 +123,7 @@ const faqs = [
       <h1
         data-reveal
         data-reveal-delay="0.06"
-        class="font-display text-[clamp(42px,5.6vw,66px)] font-medium leading-[1.02]"
+        class="track-hero font-display text-[clamp(42px,5.6vw,66px)] font-medium leading-[1.02]"
       >
         Draft once.<br />Post everywhere.<br /><span
           class="italic text-lime-text">On your own terms.</span
@@ -149,14 +149,14 @@ const faqs = [
           href={CLOUD}
           data-hover
           data-hover-lift="-3"
-          class="rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+          class="press rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
           >Get started →</a
         >
         <a
           href="#pricing"
           data-hover
           data-hover-lift="-3"
-          class="rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+          class="press rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
           >Self-host</a
         >
       </div>
@@ -221,7 +221,7 @@ const faqs = [
               <div class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-lime-soft text-lime-deep dark:text-lime-text">
                 <Icon class="h-[22px] w-[22px]" stroke-width={1.7} />
               </div>
-              <h3 class="mb-2 font-display text-[21px] font-medium">{p.title}</h3>
+              <h3 class="track-title mb-2 font-display text-[21px] font-medium">{p.title}</h3>
               <p class="m-0 text-[14.5px] leading-[1.6] text-ink-500">{p.body}</p>
             </div>
           );
@@ -258,7 +258,7 @@ const faqs = [
         >
           <div class="mb-1 flex items-center gap-2 text-lime-deep dark:text-lime-text">
             <Cloud class="h-5 w-5" stroke-width={1.8} />
-            <span class="font-display text-[21px] font-medium">Shoutrrr Cloud</span>
+            <span class="track-title font-display text-[21px] font-medium">Shoutrrr Cloud</span>
           </div>
           <div class="mt-3 flex items-baseline gap-1.5">
             <span class="font-display text-[40px] font-medium leading-none">$10</span>
@@ -285,7 +285,7 @@ const faqs = [
             href={CLOUD}
             data-hover
             data-hover-lift="-3"
-            class="mt-auto rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            class="press mt-auto rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
             >Get started →</a
           >
         </div>
@@ -299,7 +299,7 @@ const faqs = [
         >
           <div class="mb-1 flex items-center gap-2 text-ink-700">
             <Server class="h-5 w-5" stroke-width={1.8} />
-            <span class="font-display text-[21px] font-medium">Self-host</span>
+            <span class="track-title font-display text-[21px] font-medium">Self-host</span>
           </div>
           <div class="mt-3 flex items-baseline gap-1.5">
             <span class="font-display text-[40px] font-medium leading-none">Free</span>
@@ -326,7 +326,7 @@ const faqs = [
             href={GITHUB}
             data-hover
             data-hover-lift="-3"
-            class="mt-auto inline-flex items-center justify-center gap-2 rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+            class="press mt-auto inline-flex items-center justify-center gap-2 rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
             ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker →</a
           >
         </div>
@@ -377,14 +377,17 @@ const faqs = [
       </h2>
     </div>
     <div
-      data-reveal
       class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-3"
     >
       {
-        features.map((f) => {
+        features.map((f, i) => {
           const Icon = f.icon;
           return (
-            <div class="bg-surface p-7 transition-colors hover:bg-surface-raised">
+            <div
+              data-reveal
+              data-reveal-delay={Math.min(i * 0.04, 0.28).toFixed(2)}
+              class="bg-surface p-7 transition-colors hover:bg-surface-raised"
+            >
               <Icon class="mb-3.5 h-[22px] w-[22px] text-ink-700" stroke-width={1.7} />
               <h3 class="mb-2 text-base font-bold -tracking-[0.01em]">{f.title}</h3>
               <p class="m-0 text-sm leading-[1.6] text-ink-500">{f.body}</p>
@@ -461,7 +464,7 @@ const faqs = [
           Start posting today
         </div>
         <h2
-          class="font-display text-[clamp(32px,4.5vw,52px)] font-medium leading-[1.05]"
+          class="track-hero font-display text-[clamp(32px,4.5vw,52px)] font-medium leading-[1.05]"
         >
           Publish everywhere.<br />Own everything.
         </h2>
@@ -477,14 +480,14 @@ const faqs = [
             href={CLOUD}
             data-hover
             data-hover-lift="-3"
-            class="inline-flex items-center gap-2 rounded-xl border border-lime-ring bg-lime px-[26px] py-3.5 text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+            class="press inline-flex items-center gap-2 rounded-xl border border-lime-ring bg-lime px-[26px] py-3.5 text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
             ><Cloud class="h-[18px] w-[18px]" stroke-width={1.8} /> Start on Cloud →</a
           >
           <a
             href={GITHUB}
             data-hover
             data-hover-lift="-3"
-            class="inline-flex items-center gap-2 rounded-xl border border-line-strong bg-surface px-[26px] py-3.5 text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+            class="press inline-flex items-center gap-2 rounded-xl border border-line-strong bg-surface px-[26px] py-3.5 text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
             ><BrandIcon name="docker" class="h-[18px] w-[18px]" /> Deploy with Docker →</a
           >
         </div>
