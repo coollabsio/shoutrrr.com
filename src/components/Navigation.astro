@@ -6,11 +6,14 @@ import X from 'lucide-astro/X';
 import ChevronRight from 'lucide-astro/ChevronRight';
 import Sun from 'lucide-astro/Sun';
 import Moon from 'lucide-astro/Moon';
+import Star from 'lucide-astro/Star';
+import { getStarCount, formatStarCount } from '../lib/github-stars';
+const stars = await getStarCount();
+const starLabel = stars != null ? formatStarCount(stars) : null;
 const links = [
   { href: '/#features', label: 'Features' },
   { href: '/#showcase', label: 'Product' },
   { href: '/#pricing', label: 'Pricing' },
-  { href: '/#security', label: 'Security' },
   { href: '/docs', label: 'Docs' },
   { href: '/philosophy', label: 'Philosophy' },
   { href: '/sponsorships', label: 'Sponsors' },
@@ -51,9 +54,21 @@ const CLOUD = 'https://app.shoutrrr.com';
     <div class="flex items-center gap-2 sm:gap-3">
       <a
         href={GITHUB}
-        class="press hidden items-center gap-1.5 rounded-[9px] px-3 py-2 text-sm font-medium text-ink-700 no-underline transition-colors hover:bg-surface-sunken sm:inline-flex"
-        ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
+        aria-label={starLabel
+          ? `Star Shoutrrr on GitHub — ${starLabel} stars`
+          : 'Star Shoutrrr on GitHub'}
+        class="press hidden overflow-hidden rounded-[9px] border border-line-strong bg-surface text-ink-700 no-underline transition-colors hover:bg-surface-sunken sm:inline-flex"
       >
+        <span class="flex items-center px-2.5 py-2">
+          <BrandIcon name="github" class="h-[18px] w-[18px]" />
+        </span>
+        <span
+          class="flex items-center gap-1.5 border-l border-line-strong px-2.5 py-2 text-[13px] font-semibold tabular-nums"
+        >
+          <Star class="h-3.5 w-3.5 fill-current text-ink-400" />
+          {starLabel ?? 'Star'}
+        </span>
+      </a>
       <a
         href={CLOUD}
         class="press rounded-[9px] border border-lime-ring bg-lime px-3.5 py-2 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04] sm:px-4"
@@ -106,8 +121,17 @@ const CLOUD = 'https://app.shoutrrr.com';
           <a
             href={GITHUB}
             class="press inline-flex items-center justify-center gap-2 rounded-xl border border-line-strong bg-surface px-4 py-3 text-sm font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
-            ><BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub</a
           >
+            <BrandIcon name="github" class="h-[18px] w-[18px]" /> GitHub
+            {
+              starLabel && (
+                <span class="inline-flex items-center gap-1 tabular-nums text-ink-500">
+                  <Star class="h-3.5 w-3.5 fill-current text-ink-400" />
+                  {starLabel}
+                </span>
+              )
+            }
+          </a>
           <a
             href={CLOUD}
             class="press inline-flex items-center justify-center rounded-xl border border-lime-ring bg-lime px-4 py-3 text-sm font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"

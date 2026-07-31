@@ -127,10 +127,12 @@ header {
   color: var(--primary-deep);
 }
 
-/* Newsreader: keep display headlines editorial and warm at large sizes. */
+/* Bricolage Grotesque: a display grotesque with character (ink traps, mixed
+   proportions). font-optical-sizing:auto ties its opsz axis to the rendered
+   size, so it stays crafted from 21px card titles up to the 66px hero. */
 .font-display {
+  font-family: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
   font-optical-sizing: auto;
-  font-variation-settings: 'opsz' 72;
   /* Base tracking suits section headings (~30–46px). Tracking is size-specific
      (Apple): tighten large display, loosen small display — see helpers below. */
   letter-spacing: -0.015em;

@@ -115,10 +115,16 @@ const faqs = [
       <a
         href={CLOUD}
         data-reveal
-        class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface-sunken px-3 py-1.5 text-[12.5px] font-medium text-ink-600 no-underline transition-colors hover:border-line-strong"
+        class="press group mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface py-1.5 pl-2.5 pr-3 text-[13px] font-medium text-ink-700 no-underline transition-colors hover:border-line-strong hover:bg-surface-sunken"
       >
-        <Cloud class="h-4 w-4 text-lime-text" stroke-width={1.8} />
-        Shoutrrr Cloud is live →
+        <span
+          class="h-1.5 w-1.5 rounded-full bg-lime-text ring-4 ring-lime-soft"
+        ></span>
+        Shoutrrr Cloud is live
+        <span
+          class="text-ink-400 transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+          >→</span
+        >
       </a>
       <h1
         data-reveal
@@ -126,19 +132,17 @@ const faqs = [
         class="track-hero font-display text-[clamp(42px,5.6vw,66px)] font-medium leading-[1.02]"
       >
         Draft once.<br />Post everywhere.<br /><span
-          class="italic text-lime-text">On your own terms.</span
+          class="text-lime-text">On your own terms.</span
         >
       </h1>
       <p
         data-reveal
         data-reveal-delay="0.12"
-        class="mb-8 mt-[22px] max-w-[480px] text-[18px] leading-[1.6] text-ink-500"
+        class="mb-8 mt-[22px] max-w-[440px] text-[18px] leading-[1.55] text-ink-500"
       >
-        Shoutrrr is the open-source alternative to Buffer, Typefully, and
-        Hootsuite. Start on managed Shoutrrr Cloud, or self-host the open-source
-        app — the same product, your choice. Write a post once and fan it out to
-        X, LinkedIn, Instagram, and four more networks at the same time, or queue
-        it on a recurring schedule.
+        The open-source alternative to Buffer, Typefully, and Hootsuite. Publish
+        to X, LinkedIn, Instagram, and four more networks from one editor — on
+        managed Cloud or self-hosted.
       </p>
       <div
         data-reveal
