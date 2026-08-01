@@ -24,8 +24,8 @@ function reveals() {
       const delay = parseFloat(target.dataset.revealDelay ?? '0');
       animate(
         target,
-        { opacity: [0, 1], transform: ['translateY(18px)', 'translateY(0px)'] },
-        { duration: 0.7, delay, ease: easeOut },
+        { opacity: [0, 1], transform: ['translateY(12px)', 'translateY(0px)'] },
+        { duration: 0.55, delay, ease: easeOut },
       );
     },
     { amount: 0.2, margin: '0px 0px -10% 0px' },
