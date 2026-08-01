@@ -27,3 +27,7 @@ pnpm-debug.log*
 
 # superpowers brainstorming/planning docs (local only)
 docs/superpowers/
+.superpowers/
+
+# AI agent scratch files (plans, todos, lessons — local only)
+.ai/
