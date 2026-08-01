@@ -265,7 +265,8 @@ header {
 .docs-prose h2,
 .docs-prose h3,
 .docs-prose h4 {
-  font-family: 'Newsreader Variable', ui-serif, Georgia, serif;
+  /* Match the docs H1 and marketing headings — one display face sitewide. */
+  font-family: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
   font-optical-sizing: auto;
   letter-spacing: -0.01em;
   color: var(--foreground);
