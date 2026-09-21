@@ -46,7 +46,7 @@ const features = [
   { icon: Send, title: 'Multi-account publishing', body: 'Fan one post out to many accounts at once with optional per-platform overrides. Each target publishes independently and retries on failure.' },
   { icon: CalendarDays, title: 'Queue & calendar', body: 'Set recurring posting slots in your timezone, drop drafts into the queue, and review everything on a month calendar. Publish instantly anytime.' },
   { icon: LineChart, title: 'Analytics', body: 'Follower and post-count trends per account, plus per-post engagement: likes, reposts, replies, and impressions.' },
-  { icon: Link2, title: 'Connected accounts', body: 'Connect X, LinkedIn, Instagram, Facebook, Threads, Bluesky, and Discord via OAuth or app password, group accounts into reusable sets, and get nudged when one needs reconnecting.' },
+  { icon: Link2, title: 'Connected accounts', body: 'Connect X, LinkedIn, Bluesky, and Discord via OAuth or app password, group accounts into reusable sets, and get nudged when one needs reconnecting.' }, // TODO(meta): restore 'Instagram, Facebook, Threads' once Cloud's Meta app approval lands.
   { icon: Users, title: 'Workspaces & team', body: 'Multiple workspaces with role-based memberships, email invitations, and ownership transfer. Every record is scoped to its workspace.' },
   { icon: Bell, title: 'Notifications', body: 'In-app alerts the moment a post publishes or fails, or when an account needs your attention to keep posting.' },
   { icon: ShieldCheck, title: 'Secure by default', body: 'Email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login.' },
@@ -60,12 +60,17 @@ const security = [
   { tag: 'At rest', title: 'Encrypted tokens', body: 'Credentials encrypted on disk and refreshed automatically.' },
 ];
 
+// Self-hosters get the Meta networks today — they register their own Meta app.
+// Cloud runs ours, which is still awaiting App Review + Business Verification,
+// so this page (which sells Cloud too) lists only what Cloud can deliver. The
+// self-hosting docs deliberately still document all of them. Restore the
+// commented entries here and at each TODO(meta) once that approval lands.
 const networks = [
   { name: 'X', icon: 'x' as const },
   { name: 'LinkedIn', icon: 'linkedin' as const },
-  { name: 'Instagram', icon: 'instagram' as const },
-  { name: 'Facebook', icon: 'facebook' as const },
-  { name: 'Threads', icon: 'threads' as const },
+  // { name: 'Instagram', icon: 'instagram' as const },
+  // { name: 'Facebook', icon: 'facebook' as const },
+  // { name: 'Threads', icon: 'threads' as const },
   { name: 'Bluesky', icon: 'bluesky' as const },
   { name: 'Discord', icon: 'discord' as const },
 ];
@@ -73,7 +78,9 @@ const networks = [
 const faqs = [
   {
     q: 'What platforms does Shoutrrr support?',
-    a: 'Seven networks today — X, LinkedIn, Instagram, Facebook, Threads, Bluesky, and Discord. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
+    // TODO(meta): restore 'Seven networks today — X, LinkedIn, Instagram, Facebook,
+    // Threads, Bluesky, and Discord.' once Cloud's Meta app approval lands.
+    a: 'Four networks today — X, LinkedIn, Bluesky, and Discord. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
   },
   {
     q: 'Is Shoutrrr really free?',
@@ -140,9 +147,12 @@ const faqs = [
         data-reveal-delay="0.12"
         class="mb-8 mt-[22px] max-w-[440px] text-[18px] leading-[1.55] text-ink-500"
       >
+        {/* TODO(meta): restore "to X, LinkedIn, Instagram, and four more
+            networks" once Cloud's Meta app approval lands. Unlike an HTML
+            comment, this one is stripped from the built page. */}
         The open-source alternative to Buffer, Typefully, and Hootsuite. Publish
-        to X, LinkedIn, Instagram, and four more networks from one editor — on
-        managed Cloud or self-hosted.
+        to X, LinkedIn, Bluesky, and Discord from one editor — on managed Cloud
+        or self-hosted.
       </p>
       <div
         data-reveal
