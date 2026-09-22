@@ -1,0 +1,111 @@
+---
+/**
+ * A copyable command / snippet block.
+ *
+ * Monospace is a first-class type role on the developer pages (/mcp, /api) —
+ * it's the vernacular of the subject, not a fallback. Kept deliberately plain:
+ * one border, one fill, no traffic-light chrome.
+ */
+import Copy from 'lucide-astro/Copy';
+import Check from 'lucide-astro/Check';
+
+interface Props {
+  /** Raw text placed on the clipboard, and the text rendered in the block. */
+  code: string;
+  /** Optional caption above the block (e.g. a file name or shell hint). */
+  label?: string;
+  /**
+   * Soft-wrap instead of scrolling sideways. For prose (an agent prompt), where
+   * hard-wrapping the source would paste ragged line breaks into the client.
+   */
+  wrap?: boolean;
+  /** `dark` for use inside the ink-900 sections, which invert the palette. */
+  tone?: 'light' | 'dark';
+  /** Raise the border and fill — for the one block a section wants you to use. */
+  emphasis?: boolean;
+  class?: string;
+}
+
+const {
+  code,
+  label,
+  wrap = false,
+  tone = 'light',
+  emphasis = false,
+  class: className = '',
+} = Astro.props;
+
+const dark = tone === 'dark';
+---
+
+<div class={`not-prose ${className}`}>
+  {
+    label && (
+      <div
+        class:list={[
+          'mb-2 font-mono text-[11.5px] uppercase tracking-[0.12em]',
+          dark ? 'text-white/40' : 'text-ink-400',
+        ]}
+      >
+        {label}
+      </div>
+    )
+  }
+  <div
+    class:list={[
+      'relative overflow-hidden rounded-xl border',
+      dark
+        ? emphasis
+          ? 'border-white/15 bg-white/[0.06]'
+          : 'border-white/10 bg-white/[0.04]'
+        : 'border-line bg-surface-sunken',
+    ]}
+  >
+    <pre
+      class:list={[
+        'px-4 py-3.5 pr-12 font-mono leading-[1.7]',
+        // One size class only — emitting both text-[12.5px] and text-[13px]
+        // would leave Tailwind's stylesheet order to decide the winner.
+        dark ? 'text-[12.5px] text-white/85' : 'text-[13px] text-ink-700',
+        wrap ? 'whitespace-pre-wrap break-words' : 'overflow-x-auto',
+      ]}><code>{code}</code></pre>
+    <button
+      type="button"
+      data-copy={code}
+      aria-label="Copy to clipboard"
+      class:list={[
+        'press absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-lg border transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-ring',
+        dark
+          ? 'border-white/15 bg-white/10 text-white/60 hover:border-white/30 hover:text-white'
+          : 'border-line-soft bg-surface text-ink-400 hover:border-line-strong hover:text-ink-700',
+      ]}
+    >
+      <Copy class="h-[15px] w-[15px] [[data-copied]_&]:hidden" stroke-width={1.8} />
+      <Check
+        class:list={[
+          'hidden h-[15px] w-[15px] [[data-copied]_&]:block',
+          dark ? '' : 'text-lime-text',
+        ]}
+        style={dark ? 'color:oklch(0.83 0.18 128.85)' : undefined}
+        stroke-width={2.4}
+      />
+    </button>
+  </div>
+</div>
+
+<script>
+  // Delegated, so it covers every CodeBlock on the page with one listener.
+  document.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement | null)?.closest<HTMLButtonElement>(
+      '[data-copy]'
+    );
+    if (!btn) return;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+    } catch {
+      return; // Clipboard blocked (insecure context / denied) — stay silent.
+    }
+    btn.setAttribute('data-copied', '');
+    setTimeout(() => btn.removeAttribute('data-copied'), 1600);
+  });
+</script>

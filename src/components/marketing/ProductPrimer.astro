@@ -1,0 +1,143 @@
+---
+/**
+ * Orientation block for the developer pages.
+ *
+ * /mcp and /api are the two pages people reach cold — from an MCP directory,
+ * from a search for "social posting API", from a link in a thread — with no
+ * idea what Shoutrrr is. Both pages otherwise talk about "every Shoutrrr
+ * instance" and "everything the app does" without ever saying what the app is,
+ * or which networks it reaches.
+ *
+ * Deliberately static and quiet: each page already has its own signature
+ * element (the tool-call ledger, the request/response diptych), and an
+ * interactive product mockup here would compete with it.
+ */
+import BrandIcon from './BrandIcon.astro';
+import Server from 'lucide-astro/Server';
+import Cloud from 'lucide-astro/Cloud';
+
+interface Props {
+  /** Which surface the reader arrived for — used in the closing sentence. */
+  surface: 'MCP server' | 'REST API';
+}
+
+const { surface } = Astro.props;
+
+// Cloud-deliverable networks only, matching the home page. See the TODO(meta)
+// notes in src/pages/index.astro — restore Instagram, Facebook, and Threads
+// here too once Cloud's Meta app approval lands.
+const networks = [
+  { name: 'X', icon: 'x' as const },
+  { name: 'LinkedIn', icon: 'linkedin' as const },
+  { name: 'Bluesky', icon: 'bluesky' as const },
+  { name: 'Discord', icon: 'discord' as const },
+];
+
+const runs = [
+  {
+    icon: Server,
+    title: 'Self-host',
+    price: 'Free',
+    note: 'Apache 2.0. One Docker image bundles the app, worker, and scheduler, and defaults to SQLite.',
+  },
+  {
+    icon: Cloud,
+    title: 'Cloud',
+    price: '$10/mo',
+    note: 'We run and update it. Set up in seconds, cancel anytime. Includes $5 of X API usage.',
+  },
+];
+---
+
+<section class="mx-auto max-w-site px-6 pb-24">
+  <div
+    data-reveal
+    class="grid gap-9 rounded-3xl border border-line bg-surface-sunken p-8 md:grid-cols-[1.15fr_1fr] md:gap-12 md:p-10"
+  >
+    <div class="min-w-0">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        New here?
+      </div>
+      <h2
+        class="font-display text-[clamp(26px,3.2vw,36px)] font-medium leading-[1.1]"
+      >
+        Shoutrrr is an open-source social scheduler
+      </h2>
+      <p class="mt-4 text-[15px] leading-[1.65] text-ink-500">
+        Write a post once, adjust the wording per network where you want to, then
+        publish it or drop it in a queue, to many accounts at the same time. It
+        has a composer with live per-network character counts and auto-threading,
+        a calendar with recurring posting slots, per-post analytics, and shared
+        team workspaces.
+      </p>
+      <p class="mt-3 text-[15px] leading-[1.65] text-ink-500">
+        The {surface} drives that same app. It is not a cut-down copy, and it
+        reaches the same features you get in the browser.
+      </p>
+
+      <div class="mt-7">
+        <div
+          class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-ink-400"
+        >
+          Publishes independently to
+        </div>
+        <div class="flex flex-wrap items-center gap-2.5">
+          {
+            networks.map((n) => (
+              <span class="inline-flex items-center gap-2 rounded-full border border-line-soft bg-surface px-3.5 py-1.5 text-[13px] font-semibold text-ink-700">
+                <BrandIcon name={n.icon} brand class="h-4 w-4" />
+                {n.name}
+              </span>
+            ))
+          }
+          <span class="px-1 text-[13px] text-ink-300">+ more on the roadmap</span>
+        </div>
+      </div>
+
+      <a
+        href="/"
+        class="press mt-7 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-lime-deep no-underline dark:text-lime-text"
+      >
+        Tour the whole product
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="flex min-w-0 flex-col gap-3.5">
+      <div
+        class="mb-0.5 text-xs font-semibold uppercase tracking-[0.14em] text-ink-400"
+      >
+        Two ways to run it
+      </div>
+      {
+        runs.map((r) => {
+          const Icon = r.icon;
+          return (
+            <div class="rounded-2xl border border-line-soft bg-surface p-6">
+              <div class="flex items-baseline justify-between gap-3">
+                <span class="flex items-center gap-2 text-ink-700">
+                  <Icon class="h-[18px] w-[18px]" stroke-width={1.8} />
+                  <span class="track-title font-display text-[19px] font-medium">
+                    {r.title}
+                  </span>
+                </span>
+                <span class="font-display text-[22px] font-medium leading-none">
+                  {r.price}
+                </span>
+              </div>
+              <p class="m-0 mt-2.5 text-[13.5px] leading-[1.6] text-ink-500">
+                {r.note}
+              </p>
+            </div>
+          );
+        })
+      }
+      <p class="m-0 mt-1 text-[13px] leading-[1.55] text-ink-400">
+        Same app either way, and both include the {surface}. There is no developer
+        tier.
+      </p>
+    </div>
+  </div>
+</section>

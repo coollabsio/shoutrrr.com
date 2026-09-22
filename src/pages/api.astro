@@ -1,0 +1,364 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Aura from '../components/marketing/Aura.astro';
+import CodeBlock from '../components/marketing/CodeBlock.astro';
+import ProductPrimer from '../components/marketing/ProductPrimer.astro';
+import FileJson from 'lucide-astro/FileJson';
+import KeyRound from 'lucide-astro/KeyRound';
+import CircleSlash from 'lucide-astro/CircleSlash';
+import Bot from 'lucide-astro/Bot';
+
+const CLOUD = 'https://app.shoutrrr.com';
+
+const createCall = `curl -X POST 'https://app.shoutrrr.com/api/v1/posts' \\
+  -H 'Authorization: Bearer <token>' \\
+  -H 'Content-Type: application/json' \\
+  -d '{ "base_text": "Ship day. v2 is live.",
+        "destination": { "kind": "all" } }'`;
+
+const createResponse = `{
+  "id": "pst_8c31f0",
+  "status": "draft",
+  "targets": [
+    { "account": "x/@shoutrrr",        "status": "pending" },
+    { "account": "linkedin/shoutrrr",  "status": "pending" },
+    { "account": "bluesky/shoutrrr",   "status": "pending" },
+    { "account": "discord/#releases",  "status": "pending" }
+  ]
+}`;
+
+// Kept short on purpose: the narrow half of a two-column row can't hold the
+// full absolute URL without clipping mid-word. The hero already shows it in
+// full, so shell variables read as continuation rather than hand-waving.
+const publishCall = `curl -X POST "$BASE/posts/$ID/publish" \\
+  -H "Authorization: Bearer $TOKEN"`;
+
+// Mirrors the eight endpoint families documented under /docs/api.
+const surfaces = [
+  {
+    name: 'Posts',
+    href: '/docs/api/posts',
+    body: 'Create drafts, edit text and per-account overrides, list and filter, delete.',
+  },
+  {
+    name: 'Post actions',
+    href: '/docs/api/post-actions',
+    body: 'Publish now, schedule for a time, queue into the next open slot, retry a failed target.',
+  },
+  {
+    name: 'Media',
+    href: '/docs/api/media',
+    body: 'Upload images with alt text and attach them to a post. JPEG, PNG, WebP, GIF.',
+  },
+  {
+    name: 'Connected accounts',
+    href: '/docs/api/connected-accounts',
+    body: 'List every connected account, read its status, and see which ones need reconnecting.',
+  },
+  {
+    name: 'Account sets',
+    href: '/docs/api/account-sets',
+    body: 'Create and manage named, reusable groups of accounts to post to as one destination.',
+  },
+  {
+    name: 'Posting schedule',
+    href: '/docs/api/posting-schedule',
+    body: 'Read and edit the workspace timezone and its recurring weekly posting slots.',
+  },
+  {
+    name: 'Calendar',
+    href: '/docs/api/calendar',
+    body: 'Pull scheduled and published posts for any month in one call.',
+  },
+  {
+    name: 'Shares',
+    href: '/docs/api/shares',
+    body: 'Create public, no-auth preview links for a post, list them, and revoke them.',
+  },
+];
+
+const terms = [
+  {
+    icon: KeyRound,
+    title: 'A token, not an application',
+    body: 'Create a bearer token in Settings and start calling. There is no OAuth app to register with us, no client secret to rotate, and no review queue to sit in.',
+  },
+  {
+    icon: CircleSlash,
+    title: 'No developer tier',
+    body: 'The API is not a plan you upgrade to. It is on the free self-hosted build and on the $10/mo Cloud plan, with no per-call charge and no separate API seat.',
+  },
+  {
+    icon: FileJson,
+    title: 'Described in OpenAPI',
+    body: 'A full OpenAPI description ships with the docs, so you can generate a client, load it into an agent, or point your own tooling at it.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Shoutrrr REST API',
+  applicationCategory: 'DeveloperApplication',
+  description:
+    'A REST API for creating, scheduling, and publishing social posts across X, LinkedIn, Bluesky, and Discord. Bearer token auth, JSON, OpenAPI spec included, free on every plan.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+
+<Layout
+  title="REST API: publish from your own code | Shoutrrr"
+  description="A REST API over everything Shoutrrr does: posts, media, schedules, account sets, and calendar. Bearer token, JSON in and out, OpenAPI spec included. Free on every plan, self-hosted or Cloud."
+  jsonLd={jsonLd}
+>
+  <!-- ===== HERO ===== -->
+  <section
+    class="mx-auto grid max-w-site items-center gap-10 overflow-hidden px-6 pb-12 pt-14 md:grid-cols-[1fr_1.05fr] md:gap-14 md:overflow-visible md:pt-[72px]"
+  >
+    <div class="min-w-0">
+      <div
+        data-reveal
+        class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface py-1.5 pl-2.5 pr-3.5 text-[13px] font-medium text-ink-700"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-lime-text ring-4 ring-lime-soft"
+        ></span>
+        REST · free on every plan
+      </div>
+      <h1
+        data-reveal
+        data-reveal-delay="0.06"
+        class="track-hero font-display text-[clamp(40px,5.2vw,62px)] font-medium leading-[1.03]"
+      >
+        Two calls from<br />token to <span class="text-lime-text">published</span
+        >.
+      </h1>
+      <p
+        data-reveal
+        data-reveal-delay="0.12"
+        class="mb-7 mt-[22px] max-w-[460px] text-[18px] leading-[1.55] text-ink-500"
+      >
+        Shoutrrr is an open-source scheduler for X, LinkedIn, Bluesky, and
+        Discord. Its REST API covers everything the app does, including posts,
+        media, schedules, and the calendar. Bearer token, JSON in and out, and an
+        OpenAPI spec. One call fans a post out to every account you connected.
+      </p>
+      <div
+        data-reveal
+        data-reveal-delay="0.18"
+        class="flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap"
+      >
+        <a
+          href="/docs/api"
+          data-hover
+          data-hover-lift="-3"
+          class="press rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+          >Read the docs →</a
+        >
+        <a
+          href={CLOUD}
+          data-hover
+          data-hover-lift="-3"
+          class="press rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+          >Get a token</a
+        >
+      </div>
+    </div>
+
+    <!-- Signature: the request/response pair, not a lone snippet, so the
+         reader sees both halves and the seam between them. -->
+    <div data-reveal data-reveal-delay="0.1" class="relative min-w-0 max-w-full">
+      <Aura variant="hero" />
+      <!-- `relative z-10` keeps it above the Aura (positioned at z-0). -->
+      <div
+        class="relative z-10 overflow-hidden rounded-2xl border border-line bg-surface shadow-panel"
+      >
+        <div
+          class="flex items-center gap-2.5 border-b border-line-soft bg-surface-sunken px-4 py-3"
+        >
+          <span class="h-2 w-2 rounded-full bg-lime ring-4 ring-lime-soft"></span>
+          <span class="font-mono text-[12.5px] text-ink-600"
+            >POST <span class="text-ink-400">/api/v1/posts</span></span
+          >
+          <span
+            class="ml-auto rounded-md bg-lime-soft px-2 py-0.5 font-mono text-[11px] font-bold text-lime-deep dark:text-lime-text"
+            >201</span
+          >
+        </div>
+        <pre
+          class="overflow-x-auto border-b border-line-soft px-4 py-3.5 font-mono text-[12.5px] leading-[1.7] text-ink-700"><code>{createCall}</code></pre>
+        <div
+          class="border-b border-line-soft bg-surface-sunken px-4 py-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-400"
+        >
+          Response
+        </div>
+        <pre
+          class="overflow-x-auto px-4 py-3.5 font-mono text-[12.5px] leading-[1.7] text-ink-600"><code>{createResponse}</code></pre>
+        <p
+          class="border-t border-line-soft bg-surface-sunken px-4 py-3 text-[12.5px] leading-[1.5] text-ink-500"
+        >
+          One post, four networks, four independent targets. Each one publishes
+          and retries on its own.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SECOND CALL ===== -->
+  <section class="mx-auto max-w-site px-6 pb-24 pt-6">
+    <div
+      data-reveal
+      class="mx-auto grid max-w-[900px] items-center gap-8 rounded-2xl border border-line-soft bg-surface-sunken p-7 md:grid-cols-[1fr_1.1fr] md:p-9"
+    >
+      <div>
+        <div
+          class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+        >
+          Then the second call
+        </div>
+        <h2
+          class="track-title font-display text-[clamp(22px,2.6vw,30px)] font-medium leading-[1.12]"
+        >
+          Publishing returns immediately
+        </h2>
+        <p class="mt-3 text-[14.5px] leading-[1.6] text-ink-500">
+          The API answers <code
+            class="rounded bg-surface px-1.5 py-0.5 font-mono text-[13px] text-ink-700"
+            >202 Accepted</code
+          > and works each target in the background. Poll the post to read per-target
+          status and attempts rather than assuming success.
+        </p>
+      </div>
+      <CodeBlock code={publishCall} class="min-w-0" />
+    </div>
+  </section>
+
+  <!-- ===== WHAT SHOUTRRR IS =====
+       Placed after the two calls rather than before them: those two blocks are
+       one narrative and shouldn't be split. This is the zoom-out, and it has to
+       land before the next section claims "the same surface the app runs on". -->
+  <ProductPrimer surface="REST API" />
+
+  <!-- ===== SURFACE ===== -->
+  <section class="mx-auto max-w-site px-6 pb-24">
+    <div data-reveal class="mb-11 max-w-[560px]">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        What you can reach
+      </div>
+      <h2
+        class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+      >
+        The same endpoints the app uses
+      </h2>
+      <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
+        Not a reduced public subset. Anything the interface can do, your code can
+        do over HTTP.
+      </p>
+    </div>
+    <div
+      class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line sm:grid-cols-2 lg:grid-cols-4"
+    >
+      {
+        surfaces.map((s, i) => (
+          <a
+            href={s.href}
+            data-reveal
+            data-reveal-delay={Math.min(i * 0.04, 0.28).toFixed(2)}
+            class="group bg-surface p-6 no-underline transition-colors hover:bg-surface-raised"
+          >
+            <h3 class="mb-2 flex items-center gap-1.5 font-mono text-[13.5px] font-bold text-ink-800">
+              {s.name}
+              <span class="text-ink-300 transition-transform duration-200 ease-out group-hover:translate-x-0.5">
+                →
+              </span>
+            </h3>
+            <p class="m-0 text-[13.5px] leading-[1.6] text-ink-500">{s.body}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ===== TERMS (dark) ===== -->
+  <section class="bg-ink-900 text-white">
+    <div
+      class="mx-auto grid max-w-site items-center gap-14 px-6 py-24 md:grid-cols-2"
+    >
+      <div data-reveal>
+        <div
+          class="mb-4 text-xs font-semibold uppercase tracking-[0.14em]"
+          style="color:oklch(0.83 0.18 128.85)"
+        >
+          The terms
+        </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,46px)] font-medium leading-[1.06]"
+        >
+          Nothing to apply for
+        </h2>
+        <p class="mt-[18px] max-w-[440px] text-base leading-[1.65] text-white/70">
+          Most social APIs make you register an application, argue your case to a
+          review team, and then pay for the tier that unlocks the endpoints. This
+          one is a token and a base URL.
+        </p>
+      </div>
+      <div class="flex flex-col gap-3.5">
+        {
+          terms.map((t, i) => {
+            const Icon = t.icon;
+            return (
+              <div
+                data-reveal
+                data-reveal-delay={(i * 0.07).toFixed(2)}
+                class="rounded-[13px] border border-white/10 bg-white/[0.03] p-6 dark:border-white/[0.08] dark:bg-white/[0.04]"
+              >
+                <Icon
+                  class="mb-3 h-[20px] w-[20px]"
+                  style="color:oklch(0.83 0.18 128.85)"
+                  stroke-width={1.8}
+                />
+                <div class="mb-1.5 text-[15px] font-semibold">{t.title}</div>
+                <div class="text-[13.5px] leading-[1.6] text-white/60">
+                  {t.body}
+                </div>
+              </div>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MCP CROSS-LINK ===== -->
+  <section class="mx-auto max-w-site px-6 py-24">
+    <a
+      href="/mcp"
+      data-reveal
+      data-hover
+      data-hover-lift="-3"
+      class="group mx-auto flex max-w-[860px] flex-col items-start gap-6 rounded-3xl border border-line-strong bg-surface-raised p-8 no-underline sm:flex-row sm:items-center sm:p-10"
+    >
+      <div
+        class="grid h-12 w-12 flex-shrink-0 place-items-center rounded-xl bg-lime-soft text-lime-deep dark:text-lime-text"
+      >
+        <Bot class="h-[24px] w-[24px]" stroke-width={1.7} />
+      </div>
+      <div class="min-w-0">
+        <h2
+          class="track-title m-0 font-display text-[clamp(21px,2.4vw,27px)] font-medium leading-[1.15]"
+        >
+          Want an agent to call it instead?
+        </h2>
+        <p class="mt-2 text-[14.5px] leading-[1.6] text-ink-500">
+          MCP exposes the same endpoints, so any MCP client can drive them in plain
+          language. Publishing still needs your confirmation.
+        </p>
+      </div>
+      <span
+        class="ml-auto hidden flex-shrink-0 text-2xl text-ink-300 transition-transform duration-200 ease-out group-hover:translate-x-1 sm:block"
+        >→</span
+      >
+    </a>
+  </section>
+</Layout>

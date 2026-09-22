@@ -1,0 +1,109 @@
+---
+/**
+ * The signature element of /mcp.
+ *
+ * Every competitor mockups a friendly chat bubble ("Done! I scheduled both
+ * posts"), which hides the layer developers actually debug. This shows the
+ * wire format instead, and lands on the one thing only Shoutrrr does: the
+ * publish tool refuses to fire without `confirm=true`.
+ *
+ * The refusal is the pitch, so it gets the only accent in the panel.
+ */
+import ShieldCheck from 'lucide-astro/ShieldCheck';
+
+const calls = [
+  {
+    tool: 'list-connected-accounts-tool',
+    args: '{}',
+    result: '4 accounts · x, linkedin, bluesky, discord',
+  },
+  {
+    tool: 'create-post-tool',
+    args: '{ base_text: "Ship day. v2 is live.", destination: { kind: "all" } }',
+    result: 'post_id: pst_8c31f0',
+  },
+  {
+    tool: 'queue-post-tool',
+    args: '{ post_id: "pst_8c31f0" }',
+    result: 'queued · Tue 09:00 Europe/Berlin',
+  },
+];
+---
+
+<!-- `relative z-10` keeps the panel above the ambient Aura, which is positioned
+     at z-0 and would otherwise paint over this static block. -->
+<div
+  data-reveal
+  class="relative z-10 overflow-hidden rounded-2xl border border-line bg-surface shadow-panel"
+>
+  <!-- Ledger header: names the two parties, agent-agnostic on purpose. -->
+  <div
+    class="flex items-center gap-2.5 border-b border-line-soft bg-surface-sunken px-4 py-3"
+  >
+    <span class="h-2 w-2 rounded-full bg-lime ring-4 ring-lime-soft"></span>
+    <span class="font-mono text-[12.5px] text-ink-600">
+      your agent <span class="text-ink-300">→</span> shoutrrr
+      <span class="text-ink-300">/mcp</span>
+    </span>
+    <span
+      class="ml-auto font-mono text-[11px] uppercase tracking-[0.1em] text-ink-300"
+      >mcp</span
+    >
+  </div>
+
+  <div class="divide-y divide-line-soft">
+    {
+      calls.map((c, i) => (
+        <div
+          data-reveal
+          data-reveal-delay={(0.12 + i * 0.1).toFixed(2)}
+          class="px-4 py-3.5"
+        >
+          <div class="flex items-baseline gap-2 font-mono text-[13px]">
+            <span class="text-ink-300">→</span>
+            <span class="font-semibold text-ink-800">{c.tool}</span>
+          </div>
+          <div class="mt-1 pl-[18px] font-mono text-[12px] leading-[1.6] text-ink-400 break-words">
+            {c.args}
+          </div>
+          <div class="mt-1.5 flex items-baseline gap-2 pl-[18px] font-mono text-[12.5px]">
+            <span class="text-lime-text">←</span>
+            <span class="text-ink-600">{c.result}</span>
+          </div>
+        </div>
+      ))
+    }
+
+    <!-- The climax. The agent asks to publish; the server refuses. -->
+    <div
+      data-reveal
+      data-reveal-delay="0.46"
+      class="relative bg-lime-soft/60 px-4 py-4 dark:bg-lime-soft/40"
+    >
+      <span class="absolute inset-y-0 left-0 w-[3px] bg-lime"></span>
+      <div class="flex items-baseline gap-2 font-mono text-[13px]">
+        <span class="text-ink-300">→</span>
+        <span class="font-semibold text-ink-800">publish-post-tool</span>
+      </div>
+      <div class="mt-1 pl-[18px] font-mono text-[12px] text-ink-400">
+        {'{ post_id: "pst_8c31f0" }'}
+      </div>
+      <div
+        class="mt-2 flex items-start gap-2 pl-[18px] font-mono text-[12.5px] font-semibold leading-[1.5] text-lime-deep dark:text-lime-text"
+      >
+        <ShieldCheck
+          class="mt-[1px] h-[15px] w-[15px] flex-shrink-0"
+          stroke-width={2}
+        />
+        <span>blocked: publishing requires confirm=true</span>
+      </div>
+    </div>
+  </div>
+
+  <p
+    class="border-t border-line-soft bg-surface-sunken px-4 py-3 text-[12.5px] leading-[1.5] text-ink-500"
+  >
+    Your agent can draft, schedule, and read everything on its own. It cannot
+    say anything in public without you.
+  </p>
+</div>

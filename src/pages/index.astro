@@ -13,7 +13,8 @@ import Link2 from 'lucide-astro/Link2';
 import Users from 'lucide-astro/Users';
 import Bell from 'lucide-astro/Bell';
 import ShieldCheck from 'lucide-astro/ShieldCheck';
-import Zap from 'lucide-astro/Zap';
+import Bot from 'lucide-astro/Bot';
+import Terminal from 'lucide-astro/Terminal';
 import Server from 'lucide-astro/Server';
 import KeyRound from 'lucide-astro/KeyRound';
 import CircleSlash from 'lucide-astro/CircleSlash';
@@ -27,7 +28,7 @@ const pillars = [
   {
     icon: Server,
     title: 'Self-host or Cloud',
-    body: 'Run it on your own box with a single Docker image, or start in seconds on our managed Cloud — the same app, your choice.',
+    body: 'Run it on your own box with a single Docker image, or start in seconds on our managed Cloud. Same app either way.',
   },
   {
     icon: KeyRound,
@@ -37,20 +38,20 @@ const pillars = [
   {
     icon: CircleSlash,
     title: 'No per-seat pricing',
-    body: 'Invite the whole team into a workspace. The open-source app is free forever — no per-head, per-post, or per-month seat fees.',
+    body: 'Invite the whole team into a workspace. The open-source app is free forever, with no per-head, per-post, or per-month seat fees.',
   },
 ];
 
 const features = [
   { icon: PenLine, title: 'Composer', body: 'Draft with media and alt text, watch a live character count per network, and auto-split long posts into threads where supported.' },
   { icon: Send, title: 'Multi-account publishing', body: 'Fan one post out to many accounts at once with optional per-platform overrides. Each target publishes independently and retries on failure.' },
+  { icon: Bot, title: 'MCP & REST API', body: 'Point any MCP client at your own instance and it gets 22 tools to draft, schedule, and publish. Publishing always needs your confirmation. The same actions work over REST when you would rather write code.' },
   { icon: CalendarDays, title: 'Queue & calendar', body: 'Set recurring posting slots in your timezone, drop drafts into the queue, and review everything on a month calendar. Publish instantly anytime.' },
   { icon: LineChart, title: 'Analytics', body: 'Follower and post-count trends per account, plus per-post engagement: likes, reposts, replies, and impressions.' },
   { icon: Link2, title: 'Connected accounts', body: 'Connect X, LinkedIn, Bluesky, and Discord via OAuth or app password, group accounts into reusable sets, and get nudged when one needs reconnecting.' }, // TODO(meta): restore 'Instagram, Facebook, Threads' once Cloud's Meta app approval lands.
   { icon: Users, title: 'Workspaces & team', body: 'Multiple workspaces with role-based memberships, email invitations, and ownership transfer. Every record is scoped to its workspace.' },
   { icon: Bell, title: 'Notifications', body: 'In-app alerts the moment a post publishes or fails, or when an account needs your attention to keep posting.' },
   { icon: ShieldCheck, title: 'Secure by default', body: 'Email/password with verification, two-factor (TOTP), passkeys (WebAuthn), and optional social login.' },
-  { icon: Zap, title: 'Fast & flexible', body: 'A single, snappy interface — self-host it on your own infrastructure, or run it on our managed Cloud. No lock-in either way.' },
 ];
 
 const security = [
@@ -80,23 +81,27 @@ const faqs = [
     q: 'What platforms does Shoutrrr support?',
     // TODO(meta): restore 'Seven networks today — X, LinkedIn, Instagram, Facebook,
     // Threads, Bluesky, and Discord.' once Cloud's Meta app approval lands.
-    a: 'Four networks today — X, LinkedIn, Bluesky, and Discord. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
+    a: 'Four networks today: X, LinkedIn, Bluesky, and Discord. Write once, adjust each post when needed, and schedule everything from one place. More networks are on the roadmap.',
+  },
+  {
+    q: 'Can an AI agent post for me?',
+    a: 'Yes. Every instance ships a Model Context Protocol server, so any MCP client can draft, schedule, and publish through 22 tools. It works with anything that speaks the protocol, not one named vendor. The server runs inside your own deployment, and publishing, retrying, and deleting all refuse to run without your explicit confirmation. There is also a full REST API. Every plan includes both, with no developer tier and no per-call fee.',
   },
   {
     q: 'Is Shoutrrr really free?',
-    a: 'The open-source app is free forever under Apache 2.0 — self-host it with no paid seats or locked features. Managed Shoutrrr Cloud is $10/mo (which includes $5 of X usage) for teams who would rather not run it themselves.',
+    a: 'The open-source app is free forever under Apache 2.0. Self-host it with no paid seats or locked features. Managed Shoutrrr Cloud is $10/mo, which includes $5 of X usage, for teams who would rather not run it themselves.',
   },
   {
     q: 'Do I have to self-host?',
-    a: 'No. Shoutrrr Cloud is live — sign up and start posting in seconds. Self-hosting stays free and open source if you would rather run it yourself.',
+    a: 'No. Shoutrrr Cloud is live, so you can sign up and start posting in seconds. Self-hosting stays free and open source if you would rather run it yourself.',
   },
   {
     q: 'How do I install it?',
-    a: 'Self-hosting: pull the prebuilt Docker image — it bundles the web app, queue worker, and scheduler in one container and defaults to SQLite with no external services. Prefer zero setup? Skip it entirely with Shoutrrr Cloud.',
+    a: 'To self-host, pull the prebuilt Docker image. It bundles the web app, queue worker, and scheduler in one container, and defaults to SQLite with no external services. Prefer zero setup? Skip it with Shoutrrr Cloud.',
   },
   {
-    q: 'Cloud or self-host — which should I pick?',
-    a: 'Pick Cloud if you want zero ops — we run and update everything for a flat monthly fee. Pick self-host if you want full control of your infrastructure and data; it is free and open source. Same app either way — see the pricing section above for the details.',
+    q: 'Should I pick Cloud or self-host?',
+    a: 'Pick Cloud if you want zero ops. We run and update everything for a flat monthly fee. Pick self-host if you want full control of your infrastructure and data. It is free and open source. Same app either way. See the pricing section above for the details.',
   },
   {
     q: 'Can I use it with my team?',
@@ -108,7 +113,7 @@ const faqs = [
   },
   {
     q: 'How do I contribute?',
-    a: 'Open an issue or pull request on GitHub — bug reports, docs, and features all help. The whole project is Apache 2.0 licensed.',
+    a: 'Open an issue or pull request on GitHub. Bug reports, docs, and features all help. The whole project is Apache 2.0 licensed.',
   },
 ];
 ---
@@ -151,8 +156,8 @@ const faqs = [
             networks" once Cloud's Meta app approval lands. Unlike an HTML
             comment, this one is stripped from the built page. */}
         The open-source alternative to Buffer, Typefully, and Hootsuite. Publish
-        to X, LinkedIn, Bluesky, and Discord from one editor — on managed Cloud
-        or self-hosted.
+        to X, LinkedIn, Bluesky, and Discord from one editor, or hand it to any AI
+        agent through the built-in MCP server.
       </p>
       <div
         data-reveal
@@ -186,6 +191,12 @@ const faqs = [
         <span class="flex items-center gap-1.5"
           ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> Self-host
           anytime, no lock-in</span
+        >
+        <a
+          href="/mcp"
+          class="flex items-center gap-1.5 text-ink-300 no-underline transition-colors hover:text-ink-600"
+          ><Check class="h-4 w-4 text-lime-text" stroke-width={2.5} /> MCP +
+          REST API included</a
         >
       </div>
     </div>
@@ -259,8 +270,8 @@ const faqs = [
           Two ways to run Shoutrrr
         </h2>
         <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
-          Same app, same features. Let us run it for you, or run it yourself —
-          the open-source app is free forever.
+          Same app, same features. Let us run it for you, or run it yourself. The
+          open-source app is free forever.
         </p>
       </div>
       <div class="mx-auto grid max-w-[860px] gap-5 md:grid-cols-2">
@@ -288,7 +299,7 @@ const faqs = [
             </li>
             <li class="flex items-start gap-2.5">
               <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
-              We run the infrastructure — no servers to babysit
+              We run the infrastructure, so you maintain no servers
             </li>
             <li class="flex items-start gap-2.5">
               <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-lime-text" stroke-width={2.5} />
@@ -333,7 +344,7 @@ const faqs = [
             </li>
             <li class="flex items-start gap-2.5">
               <Check class="mt-0.5 h-[18px] w-[18px] flex-shrink-0 text-ink-400" stroke-width={2.5} />
-              One Docker image — web, worker, scheduler
+              One Docker image with web, worker, and scheduler
             </li>
           </ul>
           <a
@@ -346,7 +357,7 @@ const faqs = [
         </div>
       </div>
       <p data-reveal class="mt-8 text-center text-[13.5px] text-ink-400">
-        Same app, same features — your choice.
+        Same app, same features. Your choice.
       </p>
     </div>
   </section>
@@ -366,7 +377,7 @@ const faqs = [
           Everything from drafting to results
         </h2>
         <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
-          Compose, queue, reply, and measure without ever leaving the app — or
+          Compose, queue, reply, and measure without ever leaving the app, or
           switching between five browser tabs.
         </p>
       </div>
@@ -412,6 +423,105 @@ const faqs = [
     </div>
   </section>
 
+  <!-- ===== DEVELOPERS =====
+       The MCP server and the API are the two surfaces developers and agent
+       builders arrive looking for, and a feature card alone gave them nowhere
+       to go. Sits between Features and Security: what it does, then how to
+       drive it, then how it's locked down. -->
+  <section id="developers" class="mx-auto max-w-site px-6 pb-24">
+    <div data-reveal class="mb-11 max-w-[620px]">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        For developers and agents
+      </div>
+      <h2
+        class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+      >
+        Drive it from your agent, or from your code
+      </h2>
+      <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
+        The interface is not the only way in. Every plan includes both, with no
+        developer tier, no per-call fee, and nothing to apply for.
+      </p>
+    </div>
+
+    <div class="grid gap-5 md:grid-cols-2">
+      <a
+        href="/mcp"
+        data-reveal
+        data-hover
+        data-hover-lift="-3"
+        class="group flex flex-col rounded-2xl border border-lime-ring bg-lime-soft/40 p-8 no-underline dark:bg-lime-soft/25"
+      >
+        <div
+          class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-surface text-lime-deep dark:text-lime-text"
+        >
+          <Bot class="h-[22px] w-[22px]" stroke-width={1.7} />
+        </div>
+        <h3 class="track-title mb-2 font-display text-[23px] font-medium">
+          MCP server
+        </h3>
+        <p class="m-0 text-[14.5px] leading-[1.6] text-ink-600">
+          Point any MCP client at your instance and it gets 22 tools to draft,
+          schedule, and publish. Publishing, retrying, and deleting refuse to run
+          without your explicit confirmation.
+        </p>
+        <div
+          class="mt-6 overflow-x-auto rounded-lg border border-line-soft bg-surface px-3.5 py-2.5 font-mono text-[12.5px] text-ink-600"
+        >
+          https://app.shoutrrr.com/mcp
+        </div>
+        <span
+          class="mt-5 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-lime-deep dark:text-lime-text"
+        >
+          Explore the MCP server
+          <span
+            class="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+            >→</span
+          >
+        </span>
+      </a>
+
+      <a
+        href="/api"
+        data-reveal
+        data-reveal-delay="0.08"
+        data-hover
+        data-hover-lift="-3"
+        class="group flex flex-col rounded-2xl border border-line-soft bg-surface p-8 no-underline"
+      >
+        <div
+          class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-surface-sunken text-ink-700"
+        >
+          <Terminal class="h-[22px] w-[22px]" stroke-width={1.7} />
+        </div>
+        <h3 class="track-title mb-2 font-display text-[23px] font-medium">
+          REST API
+        </h3>
+        <p class="m-0 text-[14.5px] leading-[1.6] text-ink-600">
+          Two calls take you from a token to a published post. Bearer auth, JSON
+          in and out, an OpenAPI spec, and one call fans a post out to every
+          account you connected.
+        </p>
+        <div
+          class="mt-6 overflow-x-auto rounded-lg border border-line-soft bg-surface-sunken px-3.5 py-2.5 font-mono text-[12.5px] text-ink-600"
+        >
+          POST /api/v1/posts
+        </div>
+        <span
+          class="mt-5 inline-flex items-center gap-1.5 text-[14.5px] font-semibold text-ink-700"
+        >
+          Read the API overview
+          <span
+            class="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+            >→</span
+          >
+        </span>
+      </a>
+    </div>
+  </section>
+
   <!-- ===== SECURITY (dark) ===== -->
   <section id="security" class="bg-ink-900 text-white">
     <div
@@ -427,12 +537,12 @@ const faqs = [
         <h2
           class="font-display text-[clamp(30px,4vw,46px)] font-medium leading-[1.06]"
         >
-          Your accounts,<br />locked down tight
+          Your accounts,<br />locked down
         </h2>
         <p class="mt-[18px] max-w-[440px] text-base leading-[1.65] text-white/70">
-          Email and password with verification out of the box, plus every modern
-          factor you'd want layered on top. Account tokens are encrypted at rest
-          and never stored in plain text.
+          Email and password with verification from the start, plus the modern
+          factors you would expect. Shoutrrr encrypts account tokens at rest and
+          never stores them in plain text.
         </p>
       </div>
       <div class="grid grid-cols-2 gap-3.5">
@@ -486,8 +596,8 @@ const faqs = [
           class="mx-auto mt-[18px] max-w-[496px] text-[17px] leading-[1.6] text-ink-500"
         >
           Start on managed Cloud in about a minute, or self-host the same
-          open-source app on your own box. No per-seat pricing, no lock-in —
-          move between them whenever you want.
+          open-source app on your own box. No per-seat pricing and no lock-in.
+          Move between them whenever you want.
         </p>
         <div class="mt-7 flex flex-wrap justify-center gap-3">
           <a

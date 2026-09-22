@@ -5,8 +5,11 @@ export const prerender = true;
 
 const INTRO =
   'Shoutrrr is the open-source alternative to Buffer, Typefully, and Hootsuite. ' +
-  'Draft once and post everywhere — schedule to X, Bluesky, and LinkedIn. ' +
-  'Self-host it free, or use the managed Cloud.';
+  'Draft once and post everywhere, scheduling to X, Bluesky, LinkedIn, and Discord. ' +
+  'Self-host it free, or use the managed Cloud. ' +
+  'Every instance ships a Model Context Protocol (MCP) server and a REST API, ' +
+  'both included on every plan: any MCP client can draft, schedule, and publish ' +
+  'through 22 tools, and publishing requires explicit confirmation.';
 
 const CONTEXT =
   'This file indexes the Shoutrrr website and documentation for LLMs. ' +
@@ -25,6 +28,18 @@ const PAGES = [
       'Product overview: self-host or Cloud, multi-account publishing, queue & calendar, and analytics.',
   },
   {
+    title: 'MCP server',
+    path: '/mcp',
+    description:
+      'Let any MCP client draft, schedule, and publish. 22 tools, OAuth 2.1 with dynamic client registration, runs inside your own deployment, and publishing is gated behind explicit confirmation.',
+  },
+  {
+    title: 'REST API',
+    path: '/api',
+    description:
+      'Publish from your own code. Bearer token auth, JSON in and out, OpenAPI spec included; covers posts, media, schedules, account sets, calendar, and shares.',
+  },
+  {
     title: 'Philosophy',
     path: '/philosophy',
     description:
@@ -34,7 +49,7 @@ const PAGES = [
     title: 'Sponsor us',
     path: '/sponsorships',
     description:
-      'Shoutrrr and coolLabs are self-funded — support the project via GitHub Sponsors or Open Collective.',
+      'Shoutrrr and coolLabs are self-funded. Support the project via GitHub Sponsors or Open Collective.',
   },
 ];
 

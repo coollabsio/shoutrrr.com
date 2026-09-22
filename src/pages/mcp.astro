@@ -1,0 +1,492 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Aura from '../components/marketing/Aura.astro';
+import CodeBlock from '../components/marketing/CodeBlock.astro';
+import ToolCallLedger from '../components/marketing/ToolCallLedger.astro';
+import ProductPrimer from '../components/marketing/ProductPrimer.astro';
+import Server from 'lucide-astro/Server';
+import ShieldCheck from 'lucide-astro/ShieldCheck';
+import CircleSlash from 'lucide-astro/CircleSlash';
+import Lock from 'lucide-astro/Lock';
+import Sparkles from 'lucide-astro/Sparkles';
+
+const CLOUD = 'https://app.shoutrrr.com';
+// Cloud's own MCP endpoint. Verified live: /mcp answers 405 to a GET (it is
+// POST-only streamable HTTP) and /.well-known/oauth-protected-resource serves
+// the discovery document with scope `mcp:use`.
+const CLOUD_MCP = `${CLOUD}/mcp`;
+
+// A ready-to-paste setup prompt. Deliberately client-neutral — it states the
+// URL, the transport, and what the OAuth handshake will do, then ends on a
+// verification step and the guardrail this product is built around.
+const setupPrompt = `Add the Shoutrrr MCP server to my tools.
+
+URL: ${CLOUD}/mcp
+Transport: streamable HTTP
+
+It uses OAuth 2.1 with dynamic client registration, so there's no API key to create. Register as a client, then open the consent screen so I can sign in and pick a workspace.
+
+Once you're connected, call list-connected-accounts-tool and show me what you find. Never publish, retry, or delete anything without asking me first.`;
+
+// Deliberately vendor-neutral. The server implements the MCP standard, so the
+// honest claim is "any client that speaks it" — these are examples, not a
+// compatibility matrix, and the copy says so.
+const clients = [
+  'Claude Code',
+  'ChatGPT',
+  'Cursor',
+  'Codex',
+  'Copilot',
+  'Gemini CLI',
+  'Zed',
+  'Windsurf',
+  'Cline',
+  'n8n',
+];
+
+const pillars = [
+  {
+    icon: Server,
+    title: 'Runs inside your deployment',
+    body: 'The MCP server is part of Shoutrrr itself, not a service we host for you. Your agent connects straight to your instance. No vendor sits in the middle holding your tokens.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Confirmation before anything publishes',
+    body: 'Publishing, retrying, and deleting refuse to run without explicit confirmation. Shoutrrr re-checks your workspace role on every call, so an agent can never exceed what you can do in the browser.',
+  },
+  {
+    icon: CircleSlash,
+    title: 'Not a paid add-on',
+    body: 'Included in the free self-hosted build and in the $10/mo Cloud plan. There is no developer tier to upgrade to, no per-call charge, and no waitlist.',
+  },
+];
+
+// Grouped by what the tools do, not numbered — order carries nothing here, but
+// capability class does. The read-heavy majority is itself the proof that this
+// is a real surface rather than a demo.
+const toolGroups = [
+  {
+    group: 'Read',
+    tools: [
+      'list-workspaces-tool',
+      'list-posts-tool',
+      'get-post-tool',
+      'get-calendar-tool',
+      'list-connected-accounts-tool',
+      'list-account-sets-tool',
+      'get-posting-schedule-tool',
+    ],
+  },
+  {
+    group: 'Draft & edit',
+    tools: [
+      'create-post-tool',
+      'update-post-tool',
+      'add-post-media-tool',
+      'remove-post-media-tool',
+    ],
+  },
+  {
+    group: 'Schedule & publish',
+    tools: [
+      'schedule-post-tool',
+      'queue-post-tool',
+      'publish-post-tool',
+      'retry-post-target-tool',
+    ],
+  },
+  {
+    group: 'Sets & sharing',
+    tools: [
+      'create-account-set-tool',
+      'update-account-set-tool',
+      'delete-account-set-tool',
+      'create-share-link-tool',
+      'list-shares-tool',
+      'delete-share-tool',
+    ],
+  },
+  {
+    group: 'Delete',
+    tools: ['delete-post-tool'],
+  },
+];
+
+// Tools that refuse to run without `confirm=true`. Flagged inline so the
+// guardrail reads as a property of the surface, not a footnote.
+const confirmGated = new Set([
+  'publish-post-tool',
+  'retry-post-target-tool',
+  'delete-post-tool',
+]);
+
+const toolCount = toolGroups.reduce((n, g) => n + g.tools.length, 0);
+
+const jsonConfig = `{
+  "mcpServers": {
+    "shoutrrr": {
+      "type": "http",
+      "url": "https://app.shoutrrr.com/mcp"
+    }
+  }
+}`;
+
+const steps = [
+  {
+    title: 'Add the endpoint',
+    body: 'Paste your instance URL into your client. Most clients need nothing more. They read the OAuth metadata documents and register themselves.',
+  },
+  {
+    title: 'Approve once, pick a workspace',
+    body: 'Your browser opens the Shoutrrr consent screen. Sign in, choose which workspace this connection may touch, and approve. That binding is fixed for the life of the connection.',
+  },
+  {
+    title: 'Talk to it in plain language',
+    body: 'Ask for a draft, a reschedule, or the numbers from last month. The agent picks the tools. You still confirm anything that goes out in public.',
+  },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Shoutrrr MCP server',
+  applicationCategory: 'DeveloperApplication',
+  description:
+    'A Model Context Protocol server built into every Shoutrrr instance. Lets any MCP client draft, schedule, and publish social posts, with confirmation required before anything goes public.',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+};
+---
+
+<Layout
+  title="MCP server: let any agent post for you | Shoutrrr"
+  description={`Every Shoutrrr instance ships a Model Context Protocol server: ${toolCount} tools, OAuth 2.1, and a hard stop before anything publishes. Point any MCP client at your own deployment. Free on every plan.`}
+  jsonLd={jsonLd}
+>
+  <!-- ===== HERO ===== -->
+  <section
+    class="mx-auto grid max-w-site items-center gap-10 overflow-hidden px-6 pb-12 pt-14 md:grid-cols-[1.05fr_1fr] md:gap-14 md:overflow-visible md:pt-[72px]"
+  >
+    <div class="min-w-0">
+      <div
+        data-reveal
+        class="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-surface py-1.5 pl-2.5 pr-3.5 text-[13px] font-medium text-ink-700"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-lime-text ring-4 ring-lime-soft"
+        ></span>
+        Built in · free on every plan
+      </div>
+      <h1
+        data-reveal
+        data-reveal-delay="0.06"
+        class="track-hero font-display text-[clamp(40px,5.2vw,62px)] font-medium leading-[1.03]"
+      >
+        Your agent drafts.<br /><span class="text-lime-text">You publish.</span
+        >
+      </h1>
+      <p
+        data-reveal
+        data-reveal-delay="0.12"
+        class="mb-7 mt-[22px] max-w-[470px] text-[18px] leading-[1.55] text-ink-500"
+      >
+        Shoutrrr is an open-source scheduler for X, LinkedIn, Bluesky, and
+        Discord. Every instance ships a Model Context Protocol server, so any MCP
+        client gets {toolCount} tools to draft, schedule, and publish, with a hard
+        stop before anything goes public.
+      </p>
+
+      <div data-reveal data-reveal-delay="0.18" class="mb-6 max-w-[470px]">
+        <CodeBlock label="Server endpoint" code={CLOUD_MCP} />
+        <p class="mt-2.5 text-[13px] leading-[1.5] text-ink-400">
+          That is the Cloud endpoint. Self-hosting? Use your own domain. Either way
+          it is OAuth 2.1 with dynamic client registration, so there is no API
+          key to create.
+        </p>
+      </div>
+
+      <div
+        data-reveal
+        data-reveal-delay="0.24"
+        class="flex flex-col gap-3 min-[430px]:flex-row min-[430px]:flex-wrap"
+      >
+        <a
+          href="/docs/mcp"
+          data-hover
+          data-hover-lift="-3"
+          class="press rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+          >Read the docs →</a
+        >
+        <a
+          href={CLOUD}
+          data-hover
+          data-hover-lift="-3"
+          class="press rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+          >Start on Cloud</a
+        >
+      </div>
+    </div>
+
+    <div data-reveal data-reveal-delay="0.1" class="relative min-w-0 max-w-full">
+      <Aura variant="hero" />
+      <ToolCallLedger />
+    </div>
+  </section>
+
+  <!-- ===== CLIENT STRIP ===== -->
+  <section class="mx-auto max-w-site px-6 pb-20 pt-6">
+    <div data-reveal class="text-center">
+      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-ink-400">
+        Any client that speaks MCP
+      </p>
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+        {
+          clients.map((c) => (
+            <span class="inline-flex items-center rounded-full border border-line-soft bg-surface-sunken px-3.5 py-1.5 font-mono text-[12.5px] text-ink-600">
+              {c}
+            </span>
+          ))
+        }
+        <span class="px-1 text-[13px] text-ink-300">+ any other MCP client</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WHAT SHOUTRRR IS =====
+       Sits this high because people reach /mcp cold, from an MCP directory or
+       a search, with no idea what the host product is. -->
+  <ProductPrimer surface="MCP server" />
+
+  <!-- ===== PILLARS ===== -->
+  <section class="mx-auto max-w-site px-6 pb-24">
+    <div class="grid gap-5 md:grid-cols-3">
+      {
+        pillars.map((p, i) => {
+          const Icon = p.icon;
+          return (
+            <div
+              data-reveal
+              data-reveal-delay={(i * 0.08).toFixed(2)}
+              data-hover
+              class="rounded-2xl border border-line-soft p-7"
+            >
+              <div class="mb-4 grid h-11 w-11 place-items-center rounded-xl bg-lime-soft text-lime-deep dark:text-lime-text">
+                <Icon class="h-[22px] w-[22px]" stroke-width={1.7} />
+              </div>
+              <h3 class="track-title mb-2 font-display text-[21px] font-medium">
+                {p.title}
+              </h3>
+              <p class="m-0 text-[14.5px] leading-[1.6] text-ink-500">{p.body}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <!-- ===== CONNECT (dark) ===== -->
+  <section class="bg-ink-900 text-white">
+    <div
+      class="mx-auto grid max-w-site items-start gap-14 px-6 py-24 md:grid-cols-2"
+    >
+      <!-- `min-w-0`: without it the grid item keeps min-width:auto and the JSON
+           block below forces the track wider than the viewport on mobile. -->
+      <div data-reveal class="min-w-0">
+        <div
+          class="mb-4 text-xs font-semibold uppercase tracking-[0.14em]"
+          style="color:oklch(0.83 0.18 128.85)"
+        >
+          Connect it
+        </div>
+        <h2
+          class="font-display text-[clamp(30px,4vw,46px)] font-medium leading-[1.06]"
+        >
+          Three steps,<br />then plain language
+        </h2>
+        <p class="mt-[18px] max-w-[440px] text-base leading-[1.65] text-white/70">
+          The endpoint is the whole configuration. Clients discover the
+          authorization server from the standard metadata documents and register
+          themselves, so there is nothing to copy out of a settings screen.
+        </p>
+        <!-- The fastest path: hand the agent the instructions and let it wire
+             itself up. Emphasised because it's the one block to reach for. -->
+        <div class="mt-8">
+          <div
+            class="mb-2 flex items-center gap-2 font-mono text-[11.5px] uppercase tracking-[0.12em]"
+            style="color:oklch(0.83 0.18 128.85)"
+          >
+            <Sparkles class="h-[13px] w-[13px]" stroke-width={2} />
+            Paste this into your agent
+          </div>
+          <CodeBlock code={setupPrompt} tone="dark" wrap emphasis />
+          <p class="mt-2.5 text-[13px] leading-[1.5] text-white/45">
+            Self-hosting? Swap the URL for your own domain before you paste it.
+          </p>
+        </div>
+
+        <div class="mt-7">
+          <CodeBlock
+            label="Or, for a client that takes JSON"
+            code={jsonConfig}
+            tone="dark"
+          />
+        </div>
+      </div>
+
+      <ol class="m-0 flex list-none flex-col gap-3.5 p-0">
+        {
+          steps.map((s, i) => (
+            <li
+              data-reveal
+              data-reveal-delay={(i * 0.08).toFixed(2)}
+              class="rounded-[13px] border border-white/10 bg-white/[0.03] p-6 dark:border-white/[0.08] dark:bg-white/[0.04]"
+            >
+              <div
+                class="mb-2 font-mono text-[12px] font-bold"
+                style="color:oklch(0.83 0.18 128.85)"
+              >
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <div class="mb-1.5 text-[15px] font-semibold">{s.title}</div>
+              <div class="text-[13.5px] leading-[1.6] text-white/60">
+                {s.body}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== TOOLS ===== -->
+  <section class="mx-auto max-w-site px-6 py-24">
+    <div data-reveal class="mb-11 max-w-[620px]">
+      <div
+        class="mb-3.5 text-xs font-semibold uppercase tracking-[0.14em] text-lime-text"
+      >
+        Every tool
+      </div>
+      <h2
+        class="font-display text-[clamp(30px,4vw,44px)] font-medium leading-[1.08]"
+      >
+        {toolCount} tools, and three need your confirmation
+      </h2>
+      <p class="mt-3.5 text-base leading-[1.6] text-ink-500">
+        Anything you can do in the app, an agent can do over MCP, scoped to one
+        workspace and to your own role. The three outward-facing tools refuse to
+        run unless they are called with <code
+          class="rounded bg-surface-sunken px-1.5 py-0.5 font-mono text-[13px] text-ink-700"
+          >confirm=true</code
+        >.
+      </p>
+    </div>
+
+    <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        toolGroups.map((g, i) => (
+          <div
+            data-reveal
+            data-reveal-delay={Math.min(i * 0.06, 0.24).toFixed(2)}
+            class="rounded-2xl border border-line-soft p-6"
+          >
+            <div class="mb-4 flex items-baseline justify-between gap-3">
+              <h3 class="track-title m-0 font-display text-[18px] font-medium">
+                {g.group}
+              </h3>
+              <span class="font-mono text-[12px] text-ink-300">
+                {g.tools.length}
+              </span>
+            </div>
+            <ul class="m-0 flex list-none flex-col gap-2 p-0">
+              {g.tools.map((t) => (
+                <li class="flex items-center gap-2 font-mono text-[12.5px] leading-[1.5] text-ink-600">
+                  <span class="break-all">{t}</span>
+                  {confirmGated.has(t) && (
+                    <span
+                      title="Requires confirm=true"
+                      class="inline-flex flex-shrink-0 items-center gap-1 rounded-md bg-lime-soft px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-lime-deep dark:text-lime-text"
+                    >
+                      <Lock class="h-[11px] w-[11px]" stroke-width={2.4} />
+                      confirm
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+
+      <!-- Sixth cell. Five tool groups leave a hole in a 3-up grid; rather than
+           pad it, it explains the badge the grid just introduced. -->
+      <a
+        href="/docs/mcp"
+        data-reveal
+        data-reveal-delay="0.3"
+        data-hover
+        class="group flex flex-col rounded-2xl border border-lime-ring bg-lime-soft/50 p-6 no-underline dark:bg-lime-soft/30"
+      >
+        <div
+          class="mb-3 inline-flex w-fit items-center gap-1 rounded-md bg-surface px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-lime-deep dark:text-lime-text"
+        >
+          <Lock class="h-[11px] w-[11px]" stroke-width={2.4} />
+          confirm
+        </div>
+        <h3 class="track-title mb-2 font-display text-[18px] font-medium">
+          What the badge means
+        </h3>
+        <p class="m-0 text-[13.5px] leading-[1.6] text-ink-600">
+          These three tools reach the outside world, so they hard-fail unless the
+          call carries <code class="font-mono text-[12.5px]">confirm=true</code>.
+          A well-behaved client asks you first.
+        </p>
+        <span
+          class="mt-4 inline-flex items-center gap-1 text-[13.5px] font-semibold text-lime-deep dark:text-lime-text"
+        >
+          How confirmation works
+          <span
+            class="transition-transform duration-200 ease-out group-hover:translate-x-0.5"
+            >→</span
+          >
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="mx-auto max-w-site px-6 pb-24">
+    <div
+      data-reveal
+      class="rounded-3xl border border-line-strong bg-surface-raised px-6 py-14 text-center sm:px-10"
+    >
+      <h2
+        class="mx-auto max-w-[620px] font-display text-[clamp(26px,3.4vw,38px)] font-medium leading-[1.1]"
+      >
+        Point an agent at it
+      </h2>
+      <p
+        class="mx-auto mt-3.5 max-w-[520px] text-base leading-[1.6] text-ink-500"
+      >
+        Self-host it free under Apache 2.0, or start on Cloud for $10 a month.
+        The MCP server is the same either way.
+      </p>
+      <div
+        class="mt-8 flex flex-col justify-center gap-3 min-[430px]:flex-row min-[430px]:flex-wrap"
+      >
+        <a
+          href={CLOUD}
+          data-hover
+          data-hover-lift="-3"
+          class="press rounded-[11px] border border-lime-ring bg-lime px-[22px] py-[13px] text-center text-[15px] font-semibold text-lime-deep no-underline transition-[filter] hover:brightness-[1.04]"
+          >Get started →</a
+        >
+        <a
+          href="/api"
+          data-hover
+          data-hover-lift="-3"
+          class="press rounded-[11px] border border-line-strong bg-surface px-[22px] py-[13px] text-center text-[15px] font-semibold text-ink-700 no-underline transition-colors hover:bg-surface-sunken"
+          >Prefer to write code? →</a
+        >
+      </div>
+    </div>
+  </section>
+</Layout>

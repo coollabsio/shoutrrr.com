@@ -10,13 +10,18 @@ import Star from 'lucide-astro/Star';
 import { getStarCount, formatStarCount } from '../lib/github-stars';
 const stars = await getStarCount();
 const starLabel = stars != null ? formatStarCount(stars) : null;
+// MCP and API sit high on purpose: they're the surfaces developers and agent
+// builders arrive looking for, and they were previously reachable only by
+// digging through /docs.
 const links = [
   { href: '/#features', label: 'Features' },
   { href: '/#showcase', label: 'Product' },
+  { href: '/mcp', label: 'MCP' },
+  { href: '/api', label: 'API' },
   { href: '/#pricing', label: 'Pricing' },
   { href: '/docs', label: 'Docs' },
-  { href: '/philosophy', label: 'Philosophy' },
-  { href: '/sponsorships', label: 'Sponsors' },
+  // Philosophy and Sponsors live in the footer's Project column only — the bar
+  // was too crowded once MCP and API joined it.
   { href: 'https://coollabs.io/discord', label: 'Community' },
   { href: '/#faq', label: 'FAQ' },
 ];
@@ -57,7 +62,7 @@ const CLOUD = 'https://app.shoutrrr.com';
       <a
         href={GITHUB}
         aria-label={starLabel
-          ? `Star Shoutrrr on GitHub — ${starLabel} stars`
+          ? `Star Shoutrrr on GitHub, ${starLabel} stars`
           : 'Star Shoutrrr on GitHub'}
         class="press hidden overflow-hidden rounded-[9px] border border-line-strong bg-surface text-ink-700 no-underline transition-colors hover:bg-surface-sunken sm:inline-flex"
       >

@@ -45,11 +45,11 @@
   ];
 
   // The base draft, split into the 3 X-sized sections the auto-splitter produces.
-  // Lengths sum to ~635 → three posts at the 280 limit, justifying "3-post thread".
+  // Each section stays under the 280 limit, justifying "3-post thread".
   const sections = [
-    { count: 222, text: 'Shipped Shoutrrr 1.0 today 🚀\n\nThe open-source social scheduler is here: draft once, then fan it out to X, LinkedIn, Bluesky, and more at the same time — with a live per-network character count and auto-threading. No per-seat pricing.' },
-    { count: 206, text: 'Run it your way.\n\nSelf-host the open-source app free on your own box, or start on our fully managed Cloud. Your posts, your audience, your data — Apache 2.0, runs anywhere Docker does.' },
-    { count: 150, text: 'Get started in about a minute:\n\ndocker pull ghcr.io/coollabsio/shoutrrr\n\nStar it on GitHub and deploy today → github.com/coollabsio/shoutrrr' },
+    { count: 232, text: 'Shipped Shoutrrr 1.0 today 🚀\n\nThe open-source social scheduler is here. Draft once, then fan it out to X, LinkedIn, Bluesky, and more at the same time, with a live per-network character count and auto-threading. No per-seat pricing.' },
+    { count: 183, text: 'Run it your way.\n\nSelf-host the open-source app free on your own box, or start on our fully managed Cloud. Your posts, your audience, your data. Apache 2.0, runs anywhere Docker does.' },
+    { count: 139, text: 'Get started in about a minute:\n\ndocker pull ghcr.io/coollabsio/shoutrrr\n\nStar it on GitHub and deploy today: github.com/coollabsio/shoutrrr' },
   ];
   const threadTotal = sections.reduce((s, x) => s + x.count, 0);
   // Same content as it lands on X, with illustrative engagement.
@@ -106,17 +106,17 @@
     {
       id: 'r2', platform: 'x', name: 'Marco Reyes', handle: '@marcodev', initials: 'MR',
       time: '34m', replied: true, on: 'Run it your way',
-      text: 'Just deployed with the Docker one-liner — took two minutes flat. 🙌',
+      text: 'Just deployed with the Docker one-liner. Took two minutes flat. 🙌',
     },
     {
       id: 'r3', platform: 'bluesky', name: 'devsandra', handle: '@devsandra.bsky', initials: 'DS',
       time: '1h', unread: true, on: 'Shipped Shoutrrr 1.0 today',
-      text: 'How does auto-split pick the break points — sentence boundaries?',
+      text: 'Does auto-split break on sentence boundaries?',
     },
     {
       id: 'r4', platform: 'linkedin', name: 'Liang Wei', handle: '', initials: 'LW',
       time: '2h', on: 'Run it your way',
-      text: 'Congrats on the launch — self-hosting this for our team this week.',
+      text: 'Congrats on the launch. Self-hosting this for our team this week.',
     },
     {
       id: 'r5', platform: 'x', name: 'Tomás Alvarez', handle: '@tomdesigns', initials: 'TA',
@@ -130,7 +130,7 @@
     'Shipped Shoutrrr 1.0 today 🚀 The open-source social scheduler is here: draft once, fan it out to X, LinkedIn, and Bluesky at the same time.';
   const convo = [
     { ours: false, text: "Been waiting for an open-source scheduler that isn't per-seat. Does it handle Bluesky threads too?", time: '12m' },
-    { ours: true, text: 'It does — auto-threading works on X and Bluesky from the same draft. Give it a spin and let me know how it feels 🚀', time: '4m' },
+    { ours: true, text: 'It does. Auto-threading works on X and Bluesky from the same draft. Give it a spin and let me know how it feels 🚀', time: '4m' },
   ];
 
   // ── Analytics tab data ─────────────────────────────────────────────
